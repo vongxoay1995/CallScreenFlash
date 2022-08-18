@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.aply.ApplyActivity">
+
+        <RelativeLayout
+            android:id="@+id/layoutContent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/llAds"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_bg_call"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="visible" />
+
+            <com.call.colorscreen.ledflash.ui.main.custom.TextureViewCusTom
+                android:id="@+id/video_theme"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/layout_header"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                android:background="#4A000000"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgBack"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_back_w" />
+
+                <LinearLayout
+                    android:id="@+id/llFooter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/imgDelete"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_40sdp"
+                        android:padding="@dimen/_9sdp"
+                        app:srcCompat="@drawable/ic_delete" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/layout_header">
+
+                <LinearLayout
+                    android:id="@+id/layoutAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/_40sdp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgAvatar"
+                        android:layout_width="@dimen/_90sdp"
+                        android:layout_height="@dimen/_90sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/avatar"
+                        app:civ_border_color="#FFFFFF"
+                        app:civ_border_width="2dp" />
+
+                    <TextView
+                        android:id="@+id/txtName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="@dimen/_20sdp"
+                        android:text="@string/caller"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_25sdp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="@dimen/_10sdp"
+                        android:text="0000-0000-0000"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_14sdp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/_30sdp"
+                        android:paddingRight="@dimen/_30sdp">
+
+                        <ImageView
+                            android:id="@+id/imgReject"
+                            android:layout_width="@dimen/_100sdp"
+                            android:layout_height="@dimen/_100sdp"
+                            android:layout_alignParentStart="true"
+                            android:padding="@dimen/_20sdp"
+                            app:srcCompat="@drawable/ic_reject_call"
+                            tools:ignore="VectorDrawableCompat" />
+
+                        <ImageView
+                            android:id="@+id/imgAccept"
+                            android:layout_width="@dimen/_100sdp"
+                            android:layout_height="@dimen/_100sdp"
+                            android:layout_alignParentEnd="true"
+                            android:padding="@dimen/_20sdp"
+                            app:srcCompat="@drawable/ic_accept_call"
+                            tools:ignore="VectorDrawableCompat" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layoutBottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_15sdp"
+                        android:paddingLeft="@dimen/_15sdp"
+                        android:paddingTop="@dimen/_25sdp"
+                        android:paddingRight="@dimen/_15sdp"
+                        android:paddingBottom="@dimen/_15sdp">
+
+                        <RelativeLayout
+                            android:id="@+id/llApply"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toStartOf="@+id/llContact"
+                            android:background="@drawable/bg_blue_radius_apply"
+                            android:paddingTop="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_10sdp">
+
+                            <TextView
+                                android:id="@+id/txtApply"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:text="@string/applyForAllContact"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/llContact"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="@dimen/_15sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/bg_ic_contact"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_5sdp"
+                            android:visibility="visible">
+
+                            <ImageView
+                                android:layout_width="@dimen/_35sdp"
+                                android:layout_height="@dimen/_35sdp"
+                                android:padding="@dimen/_8sdp"
+                                app:srcCompat="@drawable/ic_avatar_contact"
+                                tools:ignore="VectorDrawableCompat" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/llAds"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/bd_ads"
+            android:gravity="center"
+            android:padding="1dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

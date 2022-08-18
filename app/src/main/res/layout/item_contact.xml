@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/layoutItem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="@dimen/_44sdp"
+            android:layout_height="@dimen/_44sdp"
+            android:layout_gravity="center"
+            android:src="@drawable/avatar"
+            app:civ_border_color="#FFFFFF"
+            app:civ_border_width="0dp" />
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/_13sdp" />
+
+        <com.call.colorscreen.ledflash.ui.main.custom.CircleContactImageView
+            android:id="@+id/imgSelectContact"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_13sdp"
+            app:srcCompat="@drawable/toggle_select" />
+    </LinearLayout>
+</layout>

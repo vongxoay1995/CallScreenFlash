@@ -2,13 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.call.colorscreen.flashlight.ui.splash.SplashActivityViewModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,14 +11,13 @@
             android:id="@+id/img_splash"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_splash" />
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:id="@+id/ll_skip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_25sdp"
             android:layout_marginEnd="@dimen/_18sdp"
             android:background="@drawable/bg_llskip"
             android:gravity="center"

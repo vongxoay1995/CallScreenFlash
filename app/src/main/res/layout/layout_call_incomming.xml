@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <com.call.colorscreen.ledflash.service.DynamicImageView
+        android:id="@+id/img_theme_call"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
+    <com.call.colorscreen.ledflash.view.FullVideoView
+        android:id="@+id/vd_theme_call"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+    <ImageView
+        android:id="@+id/imgExit"
+        android:layout_width="@dimen/_45sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_alignParentEnd="true"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_35sdp"
+        app:srcCompat="@drawable/ic_exit"/>
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="3"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/layoutInfor"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:orientation="vertical">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="@dimen/_92sdp"
+                android:layout_height="@dimen/_92sdp"
+                android:src="@drawable/avatar"
+                android:layout_gravity="center"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#FFFFFF"
+                />
+            <TextView
+                android:id="@+id/txtName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/caller"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:textSize="@dimen/_25sdp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="@dimen/_10sdp"
+                android:text="0000-0000-0000"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sdp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_30sdp"
+                android:paddingRight="@dimen/_30sdp"
+                android:layout_marginBottom="@dimen/_50sdp">
+
+                <ImageView
+                    android:id="@+id/btnReject"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/ic_reject_call"
+                    android:padding="@dimen/_20sdp"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <ImageView
+                    android:id="@+id/btnAccept"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_accept_call"
+                    android:padding="@dimen/_20sdp"
+                    tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
