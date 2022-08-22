@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -24,7 +25,6 @@ import com.call.colorscreen.ledflash.model.ContactInfor
 import com.call.colorscreen.ledflash.util.*
 import com.google.gson.Gson
 import org.koin.android.ext.android.inject
-import org.koin.java.KoinJavaComponent.inject
 import java.util.*
 
 class SelectContactActivity : BaseActivity<
@@ -33,7 +33,7 @@ class SelectContactActivity : BaseActivity<
     private lateinit var adapter: ContactAdapter
     val selectModel by inject<SelectContactModel>()
     val db by inject<RoomDatabaseHelper>()
-
+    private var isSearchShow = false
     override fun getLayoutId(): Int {
         return R.layout.activity_select_contact
     }
@@ -49,12 +49,26 @@ class SelectContactActivity : BaseActivity<
                 finish()
             }
             R.id.layoutSet -> {
-                Log.e("TAN", "onClick: set", )
                 PermissionUtil.checkPermissionCall(this, this)
+            }
+            R.id.imgSearch ->{
+                Log.e("TAN", "onClick: search")
+                binding.layoutHeader2.visibility = View.VISIBLE
+                binding.header1.visibility = View.GONE
+                isSearchShow = true
+                showSearch()
             }
         }
     }
-
+    fun showSearch() {
+        binding.edtSearch.isFocusable = true
+        binding.edtSearch.isFocusableInTouchMode = true
+        binding.edtSearch.requestFocus()
+        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        if (inputMethodManager.isActive) {
+            inputMethodManager.showSoftInput(binding.edtSearch, 0)
+        }
+    }
     fun setTranslucent() {
         val w = window
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
@@ -86,6 +100,7 @@ class SelectContactActivity : BaseActivity<
         getAllContact()
         binding.edtSearch.addTextChangedListener(EditTextListener())
         binding.layoutSet.setOnClickListener(this)
+        binding.imgSearch.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
     }
 
@@ -209,7 +224,7 @@ class SelectContactActivity : BaseActivity<
         }
     }
     override fun onHasCall() {
-        Log.e("TAN", "onHasCall: ", )
+        Log.e("TAN", "onHasCall: ")
         setThemetoContactId()
     }
 }

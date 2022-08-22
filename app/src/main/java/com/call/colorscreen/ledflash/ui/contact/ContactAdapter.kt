@@ -1,15 +1,22 @@
 package com.call.colorscreen.ledflash.ui.contact
 
+import android.R
 import android.content.Context
+import android.graphics.Bitmap
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.call.colorscreen.ledflash.databinding.ItemContactBinding
 import com.call.colorscreen.ledflash.model.ContactInfor
-import java.util.*
+import javax.sql.DataSource
+
 
 class ContactAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var listContactInfor: MutableList<ContactInfor> = mutableListOf()
@@ -58,7 +65,34 @@ class ContactAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
           } else {
               contactInfor.photo
           }
-          Glide.with(context!!).load(path).into(binding.imgAvatar)
+          Glide.with(context!!)
+              .asBitmap().load(path)
+              .listener(object : RequestListener<Bitmap?> {
+                  override fun onResourceReady(
+                      resource: Bitmap?,
+                      model: Any?,
+                      target: Target<Bitmap?>?,
+                      dataSource: com.bumptech.glide.load.DataSource?,
+                      isFirstResource: Boolean
+                  ): Boolean {
+                      binding.imgAvatar.post {
+                          binding.imgAvatar.setImageBitmap(resource)
+                      }
+
+                      return false
+                  }
+
+                  override fun onLoadFailed(
+                      e: GlideException?,
+                      model: Any?,
+                      target: Target<Bitmap?>?,
+                      isFirstResource: Boolean
+                  ): Boolean {
+                      return false
+                  }
+              }
+              ).submit()
+         // Glide.with(context!!).load(path).into(binding.imgAvatar)
           binding.txtName.text = contactInfor.displayName
           binding.imgSelectContact.isChecked = contactInfor.isChecked
           binding.layoutItem.setOnClickListener {
