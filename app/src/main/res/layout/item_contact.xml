@@ -30,7 +30,7 @@
             android:textColor="#ffffff"
             android:textSize="@dimen/_13sdp" />
 
-        <com.call.colorscreen.ledflash.ui.main.custom.CircleContactImageView
+        <com.call.colorscreen.ledflash.view.CircleContactImageView
             android:id="@+id/imgSelectContact"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="wrap_content"

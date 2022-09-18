@@ -59,7 +59,6 @@ class ContactAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private lateinit var path: String
       fun onBind(position: Int){
           contactInfor = listContactInfor[position]
-          Log.e("TAN", "onBind: "+contactInfor.photo )
           path = if (contactInfor.photo == null) {
               "file:///android_asset/avatar.webp"
           } else {

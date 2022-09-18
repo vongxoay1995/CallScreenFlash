@@ -4,6 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Work/android/tan/myapp/CallScreenFlash/app/src/main/res/layout/activity_select_contact.xml" value="0.22962962962962963" />
+        <entry key="..\:/Work/android/tan/myapp/CallScreenFlash/app/src/main/res/layout/fragment_custom.xml" value="0.25416666666666665" />
+        <entry key="..\:/Work/android/tan/myapp/CallScreenFlash/app/src/main/res/layout/item_custom_theme.xml" value="0.25416666666666665" />
+        <entry key="..\:/Work/android/tan/myapp/CallScreenFlash/app/src/main/res/layout/item_theme.xml" value="0.2361111111111111" />
       </map>
     </option>
   </component>

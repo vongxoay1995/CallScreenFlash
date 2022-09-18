@@ -1,7 +1,6 @@
 package com.call.colorscreen.ledflash.service
 
 import android.Manifest
-import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,7 +22,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.internal.telephony.ITelephony
@@ -34,7 +32,7 @@ import com.call.colorscreen.ledflash.call.IncommingCallActivity
 import com.call.colorscreen.ledflash.database.Contact
 import com.call.colorscreen.ledflash.database.RoomManager
 import com.call.colorscreen.ledflash.database.Theme
-import com.call.colorscreen.ledflash.ui.main.custom.TextureVideoView
+import com.call.colorscreen.ledflash.view.TextureVideoView
 import com.call.colorscreen.ledflash.util.*
 import com.google.gson.Gson
 import de.hdodenhof.circleimageview.CircleImageView

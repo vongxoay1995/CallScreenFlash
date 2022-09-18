@@ -1,4 +1,4 @@
-package com.call.colorscreen.ledflash.ui.main.custom;
+package com.call.colorscreen.ledflash.view;
 
 import android.app.AlertDialog;
 import android.content.Context;

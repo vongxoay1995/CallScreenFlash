@@ -16,24 +16,24 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.base.BaseActivity
-import com.call.colorscreen.ledflash.database.Contact
-import com.call.colorscreen.ledflash.database.RoomDatabaseHelper
-import com.call.colorscreen.ledflash.database.RoomManager
-import com.call.colorscreen.ledflash.database.Theme
+import com.call.colorscreen.ledflash.database.*
 import com.call.colorscreen.ledflash.databinding.ActivitySelectContactBinding
 import com.call.colorscreen.ledflash.model.ContactInfor
 import com.call.colorscreen.ledflash.util.*
 import com.google.gson.Gson
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class SelectContactActivity : BaseActivity<
         ActivitySelectContactBinding>(), View.OnClickListener, PermissionCallListener {
     private lateinit var theme: Theme
     private lateinit var adapter: ContactAdapter
-    val selectModel by inject<SelectContactModel>()
-    val db by inject<RoomDatabaseHelper>()
+    val selectModel: SelectContactModel by viewModel()
+   // val db by inject<RoomDatabaseHelper>()
     private var isSearchShow = false
+    val database by inject<AppDatabase>()
+
     override fun getLayoutId(): Int {
         return R.layout.activity_select_contact
     }
@@ -138,25 +138,27 @@ class SelectContactActivity : BaseActivity<
         val list: ArrayList<ContactInfor> = ArrayList(linkedHashSet)
         val arrListContactInfor: MutableList<ContactInfor>  = mutableListOf()
         arrListContactInfor.addAll(list)
-        RoomManager.get().liveContactList(theme.path_file).observe(this) {
-
-            val listContactDB:MutableList<Contact> = it
-            for (i in listContactDB.indices) {
-                val it: Iterator<*> = arrListContactInfor.iterator()
-                while (true) {
-                    if (!it.hasNext()) {
-                        break
-                    }
-                    val contactInforInfor: ContactInfor =
-                        it.next() as ContactInfor
-                    if (contactInforInfor.contactId == listContactDB[i].contact_id) {
-                        contactInforInfor.isChecked = true
-                        break
-                    }
+        val listContactDB:MutableList<Contact> = database.serverDao().getContactWithPath2(theme.path_file)
+       // val listContactDB:MutableList<Contact> = it
+        for (i in listContactDB.indices) {
+            val it: Iterator<*> = arrListContactInfor.iterator()
+            while (true) {
+                if (!it.hasNext()) {
+                    break
+                }
+                val contactInforInfor: ContactInfor =
+                    it.next() as ContactInfor
+                if (contactInforInfor.contactId == listContactDB[i].contact_id) {
+                    contactInforInfor.isChecked = true
+                    break
                 }
             }
-            adapter = ContactAdapter(this, arrListContactInfor)
-            binding.rvContact.adapter = adapter
+        }
+        adapter = ContactAdapter(this, arrListContactInfor)
+        binding.rvContact.adapter = adapter
+        selectModel.liveContactList(theme.path_file).observe(this){
+            Log.e("TAN", "room1", )
+
         }
     }
 
@@ -185,43 +187,64 @@ class SelectContactActivity : BaseActivity<
     fun setThemetoContactId() {
         HawkData.setEnableCall(true)
         val listContactIdSelected: List<String> = adapter.getContactSelected()
-        RoomManager.get().liveContactList(theme.path_file).observe(this) { it ->
-            Log.e("TAN", "list contact: "+it )
-            val listContactDB:MutableList<Contact> = it
-            for (i in listContactDB.indices) {
-                val contactSelect: String = listContactDB[i].contact_id
-                if (!listContactIdSelected.contains(contactSelect)) {
-                    selectModel.deleteContact(db,contactSelect)
-                }
+        val listContactDB:MutableList<Contact> = database.serverDao().getContactWithPath2(theme.path_file)
+        for (i in listContactDB.indices) {
+            val contactSelect: String = listContactDB[i].contact_id
+            if (!listContactIdSelected.contains(contactSelect)) {
+                selectModel.deleteContact(database,contactSelect)
             }
-            val item = listContactIdSelected.iterator()
-            Log.e("TAN", "setThemetoContactId: "+listContactIdSelected.size )
-            var contact: Contact
-            while (item.hasNext()) {
-                val contactID = item.next()
-                selectModel.listContactLiveData.observe(this) {
-                    val listQueryContactID: List<Contact> = it!!
-                    if (listQueryContactID.isNotEmpty()) {
-                        Log.e("TAN", "setThemetoContactId: update" )
-                        contact = listQueryContactID[0]
-                        contact.theme_path = theme.path_file
-                        contact.theme = Gson().toJson(theme)
-                        selectModel.updateContact(db,contact)
-                    } else {
-                        Log.e("TAN", "setThemetoContactId: insert" )
-
-                        contact =
-                            Contact(contactID, theme.path_file, Gson().toJson(theme))
-                        selectModel.insertDb(db,contact)
-                    }
-                }
-                Log.e("TAN", "dkien: contactID "+contactID )
-
-                selectModel.getListContact(db,contactID)
-            }
-            Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show()
-            finish()
         }
+        val item = listContactIdSelected.iterator()
+        Log.e("TAN", "setThemetoContactId: "+listContactIdSelected.size )
+        var contact: Contact
+        while (item.hasNext()) {
+            val contactID = item.next()
+            /*     selectModel.listContactLiveData.observe(this) {
+                     Log.e("TAN", "listContactLiveData: run" )
+
+                     val listQueryContactID: List<Contact> = it!!
+                     if (listQueryContactID.isNotEmpty()) {
+                         Log.e("TAN", "setThemetoContactId: update" )
+                         contact = listQueryContactID[0]
+                         contact.theme_path = theme.path_file
+                         contact.theme = Gson().toJson(theme)
+                         selectModel.updateContact(db,contact)
+                     } else {
+                         Log.e("TAN", "setThemetoContactId: insert" )
+
+                         contact =
+                             Contact(contactID, theme.path_file, Gson().toJson(theme))
+                         selectModel.insertDb(db,contact)
+                     }
+                 }*/
+            val list = database.serverDao().getContactById(contactID)
+            Log.e("TAN", "dkien: list "+list.size )
+            val listQueryContactID: List<Contact> = list
+            if (listQueryContactID.isNotEmpty()) {
+                Log.e("TAN", "setThemetoContactId: update" )
+                contact = listQueryContactID[0]
+                contact.theme_path = theme.path_file
+                contact.theme = Gson().toJson(theme)
+                Log.e("TAN", "contact: "+contact )
+
+                selectModel.updateContact(database,contact)
+            } else {
+                Log.e("TAN", "setThemetoContactId: insert" )
+
+                contact =
+                    Contact(contactID, theme.path_file, Gson().toJson(theme))
+                selectModel.insertDb(database,contact)
+            }
+            //selectModel.getListContact(db,contactID)
+        }
+        Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show()
+        finish()
+
+
+        selectModel.liveContactList(theme.path_file).observe(this){
+
+        }
+
     }
     override fun onHasCall() {
         Log.e("TAN", "onHasCall: ")

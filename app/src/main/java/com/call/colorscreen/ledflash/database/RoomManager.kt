@@ -38,6 +38,9 @@ class RoomManager(application: Application) {
     fun liveContactList(path:String): LiveData<MutableList<Contact>> {
         return roomDao.getContactWithPath(path)
     }
+    fun liveContactListSetTheme(value:String): LiveData<MutableList<Contact>> {
+        return roomDao.getContactWithPath(value)
+    }
     fun liveContactListWithId(id:String): LiveData<MutableList<Contact>> {
         return roomDao.getContactWithId(id)
     }

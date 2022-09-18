@@ -7,6 +7,10 @@ import androidx.room.*
 interface RoomDao {
     @Query("SELECT * FROM contact WHERE theme_path = :path")
     fun getContactWithPath(path: String): LiveData<MutableList<Contact>>
+
+    @Query("SELECT * FROM contact WHERE theme_path = :path")
+    fun getContactWithPath2(path: String): MutableList<Contact>
+
     @Query("SELECT * FROM contact WHERE contact_id = :id")
     fun getContactWithId(id: String): LiveData<MutableList<Contact>>
     @Query("DELETE FROM contact where contact_id = :id")

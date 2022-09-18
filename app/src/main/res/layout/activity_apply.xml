@@ -22,7 +22,7 @@
                 android:scaleType="centerCrop"
                 android:visibility="visible" />
 
-            <com.call.colorscreen.ledflash.ui.main.custom.TextureViewCusTom
+            <com.call.colorscreen.ledflash.view.TextureViewCusTom
                 android:id="@+id/video_theme"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -17,7 +17,7 @@
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_120sdp">
 
-                <com.call.colorscreen.ledflash.ui.main.custom.TextureViewCusTom
+                <com.call.colorscreen.ledflash.view.TextureViewCusTom
                     android:id="@+id/video_themes"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
