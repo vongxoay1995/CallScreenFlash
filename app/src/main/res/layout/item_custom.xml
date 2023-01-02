@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layoutAdd"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:orientation="vertical">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/img_theme"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_app"
+        android:padding="5dp"
+        android:scaleType="centerCrop"
+        app:riv_border_color="#333333"
+        app:riv_corner_radius="@dimen/_3sdp"
+        app:riv_mutate_background="true"
+        app:riv_tile_mode="repeat"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            app:srcCompat="@drawable/ic_add"
+            tools:ignore="VectorDrawableCompat" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:gravity="center"
+            android:text="@string/addYourVideo"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_9sdp" />
+    </LinearLayout>
+</RelativeLayout>
+</layout>

@@ -3,7 +3,6 @@ package com.call.colorscreen.ledflash.ui.main.custom
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Handler
@@ -13,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -24,16 +22,23 @@ import butterknife.ButterKnife
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Theme
+import com.call.colorscreen.ledflash.databinding.ItemCustomBinding
+import com.call.colorscreen.ledflash.databinding.ItemThemeBinding
 import com.call.colorscreen.ledflash.util.Constant
+import com.call.colorscreen.ledflash.util.HawkData
+import com.call.colorscreen.ledflash.view.TextureVideoView
+import kotlinx.coroutines.NonDisposableHandle.parent
 
-class CustomThemeAdapter(private val context: Context) :
+class CustomThemeAdapter(private val context: Context,val database: AppDatabase) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var listBg: ArrayList<Theme>? = null
     fun setNewListBg() {
-        listBg = ArrayList<Theme>()
+        listBg = ArrayList()
         listBg!!.add(Theme(0, "", "", false))
-        listBg!!.addAll(DataManager.query().getBackgroundDao().queryBuilder().list())
+       // listBg!!.addAll(database.serverDao().getListTheme())
+       // listBg!!.addAll(DataManager.query().getBackgroundDao().queryBuilder().list())
     }
 
     private fun resizeItem(context: Context, layout_item: RelativeLayout?) {
@@ -56,8 +61,8 @@ class CustomThemeAdapter(private val context: Context) :
         layout_item.layoutParams = layoutParams
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.img_item_thumb_theme)
+    inner class ViewHolder(val binding: ItemThemeBinding) : RecyclerView.ViewHolder(binding.root)  {
+        /*@BindView(R.id.img_item_thumb_theme)
         var imgThumb: ImageView? = null
 
         @BindView(R.id.layout_item)
@@ -78,100 +83,91 @@ class CustomThemeAdapter(private val context: Context) :
         @BindView(R.id.layoutBorderItemSelect)
         var layoutBorderItemSelect: RelativeLayout? = null
 
-        @BindView(R.id.vdo_background_call)
-        var vdo_background_call: TextureViewHandleClick? = null
+        @BindView(R.id.vd_theme_call)
+        var vdo_background_call: TextureVideoView? = null*/
 
-        @BindView(R.id.btnAccept)
-        var btnAccept: ImageView? = null
-        private var backgroundSelected: Background? = null
-        private var position = 0
+        private var themeSelected: Theme? = null
         private var posRandom = 0
         fun onBind(i: Int) {
-            position = i
             initInfor()
-            backgroundSelected = HawkHelper.getBackgroundSelect()
-            val background: Theme = listBg!![i]
+            themeSelected = HawkData.getThemeSelect()
+            val theme: Theme = listBg!![i]
             val pathFile: String
-            if (!background.getPathThumb().equals("")) {
-                pathFile = background.getPathThumb()
+            if (theme.path_thumb != "") {
+                pathFile = theme.path_thumb
                 Glide.with(context.applicationContext)
                     .load(pathFile)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .thumbnail(0.1f)
-                    .into(imgThumb!!)
+                    .into(binding.imgThumb)
             }
-            if (background.getPathThumb()
-                    .equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()
-            ) {
-                layoutSelected!!.visibility = View.VISIBLE
-                layoutBorderItemSelect!!.visibility = View.VISIBLE
-                if (!checkIsImage(background.getPathItem())) {
-                    vdo_background_call.setVisibility(View.VISIBLE)
-                    imgThumb!!.visibility = View.GONE
-                    processVideo(background)
+            if (theme.path_thumb == themeSelected!!.path_thumb && HawkData.getEnableCall()) {
+                binding.layoutSelected.visibility = View.VISIBLE
+                binding.layoutBorderItemSelect.visibility = View.VISIBLE
+                if (!checkIsImage(theme.path_file)) {
+                    binding.videoThemes.visibility = View.VISIBLE
+                    binding.imgThumb.visibility = View.GONE
+                    processVideo(theme)
                 } else {
-                    imgThumb!!.visibility = View.VISIBLE
+                    binding.imgThumb.visibility = View.VISIBLE
                 }
                 startAnimation()
                 if (listener != null) {
                     listener!!.onItemThemeSelected(position)
                 }
             } else {
-                if (!checkIsImage(background.getPathItem())) {
-                    vdo_background_call.stopPlayback()
+                if (!checkIsImage(theme.path_file)) {
+                    binding.videoThemes.stopPlayback()
                 }
-                vdo_background_call.setVisibility(View.GONE)
-                imgThumb!!.visibility = View.VISIBLE
-                layoutSelected!!.visibility = View.GONE
-                layoutBorderItemSelect!!.visibility = View.GONE
-                btnAccept!!.clearAnimation()
+                binding.videoThemes.visibility = View.GONE
+                binding.imgThumb.visibility = View.VISIBLE
+                binding.layoutSelected.visibility = View.GONE
+                binding.layoutBorderItemSelect.visibility = View.GONE
+                binding.btnAccept.clearAnimation()
             }
         }
 
         private fun initInfor() {
-            posRandom = position % 10
-            val pathAvatar: String = Constant.avatarRandom.get(posRandom)
-            val name: String = Constant.nameRandom.get(posRandom)
-            val phone: String = Constant.phoneRandom.get(posRandom)
+            posRandom = absoluteAdapterPosition % 10
+            val pathAvatar: String = Constant.avRandom[posRandom]
+            val name: String = Constant.nameRandom[posRandom]
+            val phone: String = Constant.numberRandom[posRandom]
             Glide.with(context.applicationContext)
                 .load("file:///android_asset/avatar/$pathAvatar")
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .thumbnail(0.1f)
-                .into(imgAvatar!!)
-            txtName!!.text = name
-            txtPhone!!.text = phone
+                .into(binding.imgAvatar)
+            binding.txtName.text = name
+            binding.txtPhone.text = phone
         }
 
-        fun checkIsImage(path: String): Boolean {
-            return if (path.contains(".jpg")
-                || path.contains(".webp")
-                || path.contains(".jpeg")
-                || path.contains(".gif")
-                || path.contains(".tiff")
-                || path.contains(".png")
-            ) {
-                true
-            } else false
+        private fun checkIsImage(path: String): Boolean {
+            return (path.contains(".jpg")
+                    || path.contains(".webp")
+                    || path.contains(".jpeg")
+                    || path.contains(".gif")
+                    || path.contains(".tiff")
+                    || path.contains(".png"))
         }
 
         @SuppressLint("ClickableViewAccessibility")
         private fun listener() {
-            imgThumb!!.setOnClickListener { v: View? ->
+            binding.imgThumb.setOnClickListener { v: View? ->
                 if (listener != null) {
                     listener!!.onItemClick(
                         listBg,
                         position,
-                        listBg!![position].getDelete(),
+                        listBg!![absoluteAdapterPosition].delete,
                         posRandom
                     )
                 }
             }
-            vdo_background_call.setOnClickListener { v ->
+            binding.videoThemes.setOnClickListener { v ->
                 if (listener != null) {
                     listener!!.onItemClick(
                         listBg,
                         position,
-                        listBg!![position].getDelete(),
+                        listBg!![position].delete,
                         posRandom
                     )
                 }
@@ -179,77 +175,74 @@ class CustomThemeAdapter(private val context: Context) :
         }
 
         fun startAnimation() {
-            val anim8 = AnimationUtils.loadAnimation(context, R.anim.anm_accept_call)
-            btnAccept!!.startAnimation(anim8)
+            val anim8 = AnimationUtils.loadAnimation(context, R.anim.ani_bling_call)
+            binding.btnAccept.startAnimation(anim8)
         }
 
         private fun processVideo(background: Theme) {
             val sPath: String
             val sPathThumb: String
-            val uriPath = "android.resource://" + context.packageName + background.getPathItem()
-            if (!background.getPathThumb().equals("")) {
-                sPathThumb = background.getPathThumb()
+            val uriPath = "android.resource://" + context.packageName + background.path_file
+            if (background.path_thumb != "") {
+                sPathThumb = background.path_thumb
                 Glide.with(context.applicationContext)
                     .load(sPathThumb)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .thumbnail(0.1f)
-                    .into(imgThumb!!)
+                    .into(binding.imgThumb)
             }
-            if (background.getPathItem().contains("storage") || background.getPathItem()
-                    .contains("/data/data") || background.getPathItem().contains("data/user/")
+            if (background.path_file.contains("storage") || background.path_file
+                    .contains("/data/data") || background.path_file.contains("data/user/")
             ) {
-                sPath = background.getPathItem()
+                sPath = background.path_file
                 if (!sPath.startsWith("http")) {
-                    vdo_background_call.setVideoURI(Uri.parse(sPath))
+                    binding.videoThemes.setVideoURI(Uri.parse(sPath))
                     playVideo()
                 }
             } else {
-                vdo_background_call.setVideoURI(Uri.parse(uriPath))
+                binding.videoThemes.setVideoURI(Uri.parse(uriPath))
                 playVideo()
             }
         }
 
         private fun playVideo() {
-            vdo_background_call.setOnPreparedListener { mediaPlayer ->
-                mediaPlayer.setLooping(true)
+            binding.videoThemes.setOnPreparedListener { mediaPlayer ->
+                mediaPlayer.isLooping = true
                 mediaPlayer.setVolume(0.0f, 0.0f)
             }
-            vdo_background_call.setOnErrorListener { mp, what, extra ->
-                vdo_background_call.stopPlayback()
-                vdo_background_call.setVisibility(View.GONE)
-                imgThumb!!.visibility = View.VISIBLE
+            binding.videoThemes.setOnErrorListener { mp, what, extra ->
+                binding.videoThemes.stopPlayback()
+                binding.videoThemes.visibility = View.GONE
+                binding.imgThumb.visibility = View.VISIBLE
                 false
             }
-            vdo_background_call.setOnInfoListener { mp, what, extra ->
+            binding.videoThemes.setOnInfoListener { mp, what, extra ->
                 if (what === MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                     Handler().postDelayed({
-                        vdo_background_call.setAlpha(1.0f)
-                        imgThumb!!.visibility = View.INVISIBLE
+                        binding.videoThemes.alpha = 1.0f
+                        binding.imgThumb.visibility = View.INVISIBLE
                     }, 100)
                     return@setOnInfoListener true
                 }
                 false
             }
-            vdo_background_call.start()
+            binding.videoThemes.start()
         }
 
         init {
             ButterKnife.bind(this, itemView)
-            resizeItem(context, layout_item)
+            resizeItem(context, binding.layoutItem)
             listener()
         }
     }
 
     var listener: Listener? = null
 
-    inner class AddHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.layoutAdd)
-        var layoutAdd: RelativeLayout? = null
-
+    inner class AddHolder(val binding: ItemCustomBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             ButterKnife.bind(this, itemView)
-            resizeItemAdd(context, layoutAdd)
-            layoutAdd!!.setOnClickListener { v: View? ->
+            resizeItemAdd(context, binding.layoutAdd)
+            binding.layoutAdd.setOnClickListener { v: View? ->
                 if (listener != null) {
                     listener!!.onAdd()
                 }
@@ -261,7 +254,7 @@ class CustomThemeAdapter(private val context: Context) :
         fun onAdd()
         fun onItemThemeSelected(position: Int)
         fun onItemClick(
-            backgrounds: ArrayList<Background>?,
+            backgrounds: ArrayList<Theme>?,
             position: Int,
             delete: Boolean,
             posRandom: Int
@@ -270,14 +263,9 @@ class CustomThemeAdapter(private val context: Context) :
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): RecyclerView.ViewHolder {
         return when (i) {
-            0 -> AddHolder(
-                LayoutInflater.from(viewGroup.context).inflate(R.layout.add_new, viewGroup, false)
-            )
-            1 -> ViewHolder(
-                LayoutInflater.from(viewGroup.context)
-                    .inflate(R.layout.item_theme, viewGroup, false)
-            )
-            else -> null
+            0 -> AddHolder(ItemCustomBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            1 ->ViewHolder(ItemThemeBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            else -> ViewHolder(ItemThemeBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }
 
@@ -301,7 +289,7 @@ class CustomThemeAdapter(private val context: Context) :
         return listBg!!.size
     }
 
-    fun setListener(listener2: Listener?) {
+    fun setListenerAdapter(listener2: Listener?) {
         listener = listener2
     }
 

@@ -1,6 +1,7 @@
 package com.call.colorscreen.ledflash.util
 
 object Constant {
+    const val CAPTURE_IMAGE_PATH="capture_image_path"
     const val PLAY_STORE_LINK = "https://play.google.com/store/apps/details?id="
     const val ID = "_id"
     const val REQUEST_DRAW_OVER = 1
