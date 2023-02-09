@@ -118,7 +118,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             }
 
             override fun onFailure(call: Call<Data?>, t: Throwable) {
-                Log.e("TAN", "onFailure: ")
+                Log.e("TAN", "onFailure: "+t.message)
                 val eventBusMain = EventBusMain(true, isRefresh)
                 EventBus.getDefault().postSticky(eventBusMain)
             }

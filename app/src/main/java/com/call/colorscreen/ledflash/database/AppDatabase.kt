@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Contact::class], version = 1, exportSchema = false)
+@Database(entities = [Theme::class,Contact::class], version = 1, exportSchema = false)
 abstract class AppDatabase  : RoomDatabase() {
     abstract fun serverDao(): RoomDao
 

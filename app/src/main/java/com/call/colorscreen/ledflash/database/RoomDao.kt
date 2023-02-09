@@ -11,8 +11,8 @@ interface RoomDao {
     @Query("SELECT * FROM contact WHERE theme_path = :path")
     fun getContactWithPath2(path: String): MutableList<Contact>
 
-   /* @Query("SELECT * FROM theme")
-    fun getListTheme(): MutableList<Theme>*/
+    @Query("SELECT * FROM theme ")
+    fun getListTheme(): MutableList<Theme>
 
     @Query("SELECT * FROM contact WHERE contact_id = :id")
     fun getContactWithId(id: String): LiveData<MutableList<Contact>>
@@ -24,4 +24,6 @@ interface RoomDao {
     fun update(contact: Contact?)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(contact: Contact?)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun saveTheme(theme: Theme)
 }

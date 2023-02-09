@@ -1,27 +1,37 @@
 package com.call.colorscreen.ledflash.util
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.*
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.SystemClock
 import android.provider.ContactsContract
+import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.database.Theme
+import com.call.colorscreen.ledflash.ui.listener.DialogGalleryListener
 import com.call.colorscreen.ledflash.ui.main.PermissionOverActivity
 import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
@@ -88,6 +98,15 @@ class AppUtil {
                 result = context.resources.getDimensionPixelSize(resourceId)
             }
             return result
+        }
+        fun checkPermissionGrand(grantResults: IntArray): Boolean {
+            var passed = true
+            for (i in grantResults) {
+                if (i != 0) {
+                    passed = false
+                }
+            }
+            return passed
         }
         @JvmStatic
         fun checkPermission(grantResults: IntArray): Boolean {
@@ -177,13 +196,41 @@ class AppUtil {
 
         fun checkPermission(context: Context?, permission: Array<String>): Boolean {
             for (checkSelfPermission in permission) {
-                if (ContextCompat.checkSelfPermission(context!!, checkSelfPermission!!) != 0) {
+                Log.e("TAN", "checkPermission: "+checkSelfPermission+"--"+ContextCompat.checkSelfPermission(context!!, checkSelfPermission) )
+                if (ContextCompat.checkSelfPermission(context, checkSelfPermission) != 0) {
                     return false
                 }
             }
             return true
         }
-
+        fun showDialogGallery(activity: Activity?, dialogGalleryListener: DialogGalleryListener?) {
+            val dialog = Dialog(activity!!)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(true)
+            dialog.setContentView(R.layout.dialog_request_gallery)
+            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            val imgVideo: ImageView
+            val imgImages: ImageView
+            imgVideo = dialog.findViewById(R.id.imgSelectVideo)
+            imgImages = dialog.findViewById(R.id.imgSelectImage)
+            dialog.show()
+            //analystic.trackEvent(ManagerEvent.mainDialogOpen())
+            imgVideo.setOnClickListener { v: View? ->
+                if (dialogGalleryListener != null) {
+                    dialogGalleryListener.onVideoClicked()
+                    //analystic.trackEvent(ManagerEvent.mainDialogVideo())
+                }
+                dialog.dismiss()
+            }
+            imgImages.setOnClickListener {
+                if (dialogGalleryListener != null) {
+                    dialogGalleryListener.onImagesClicked()
+                    //analystic.trackEvent(ManagerEvent.mainDialogPicture())
+                }
+                dialog.dismiss()
+            }
+        }
+        @RequiresApi(Build.VERSION_CODES.M)
         fun canDrawOverlays(context: Context): Boolean {
             return when {
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> true
@@ -404,6 +451,45 @@ class AppUtil {
                 }
             }
             return photo
+        }
+        fun openCameraIntent(fragment: Fragment, activity: Activity, requestCode: Int): String? {
+            val photoPickerIntent = Intent(Intent.ACTION_PICK)
+            photoPickerIntent.type = "image/*"
+            photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*"))
+            val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val pickTitle = activity.resources.getString(R.string.select_picture)
+            val chooserIntent = Intent.createChooser(photoPickerIntent, pickTitle)
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePhotoIntent))
+            return if (takePhotoIntent.resolveActivity(activity.packageManager) != null) {
+                var photoFile: File? = null
+                try {
+                    photoFile = createImageFile(activity)
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                }
+                if (photoFile != null) {
+                    val photoURI = FileProvider.getUriForFile(
+                        activity,
+                        activity.packageName + ".provider",
+                        photoFile
+                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        takePhotoIntent.putExtra(
+                            MediaStore.EXTRA_OUTPUT,
+                            photoURI
+                        )
+                    }
+                    fragment.startActivityForResult(chooserIntent, requestCode)
+                    photoFile.absolutePath
+                } else null
+            } else null
+        }
+
+        @Throws(IOException::class)
+        fun createImageFile(context: Context): File? {
+            val storageDir =
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            return File.createTempFile("ColorCall_image_default", ".jpg", storageDir)
         }
     }
 }

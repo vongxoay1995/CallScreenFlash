@@ -37,7 +37,7 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
     fun setNewListBg() {
         listBg = ArrayList()
         listBg!!.add(Theme(0, "", "", false))
-       // listBg!!.addAll(database.serverDao().getListTheme())
+        listBg!!.addAll(database.serverDao().getListTheme())
        // listBg!!.addAll(DataManager.query().getBackgroundDao().queryBuilder().list())
     }
 

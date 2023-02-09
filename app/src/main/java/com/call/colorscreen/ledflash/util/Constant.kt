@@ -1,6 +1,10 @@
 package com.call.colorscreen.ledflash.util
 
 object Constant {
+    val CODE_VIDEO =11
+    val CODE_IMAGE =12
+    val PATH_THUMB_CALL_VIDEO = "/CallerScreen/Video/thums/"
+    val PATH_THUMB_CALL_IMAGE = "/ColorCall/Images"
     const val CAPTURE_IMAGE_PATH="capture_image_path"
     const val PLAY_STORE_LINK = "https://play.google.com/store/apps/details?id="
     const val ID = "_id"

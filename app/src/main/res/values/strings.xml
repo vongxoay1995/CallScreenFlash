@@ -37,4 +37,9 @@
     <string name="unknowContact">Unknow</string>
     <string name="set_theme_success">Set theme success</string>
     <string name="addYourVideo">Create your video or image</string>
+    <string name="video">Videos</string>
+    <string name="images">Images</string>
+    <string name="your_video">Open camera or select a new video</string>
+    <string name="select_picture">Select a picture</string>
+    <string name="file_not_found">File not found !</string>
 </resources>
