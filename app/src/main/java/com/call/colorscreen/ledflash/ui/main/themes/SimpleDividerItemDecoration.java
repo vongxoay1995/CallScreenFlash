@@ -16,7 +16,7 @@ public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
         outRect.top = horiZonSpaceHeight/2;
-       // outRect.right = horiZonSpaceHeight;
+        outRect.right = horiZonSpaceHeight;
         Log.e("TAN", "getItemOffsets: "+outRect.top+"--"+outRect.right);
 
     }

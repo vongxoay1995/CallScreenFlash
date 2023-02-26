@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Handler
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,15 +38,15 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
     fun setNewListBg() {
         listBg = ArrayList()
         listBg!!.add(Theme(0, "", "", false))
+        Log.e("TAN", "setNewListBg: "+database.serverDao().getListTheme())
         listBg!!.addAll(database.serverDao().getListTheme())
-       // listBg!!.addAll(DataManager.query().getBackgroundDao().queryBuilder().list())
     }
 
     private fun resizeItem(context: Context, layout_item: RelativeLayout?) {
         val displayMetrics = DisplayMetrics()
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         val width = displayMetrics.widthPixels
-        val layoutParams = layout_item!!.layoutParams as FrameLayout.LayoutParams
+        val layoutParams = layout_item?.layoutParams as FrameLayout.LayoutParams
         layoutParams.width = (width.toFloat() / 2.1f).toInt()
         layoutParams.height = 5 * width / 6
         layout_item.layoutParams = layoutParams
@@ -56,36 +57,12 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         val width = displayMetrics.widthPixels
         val layoutParams = layout_item!!.layoutParams as GridLayoutManager.LayoutParams
-        layoutParams.width = (width / 2.1).toInt()
+        layoutParams.width = (width /  2.1f).toInt()
         layoutParams.height = 5 * width / 6
         layout_item.layoutParams = layoutParams
     }
 
     inner class ViewHolder(val binding: ItemThemeBinding) : RecyclerView.ViewHolder(binding.root)  {
-        /*@BindView(R.id.img_item_thumb_theme)
-        var imgThumb: ImageView? = null
-
-        @BindView(R.id.layout_item)
-        var layout_item: RelativeLayout? = null
-
-        @BindView(R.id.imgAvatar)
-        var imgAvatar: ImageView? = null
-
-        @BindView(R.id.txtName)
-        var txtName: TextView? = null
-
-        @BindView(R.id.txtPhone)
-        var txtPhone: TextView? = null
-
-        @BindView(R.id.layoutSelected)
-        var layoutSelected: ConstraintLayout? = null
-
-        @BindView(R.id.layoutBorderItemSelect)
-        var layoutBorderItemSelect: RelativeLayout? = null
-
-        @BindView(R.id.vd_theme_call)
-        var vdo_background_call: TextureVideoView? = null*/
-
         private var themeSelected: Theme? = null
         private var posRandom = 0
         fun onBind(i: Int) {
@@ -94,13 +71,17 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
             val theme: Theme = listBg!![i]
             val pathFile: String
             if (theme.path_thumb != "") {
+                Log.e("TAN", "path_thumb: "+theme.path_thumb)
                 pathFile = theme.path_thumb
                 Glide.with(context.applicationContext)
                     .load(pathFile)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .thumbnail(0.1f)
+                    //.diskCacheStrategy(DiskCacheStrategy.DATA)
+                    //.thumbnail(0.1f)
                     .into(binding.imgThumb)
+                Log.e("TAN", "T3: ")
+
             }
+
             if (theme.path_thumb == themeSelected!!.path_thumb && HawkData.getEnableCall()) {
                 binding.layoutSelected.visibility = View.VISIBLE
                 binding.layoutBorderItemSelect.visibility = View.VISIBLE
@@ -115,6 +96,8 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
                 if (listener != null) {
                     listener!!.onItemThemeSelected(position)
                 }
+                Log.e("TAN", "T1: ")
+
             } else {
                 if (!checkIsImage(theme.path_file)) {
                     binding.videoThemes.stopPlayback()
@@ -124,6 +107,8 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
                 binding.layoutSelected.visibility = View.GONE
                 binding.layoutBorderItemSelect.visibility = View.GONE
                 binding.btnAccept.clearAnimation()
+                Log.e("TAN", "T2: ")
+
             }
         }
 
@@ -230,7 +215,6 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
         }
 
         init {
-            ButterKnife.bind(this, itemView)
             resizeItem(context, binding.layoutItem)
             listener()
         }
@@ -240,7 +224,6 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
 
     inner class AddHolder(val binding: ItemCustomBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
-            ButterKnife.bind(this, itemView)
             resizeItemAdd(context, binding.layoutAdd)
             binding.layoutAdd.setOnClickListener { v: View? ->
                 if (listener != null) {
@@ -277,6 +260,7 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
             }
             else -> return
         }
+
     }
 
     override fun getItemViewType(position: Int): Int {

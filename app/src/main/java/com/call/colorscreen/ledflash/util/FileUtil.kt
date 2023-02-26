@@ -1,5 +1,6 @@
 package com.call.colorscreen.ledflash.util
 
+import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
@@ -45,12 +46,17 @@ class FileUtil {
         @Nullable
         fun createCopyAndReturnRealPath(
             context: Context, uri: Uri
-        ): String? {
+        ): String? {;
             val contentResolver = context.contentResolver ?: return null
 
             // Create file path inside app's data dir
-            val filePath = (context.filesDir.absolutePath + File.separator
-                    + System.currentTimeMillis())
+            val filePath = (context.filesDir.absolutePath + File.separator+
+                    context.contentResolver.getFileName(
+                        uri
+                    ))
+            Log.e("TAN", "getFileName: "+context.contentResolver.getFileName(
+                uri
+            ))
             val file = File(filePath)
             try {
                 val inputStream = contentResolver.openInputStream(uri) ?: return null
@@ -122,6 +128,19 @@ class FileUtil {
                     e.printStackTrace()
                 }
             }
+        }
+        private fun ContentResolver.getFileName(fileUri: Uri): String {
+            var name = ""
+            val returnCursor = this.query(fileUri, null, null, null, null)
+            if (returnCursor != null) {
+                val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                val size = returnCursor.getColumnIndex(OpenableColumns.SIZE)
+                returnCursor.moveToFirst()
+                Log.e("TAN", "size: " + returnCursor.getString(size) + "--")
+                name = returnCursor.getString(nameIndex)
+                returnCursor.close()
+            }
+            return name
         }
     }
 }

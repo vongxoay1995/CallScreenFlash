@@ -23,15 +23,19 @@ import com.call.colorscreen.ledflash.base.BaseFragmentt
 import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentCustomBinding
+import com.call.colorscreen.ledflash.ui.aply.ApplyActivity
 import com.call.colorscreen.ledflash.ui.listener.DialogGalleryListener
 import com.call.colorscreen.ledflash.ui.main.themes.SimpleDividerItemDecoration
 import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.Constant
+import com.call.colorscreen.ledflash.util.Constant.SHOW_DELETE
 import com.call.colorscreen.ledflash.util.FileUtil
+import com.google.gson.Gson
 import org.koin.android.ext.android.inject
 import java.io.File
 
-class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter.Listener,DialogGalleryListener {
+class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapter.Listener,
+    DialogGalleryListener {
     var adapter: CustomThemeAdapter? = null
     private var pathUriImage: String? = null
     val database by inject<AppDatabase>()
@@ -43,9 +47,9 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
         binding.rcvBgMyTheme.addItemDecoration(SimpleDividerItemDecoration(AppUtil.dpToPx(5)))
         val animator: ItemAnimator = binding.rcvBgMyTheme.itemAnimator!!
         if (animator is SimpleItemAnimator) {
-            (animator as SimpleItemAnimator).supportsChangeAnimations = false
+            animator.supportsChangeAnimations = false
         }
-        adapter = context?.let { CustomThemeAdapter(it,database) }
+        adapter = context?.let { CustomThemeAdapter(it, database) }
         adapter!!.setListenerAdapter(this)
         binding.rcvBgMyTheme.adapter = adapter
         binding.rcvBgMyTheme.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -66,9 +70,9 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
         if (savedInstanceState != null) {
             pathUriImage = savedInstanceState.getString(Constant.CAPTURE_IMAGE_PATH)
         }
-       /* if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this)
-        }*/
+        /* if (!EventBus.getDefault().isRegistered(this)) {
+             EventBus.getDefault().register(this)
+         }*/
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -84,20 +88,22 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
             if (requestCode == Constant.CODE_VIDEO) {
                 val uriData = data!!.data
                 val path: String = FileUtil.getRealPathFromUri(requireContext(), uriData)!!
+                Log.e("TAN", "onActivityResult:11111" + path)
+
                 resetListVideo(path)
                 adapter!!.setNewListBg()
                 adapter!!.notifyDataSetChanged()
             } else if (requestCode == Constant.CODE_IMAGE) {
-                Log.e("TAN", "onActivityResult: "+data +"--"+ data!!.data)
+                Log.e("TAN", "onActivityResult: " + data + "--" + data!!.data)
 
                 val path: String
                 if (data != null && data.data != null) {
-                   path = FileUtil.getRealPathFromUri(requireContext(), data.data)!!
-                    Log.e("TAN", "onActivityResult:1 "+path )
+                    path = FileUtil.getRealPathFromUri(requireContext(), data.data)!!
+                    Log.e("TAN", "onActivityResult:1 " + path)
 
-                }else {
-                    Log.e("TAN", "onActivityResult:2 " )
-                    path =  pathUriImage!!
+                } else {
+                    Log.e("TAN", "onActivityResult:2 ")
+                    path = pathUriImage!!
                 }
                 resetListImage(path)
                 adapter!!.setNewListBg()
@@ -105,6 +111,7 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
             }
         }
     }
+
     private fun resetListImage(path: String?) {
         if (path != null) {
             val folder = File(
@@ -118,6 +125,7 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
                     1, file.absolutePath, file.absolutePath, true,
                     file.absolutePath.substring(file.absolutePath.lastIndexOf("/") + 1)
                 )
+                Log.e("TAN", "resetListImage: "+picture.path_thumb)
                 database.serverDao().saveTheme(picture)
 
             } else {
@@ -126,6 +134,7 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
             }
         }
     }
+
     private fun resetListVideo(path: String?) {
         val listThemeDb: ArrayList<Theme> = database.serverDao().getListTheme() as ArrayList<Theme>
         if (path != null) {
@@ -134,11 +143,17 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
             val folder = File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + Constant.PATH_THUMB_CALL_VIDEO
             )
+            val folderInternal = File(
+                (requireActivity().filesDir.absolutePath+ Constant.PATH_THUMB_CALL_VIDEO)
+            )
             if (!folder.exists()) folder.mkdirs()
+            if (!folderInternal.exists()) folderInternal.mkdirs()
+
             val video: Theme
             var imageUrl = ""
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                imageUrl = ((requireActivity().filesDir.absolutePath+ Constant.PATH_THUMB_CALL_VIDEO) + "thumb_" + listThemeDb.size)
+                imageUrl =
+                    ((requireActivity().filesDir.absolutePath + Constant.PATH_THUMB_CALL_VIDEO) + "thumb_" + listThemeDb.size+".jpg")
                 video = Theme(
                     0,
                     imageUrl,
@@ -149,13 +164,13 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
                 bitmap?.let {
                     FileUtil.saveBitmap(
                         requireActivity().filesDir.absolutePath
-                                + Constant.PATH_THUMB_CALL_VIDEO+ "thumb_" + listThemeDb.size, it
+                                + Constant.PATH_THUMB_CALL_VIDEO + "thumb_" + listThemeDb.size+".jpg", it
                     )
                 }
             } else {
                 imageUrl =
                     (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-                            + Constant.PATH_THUMB_CALL_VIDEO + "thumb_" + listThemeDb.size)
+                            + Constant.PATH_THUMB_CALL_VIDEO + "thumb_" + listThemeDb.size+".jpg")
                 video = Theme(
                     0,
                     imageUrl,
@@ -165,14 +180,17 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
                 )
                 bitmap?.let { FileUtil.saveBitmap(imageUrl, it) }
             }
+            Log.e("TAN", "resetListVideo: "+video)
             database.serverDao().saveTheme(video)
         }
     }
+
     override fun onAdd() {
         checkPermissionActionCamera()
     }
 
     override fun onItemThemeSelected(position: Int) {
+        positionItemThemeSelected = position
     }
 
     override fun onItemClick(
@@ -181,37 +199,66 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
         delete: Boolean,
         posRandom: Int
     ) {
+        backgrounds?.let { moveApplyTheme(it, position, delete, posRandom) }
     }
+    private fun moveApplyTheme(
+        backgrounds: java.util.ArrayList<Theme>,
+        position: Int,
+        delete: Boolean,
+        posRandom: Int
+    ) {
+        val background: Theme = backgrounds[position]
+        val intent = Intent(activity, ApplyActivity::class.java)
+        intent.putExtra(Constant.FR_SCREEN, Constant.CUSTOM_FRAG_MENT)
+        if (delete) {
+            intent.putExtra(SHOW_DELETE, true)
+        }
+        val gson = Gson()
+        intent.putExtra(Constant.THEME, gson.toJson(background))
+        intent.putExtra(Constant.POS_RANDOM, posRandom)
+        requireActivity().startActivity(intent)
+    }
+
     fun checkPermissionActionCamera() {
         Log.e("TAN", "checkPermissionActionCamera: ")
         val permistion: Array<String> = if (Build.VERSION.SDK_INT <= 28) {
             arrayOf(
-                    permission.READ_EXTERNAL_STORAGE,
-                    permission.WRITE_EXTERNAL_STORAGE,
-                    permission.CAMERA
+                permission.READ_EXTERNAL_STORAGE,
+                permission.WRITE_EXTERNAL_STORAGE,
+                permission.CAMERA
             )
         } else {
             arrayOf(
-                    permission.READ_EXTERNAL_STORAGE,
-                    permission.CAMERA
+                permission.READ_EXTERNAL_STORAGE,
+                permission.CAMERA
             )
         }
-        Log.e("TAN", "checkPermissionActionCamera: "+permistion )
+        Log.e("TAN", "checkPermissionActionCamera: " + permistion)
         if (!AppUtil.checkPermission(context, permistion)) {
             Log.e("TAN", "checkPermissionActionCamera:2 ")
-            requestPermissions(permistion,
-                    Constant.PERMISSION_REQUEST_CAMERA)
+            requestPermissions(
+                permistion,
+                Constant.PERMISSION_REQUEST_CAMERA
+            )
         } else {
             openDialogGallery()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == Constant.PERMISSION_REQUEST_CAMERA && grantResults.isNotEmpty() && AppUtil.checkPermissionGrand(grantResults)) {
+        if (requestCode == Constant.PERMISSION_REQUEST_CAMERA && grantResults.isNotEmpty() && AppUtil.checkPermissionGrand(
+                grantResults
+            )
+        ) {
             openDialogGallery()
         }
     }
+
     private fun openDialogGallery() {
         Log.e("TAN", "openDialogGallery: ")
         AppUtil.showDialogGallery(activity, this)
@@ -223,7 +270,8 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(),CustomThemeAdapter
         photoPickerIntent.type = "video/*"
         photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
         val takePhotoIntent = Intent("android.media.action.VIDEO_CAPTURE")
-        val chooserIntent = Intent.createChooser(photoPickerIntent, resources.getString(R.string.your_video))
+        val chooserIntent =
+            Intent.createChooser(photoPickerIntent, resources.getString(R.string.your_video))
         chooserIntent.putExtra("android.intent.extra.INITIAL_INTENTS", arrayOf(takePhotoIntent))
         startActivityForResult(chooserIntent, Constant.CODE_VIDEO)
     }
