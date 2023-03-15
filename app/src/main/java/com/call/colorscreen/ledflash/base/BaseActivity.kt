@@ -24,9 +24,13 @@ abstract class BaseActivity<B : ViewDataBinding> : AppCompatActivity() {
 
     protected abstract fun onViewReady(savedInstance: Bundle?)
 
+    protected abstract fun onCreate()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         super.onCreate(savedInstanceState)
+        onCreate()
         if (getLayoutId() != 0) {
             mViewDataBinding = DataBindingUtil.setContentView(this, getLayoutId())
             onViewReady(savedInstanceState)

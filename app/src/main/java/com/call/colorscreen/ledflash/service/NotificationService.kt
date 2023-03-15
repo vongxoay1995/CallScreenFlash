@@ -1,38 +1,75 @@
 package com.call.colorscreen.ledflash.service
 
+import android.content.Intent
+import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import android.telecom.TelecomManager
+import androidx.annotation.RequiresApi
+import com.call.colorscreen.ledflash.util.PhoneUtils
+import java.lang.ref.WeakReference
+
 
 class NotificationService : NotificationListenerService() {
 
+    private var inCallNotification: StatusBarNotification? = null
+    private var isListen = false
+
+    fun getInCallNotification(): StatusBarNotification? {
+        return inCallNotification
+    }
+    companion object{
+        private var serviceWeakReference: WeakReference<NotificationService?>? = null
+        fun get(): NotificationService? {
+            val weakReference = serviceWeakReference
+            return if (weakReference?.get() == null) {
+                null
+            } else serviceWeakReference!!.get()
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
+        serviceWeakReference = WeakReference(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        super.onNotificationPosted(sbn)
-    }
-
-    override fun onNotificationRemoved(sbn: StatusBarNotification?) {
-        super.onNotificationRemoved(sbn)
-    }
-
-    override fun onListenerConnected() {
-        super.onListenerConnected()
-    }
-
-    override fun getActiveNotifications(): Array<StatusBarNotification?> {
-        var statusBarNotificationArr: Array<StatusBarNotification?>? = null
-        try {
-            statusBarNotificationArr = super.getActiveNotifications()
-        } catch (e: SecurityException) {
-        } catch (e2: Exception) {
-            e2.printStackTrace()
+    override fun onNotificationPosted(statusBarNotification: StatusBarNotification) {
+        super.onNotificationPosted(statusBarNotification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (!statusBarNotification.packageName.contains("incallui") && !statusBarNotification.packageName.contains(
+                    "dialer"
+                )
+            ) return
+            var str = ""
+            val telecomManager = applicationContext.getSystemService(
+                TelecomManager::class.java
+            )
+            if (telecomManager != null) {
+                str = telecomManager.defaultDialerPackage + ""
+            }
+            if (!statusBarNotification.packageName.contains("incallui") && statusBarNotification.packageName != str) {
+                return
+            }
+            if (isListen) {
+                object : Thread() {
+                    override fun run() {
+                        super.run()
+                        PhoneUtils.get(applicationContext)?.getPhoneFromNotificationListen(statusBarNotification)
+                    }
+                }.start()
+                return
+            }
+            inCallNotification = statusBarNotification
         }
-        return statusBarNotificationArr ?: arrayOfNulls(0)
+    }
+
+    fun stopListenColorCall() {
+        applicationContext.stopService(Intent(applicationContext, NotificationService::class.java))
+        isListen = false
+    }
+
+    @RequiresApi(api = 28)
+    fun startListenColorCall() {
+        isListen = true
     }
 }

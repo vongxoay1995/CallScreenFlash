@@ -250,4 +250,8 @@ class SelectContactActivity : BaseActivity<
         Log.e("TAN", "onHasCall: ")
         setThemetoContactId()
     }
+
+    override fun onCreate() {
+
+    }
 }

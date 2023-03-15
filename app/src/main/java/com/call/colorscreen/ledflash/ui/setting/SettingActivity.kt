@@ -292,4 +292,8 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             }
         }
     }
+
+    override fun onCreate() {
+
+    }
 }

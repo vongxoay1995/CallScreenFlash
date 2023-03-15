@@ -1,7 +1,6 @@
 package com.call.colorscreen.ledflash.database
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import org.jetbrains.annotations.NotNull
 

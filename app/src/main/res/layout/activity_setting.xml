@@ -99,7 +99,8 @@
                 <RelativeLayout
                     android:id="@+id/llFlash"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/imgFlash"

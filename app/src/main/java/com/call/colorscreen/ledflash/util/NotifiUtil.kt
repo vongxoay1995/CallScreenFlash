@@ -12,8 +12,6 @@ import androidx.core.app.NotificationCompat
 import com.call.colorscreen.ledflash.call.IncommingCallActivity
 
 class NotifiUtil {
-
-    fun NotifiUtil() {}
     companion object {
         private val ID_NOTIFICATION = 1
         var CHANNEL = "Color_Call_channel"

@@ -336,4 +336,8 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         intent.putExtra(Constant.THEME, gson.toJson(theme))
         startActivity(intent)
     }
+
+    override fun onCreate() {
+
+    }
 }

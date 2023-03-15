@@ -124,6 +124,9 @@ class AppUtil {
                 showDrawOverlayPermissionDialog(context)
             }
         }
+        fun checkDrawOverlay(context: Context?): Boolean {
+            return Build.VERSION.SDK_INT < 23 || context?.let { canDrawOverlays(it) } == true
+        }
 
         fun populateNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
             // Set the media view.
