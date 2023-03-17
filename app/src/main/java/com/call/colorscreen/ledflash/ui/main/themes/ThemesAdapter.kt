@@ -63,15 +63,15 @@ class ThemesAdapter(val context: Context) :
             ranDomInfor()
             themeSelected = HawkData.getThemeSelect()
             var theme:Theme = listThemes[i]
-            Log.e("TAN", "onBind theme: "+theme )
+            Log.e("TAN", "onBind theme: "+theme +"--"+themeSelected)
             var pathFile = ""
             if (theme.path_thumb != "") {
                 pathFile = if (theme.path_file.contains("default")) {
                     "file:///android_asset/" + theme.path_thumb
-
                 } else {
                     theme.path_thumb
                 }
+                Log.e("TAN", "pathFile: "+pathFile )
                 Glide.with(context.applicationContext)
                     .load(pathFile)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)

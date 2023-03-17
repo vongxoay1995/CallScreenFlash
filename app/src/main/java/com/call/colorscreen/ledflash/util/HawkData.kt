@@ -34,7 +34,7 @@ class HawkData {
             val theme = Theme(
                 0,
                 0,
-                "thumbDefault/default1.webp",
+                "thumb/default1.webp",
                 "/raw/default1",
                 false,
                 "default1"
