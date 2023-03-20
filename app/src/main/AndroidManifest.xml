@@ -19,12 +19,12 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
-   <!-- <uses-permission android:name="android.permission.CAMERA" />-->
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-    <!--<uses-feature
+    <uses-feature
         android:name="android.hardware.camera2"
-        android:required="false" />-->
+        android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application

@@ -71,14 +71,13 @@ class ThemesAdapter(val context: Context) :
                 } else {
                     theme.path_thumb
                 }
-                Log.e("TAN", "pathFile: "+pathFile )
                 Glide.with(context.applicationContext)
                     .load(pathFile)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .thumbnail(0.1f)
                     .into(binding.imgThumb)
             }
-            if (theme.path_thumb == themeSelected!!.path_thumb && HawkData.getEnableCall()) {
+            if (theme.path_thumb.equals(themeSelected!!.path_thumb) && HawkData.getEnableCall()) {
                 binding.layoutSelected.visibility = View.VISIBLE
                 binding.layoutBorderItemSelect.visibility = View.VISIBLE
                 binding.imgThumb.visibility = View.GONE

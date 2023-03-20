@@ -59,16 +59,16 @@ class ThemesFragment : BaseFragmentt<FragmentThemesBinding>(),
                                 .show()
                     }
                 }
-//                if (newState == 0) {
-//                    adapter.reload()
-//                }
+                if (newState == 0) {
+                    adapter.reload()
+                }
             }
         })
     }
 
     override fun onResume() {
         super.onResume()
-       // adapter.reloadAll()
+        adapter.reloadAll()
     }
 
     private fun onRefreshLayout() {

@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -329,7 +330,21 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 ).show()
             }
         }
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.e("TAN", "onActivityResult: aaaaaaaa")
+        if (requestCode == Constant.REQUEST_DRAW_OVER) {
+            if (AppUtil.canDrawOverlays(this)) {
+                if (!AppUtil.checkNotificationAccessSettings(this)) {
+                    AppUtil.showNotificationAccess(this);
+                }
+            }
+        } else if (requestCode == Constant.REQUEST_NOTIFICATION) {
+            if (AppUtil.checkNotificationAccessSettings(this)) {
+                applyThemeCall()
+            }
+        }
+    }
     override fun onHasContact() {
         val intent = Intent(this, SelectContactActivity::class.java)
         val gson = Gson()
