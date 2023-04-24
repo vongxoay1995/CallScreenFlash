@@ -56,4 +56,8 @@ class PermissionOverActivity : BaseActivity<ActivityPermissionOverBinding>(){
         }
     }
 
+    override fun onCreate() {
+
+    }
+
 }

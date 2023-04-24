@@ -1,6 +1,7 @@
 package com.call.colorscreen.ledflash.ui.contact
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.Nullable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
@@ -24,6 +26,7 @@ import com.google.gson.Gson
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
+
 
 class SelectContactActivity : BaseActivity<
         ActivitySelectContactBinding>(), View.OnClickListener, PermissionCallListener {
@@ -157,7 +160,7 @@ class SelectContactActivity : BaseActivity<
         adapter = ContactAdapter(this, arrListContactInfor)
         binding.rvContact.adapter = adapter
         selectModel.liveContactList(theme.path_file).observe(this){
-            Log.e("TAN", "room1", )
+            Log.e("TAN", "room1")
 
         }
     }
@@ -250,4 +253,44 @@ class SelectContactActivity : BaseActivity<
         Log.e("TAN", "onHasCall: ")
         setThemetoContactId()
     }
+
+    override fun onCreate() {
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Constant.REQUEST_DRAW_OVER) {
+            if (AppUtil.canDrawOverlays(this)) {
+                if (!AppUtil.checkNotificationAccessSettings(this)) {
+                    AppUtil.showNotificationAccess(this)
+                }
+            }
+        } else if (requestCode == Constant.REQUEST_NOTIFICATION) {
+            if (AppUtil.checkNotificationAccessSettings(this)) {
+                setThemetoContactId()
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Constant.PERMISSION_REQUEST_CALL_PHONE && grantResults.isNotEmpty() && AppUtil.checkPermissionGrand(
+                grantResults
+            )
+        ) {
+            if (AppUtil.canDrawOverlays(this)) {
+                if (!AppUtil.checkNotificationAccessSettings(this)) {
+                    AppUtil.showNotificationAccess(this)
+                }
+            } else {
+                AppUtil.checkDrawOverlayApp(this)
+            }
+        }
+    }
+
 }

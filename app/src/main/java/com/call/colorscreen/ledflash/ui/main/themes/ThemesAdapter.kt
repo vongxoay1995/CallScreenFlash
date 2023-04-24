@@ -63,12 +63,11 @@ class ThemesAdapter(val context: Context) :
             ranDomInfor()
             themeSelected = HawkData.getThemeSelect()
             var theme:Theme = listThemes[i]
-            Log.e("TAN", "onBind theme: "+theme )
+            Log.e("TAN", "onBind theme: "+theme +"--"+themeSelected)
             var pathFile = ""
             if (theme.path_thumb != "") {
                 pathFile = if (theme.path_file.contains("default")) {
                     "file:///android_asset/" + theme.path_thumb
-
                 } else {
                     theme.path_thumb
                 }
@@ -78,7 +77,7 @@ class ThemesAdapter(val context: Context) :
                     .thumbnail(0.1f)
                     .into(binding.imgThumb)
             }
-            if (theme.path_thumb == themeSelected!!.path_thumb && HawkData.getEnableCall()) {
+            if (theme.path_thumb.equals(themeSelected!!.path_thumb) && HawkData.getEnableCall()) {
                 binding.layoutSelected.visibility = View.VISIBLE
                 binding.layoutBorderItemSelect.visibility = View.VISIBLE
                 binding.imgThumb.visibility = View.GONE

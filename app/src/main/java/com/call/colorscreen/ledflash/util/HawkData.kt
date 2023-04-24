@@ -34,10 +34,10 @@ class HawkData {
             val theme = Theme(
                 0,
                 0,
-                "thumbDefault/default1.webp",
-                "/raw/default1",
+                "thumb/default_1.webp",
+                "/raw/default_1",
                 false,
-                "default1"
+                "default_1"
             )
             return Hawk.get(
                 THEME_SELECT,

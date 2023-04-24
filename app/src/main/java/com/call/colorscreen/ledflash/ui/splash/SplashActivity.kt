@@ -288,4 +288,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
         binding.llSkip.setOnClickListener(this)
         binding.btnStart.setOnClickListener(this)
     }
+
+    override fun onCreate() {
+
+    }
 }

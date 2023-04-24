@@ -47,7 +47,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     private fun listener() {
         binding.swOnOff.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             isCallState = isChecked
-            Log.e("TAN", "listener swOnOff: "+isAllowCallScreen )
+            Log.e("TAN", "listener swOnOff: " + isAllowCallScreen)
             if (!isAllowCallScreen) {
                 PermissionUtil.checkPermissionCall(this@SettingActivity, this)
             } else {
@@ -69,7 +69,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     }
 
     private fun loadAds() {
-        val ID_ADS_GG = "ca-app-pub-3940256099942544/2247696110"
+        val ID_ADS_GG = ""
         val builder = AdLoader.Builder(this, ID_ADS_GG)
             .forNativeAd { nativeAd: NativeAd ->
                 val isDestroyed = isDestroyed
@@ -238,14 +238,14 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == Constant.PERMISSION_REQUEST_CAMERA) {
-            if (grantResults.isNotEmpty() && AppUtil.checkPermission(grantResults)) {
-                HawkData.setEnableFlash(isFlashState)
-            } else {
-               isAllowFlash = true
-                binding.swflash.isChecked = !isFlashState
-            }
-        } else if (requestCode == Constant.PERMISSION_REQUEST_CALL_PHONE) {
+        /* if (requestCode == Constant.PERMISSION_REQUEST_CAMERA) {
+             if (grantResults.isNotEmpty() && AppUtil.checkPermission(grantResults)) {
+                 HawkData.setEnableFlash(isFlashState)
+             } else {
+                isAllowFlash = true
+                 binding.swflash.isChecked = !isFlashState
+             }
+         } else*/ if (requestCode == Constant.PERMISSION_REQUEST_CALL_PHONE) {
             if (grantResults.isNotEmpty() && AppUtil.checkPermission(grantResults)) {
                 if (AppUtil.canDrawOverlays(this)) {
                     if (!AppUtil.checkNotificationAccessSettings(this)) {
@@ -266,13 +266,14 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         isAllowCallScreen = true
         binding.swOnOff.isChecked = !isCallState
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.e("TAN", "onActivityResult: aaaaaaaa")
         if (!AppUtil.canDrawOverlays(this) || !AppUtil.checkNotificationAccessSettings(this)) {
             isAllowCallScreen = true
             binding.swOnOff.isChecked = false
-            Handler().postDelayed({ isAllowCallScreen = false },100);
+            Handler().postDelayed({ isAllowCallScreen = false }, 100);
         }
         if (requestCode == Constant.REQUEST_DRAW_OVER) {
             if (AppUtil.canDrawOverlays(this)) {
@@ -291,5 +292,9 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 onHasCall()
             }
         }
+    }
+
+    override fun onCreate() {
+
     }
 }

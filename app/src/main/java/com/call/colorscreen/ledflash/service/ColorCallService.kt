@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,7 +94,7 @@ class ColorCallService:LifecycleService() {
     }
 
     private fun checkDevice() {
-        if (Build.MANUFACTURER != null && (Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)
+        /*if (Build.MANUFACTURER != null && (Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)
                     || Build.MANUFACTURER.equals("realme", ignoreCase = true))
             || Build.MANUFACTURER.contains("INFINIX")
         ) {
@@ -104,7 +105,12 @@ class ColorCallService:LifecycleService() {
             intent2.putExtra(Constant.PHONE_NUMBER, phone)
             startActivity(intent2)
         }
-        // showViewCallColor();
+        // showViewCallColor();*/
+        Log.e("TAN", "checkDevice: 111", )
+        val intent2 = Intent(applicationContext, IncommingCallActivity::class.java)
+        intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent2.putExtra(Constant.PHONE_NUMBER, phone)
+        startActivity(intent2)
     }
 
     override fun onDestroy() {

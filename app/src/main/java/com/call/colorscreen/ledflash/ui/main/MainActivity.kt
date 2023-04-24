@@ -150,4 +150,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             Log.e("TAN", "checkData: " + HawkData.getListThemes().size)
         }*/
     }
+
+    override fun onCreate() {
+
+    }
 }
