@@ -27,56 +27,21 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import java.util.*
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListener {
-    private var ID_INTER_TEST = "aaca-app-pub-3940256099942544/1033173712"
-    private val ID_FB_TEST = "YOUR_PLACEMENT_ID"
+    private var ID_INTER_TEST = "ca-app-pub-3940256099942544/1033173712"
     private var mInterstitialAd: InterstitialAd? = null
     private var idAds: String = ""
     private var fullAdsLoaded = false
     private var loadFailed = false
     private var activeScreen = false
-    private var loadFBFailed = false
     private var endCountTimer = false
     private var nativeFB: NativeAd? = null
     private var timer: CountDownTimer? = null
     private var adView: LinearLayout? = null
-    private fun loadNativeAdFb() {
-        val idFB: String = ID_FB_TEST
-//        if (BuildConfig.DEBUG) {
-//            idFB = ID_FB_TEST
-//        } else {
-//
-//        }
-        nativeFB = NativeAd(this, idFB)
-        val nativeAdListener: NativeAdListener = object : NativeAdListener {
-            override fun onMediaDownloaded(ad: Ad) {}
-            override fun onError(ad: Ad, adError: com.facebook.ads.AdError) {
-                loadFBFailed = true
-                Log.e("TAN", "Splash  FB onError: " + adError.errorMessage)
-            }
 
-            override fun onAdLoaded(ad: Ad) {
-                if (nativeFB == null || nativeFB !== ad) {
-                    return
-                }
-                Log.e("TAN", "Splash  FB onAdLoaded: ")
-            }
-
-            override fun onAdClicked(ad: Ad) {}
-            override fun onLoggingImpression(ad: Ad) {}
-        }
-
-        // Request an ad
-        nativeFB?.loadAd(
-            nativeFB?.buildLoadAdConfig()
-                ?.withAdListener(nativeAdListener)
-                ?.build()
-        )
-    }
 
     private fun checkAds() {
         if (AppUtil.checkInternet(this)) {
             loadAds()
-            loadNativeAdFb()
         } else {
             skip()
         }
@@ -150,18 +115,11 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
                 hideLoading()
                 cancelCountimer()
             } else if (loadFailed) {
-                if (loadFBFailed) {
-                    hideLoading()
-                    endCountTimer = true
-                    cancelCountimer()
-                    if (activeScreen) {
-                        skip()
-                    }
-                } else if (nativeFB?.isAdLoaded == true) {
-                    inflateAd(nativeFB!!)
-                    hideSeekbar()
-                    cancelCountimer()
-
+                hideLoading()
+                endCountTimer = true
+                cancelCountimer()
+                if (activeScreen) {
+                    skip()
                 }
             }
         } else {
@@ -174,11 +132,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
         }
     }
 
-    private fun hideSeekbar() {
-        binding.layoutFooter.visibility = View.VISIBLE
-        binding.seekBar.visibility = View.INVISIBLE
-    }
-
     private fun hideLoading() {
         binding.layoutFooter.visibility = View.INVISIBLE
     }
@@ -187,52 +140,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
         if (mInterstitialAd != null) {
             mInterstitialAd?.show(this)
         }
-    }
-
-    private fun inflateAd(nativeAdFB: NativeAd) {
-        binding.llSkip.visibility = View.VISIBLE
-        binding.btnStart.visibility = View.VISIBLE
-        nativeAdFB.unregisterView()
-        val inflater = LayoutInflater.from(this)
-        adView =
-            inflater.inflate(R.layout.native_fb_layout, binding.fbNativeAds, false) as LinearLayout
-        binding.fbNativeAds.addView(adView)
-
-        // Add the AdOptionsView
-        val adChoicesContainer = findViewById<LinearLayout>(R.id.ad_choices_container)
-        val adOptionsView = AdOptionsView(this, nativeAdFB, binding.fbNativeAds)
-        adChoicesContainer.removeAllViews()
-        adChoicesContainer.addView(adOptionsView, 0)
-
-        // Create native UI using the ad metadata.
-        val nativeAdIcon: MediaView = adView!!.findViewById(R.id.native_ad_icon)
-        val nativeAdTitle: TextView = adView!!.findViewById(R.id.native_ad_title)
-        val nativeAdMedia: MediaView = adView!!.findViewById(R.id.native_ad_media)
-        val nativeAdSocialContext: TextView =
-            adView!!.findViewById(R.id.native_ad_social_context)
-        val nativeAdBody: TextView = adView!!.findViewById(R.id.native_ad_body)
-        val sponsoredLabel: TextView = adView!!.findViewById(R.id.native_ad_sponsored_label)
-        val nativeAdCallToAction: Button =
-            adView!!.findViewById(R.id.native_ad_call_to_action)
-
-        // Set the Text.
-        nativeAdTitle.text = nativeAdFB.advertiserName
-        nativeAdBody.text = nativeAdFB.adBodyText
-        nativeAdSocialContext.text = nativeAdFB.adSocialContext
-        nativeAdCallToAction.visibility =
-            if (nativeAdFB.hasCallToAction()) View.VISIBLE else View.INVISIBLE
-        nativeAdCallToAction.text = nativeAdFB.adCallToAction
-        sponsoredLabel.text = nativeAdFB.sponsoredTranslation
-
-        // Create a list of clickable views
-        val clickableViews: MutableList<View> = ArrayList()
-        clickableViews.add(nativeAdTitle)
-        clickableViews.add(nativeAdCallToAction)
-
-        // Register the Title and CTA button to listen for clicks.
-        nativeAdFB.registerViewForInteraction(
-            adView, nativeAdMedia, nativeAdIcon, clickableViews
-        )
     }
 
     override fun onResume() {

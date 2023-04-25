@@ -5,7 +5,9 @@
       <map>
         <entry key="app/src/main/res/layout/activity_apply.xml" value="0.40331491712707185" />
         <entry key="app/src/main/res/layout/activity_incomming_call.xml" value="0.3948919449901768" />
+        <entry key="app/src/main/res/layout/activity_permission_over.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/activity_setting.xml" value="0.4713541666666667" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.4165" />
       </map>
     </option>
   </component>

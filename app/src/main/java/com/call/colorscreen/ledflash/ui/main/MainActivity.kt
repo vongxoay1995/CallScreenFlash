@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.MutableLiveData
+import com.call.colorscreen.ledflash.BuildConfig
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.database.Theme
@@ -19,6 +20,7 @@ import com.call.colorscreen.ledflash.ui.main.themes.EventBusMain
 import com.call.colorscreen.ledflash.ui.main.themes.ThemesFragment
 import com.call.colorscreen.ledflash.ui.setting.SettingActivity
 import com.call.colorscreen.ledflash.util.AppUtil
+import com.call.colorscreen.ledflash.util.Constant
 import com.call.colorscreen.ledflash.util.HawkData
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
@@ -61,10 +63,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         AppUtil.overHeader(this, binding.layoutHeader)
         listener()
         loadApi(true)
+        if (AppUtil.checkInternet(this)) {
+            loadAds()
+        } else {
+            binding.llAds.visibility = View.GONE;
+        }
         disableToolTipTextTab()
         initPager()
     }
+    private fun loadAds() {
 
+    }
     private fun initPager() {
         adapter = ViewPagerAdapter(supportFragmentManager)
         themesFragment = ThemesFragment()
@@ -132,7 +141,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
         val mPosition: Int = HawkData.getListThemes().size
         if (versionApi > version||HawkData.getListThemes().size<10) {
-            Log.e("TAN", "checkData: lan dau", )
+            Log.e("TAN", "checkData: lan dau")
             for (i in app.indices) {
                 app[i].position= mPosition + i
                 arr.add(app[i])
