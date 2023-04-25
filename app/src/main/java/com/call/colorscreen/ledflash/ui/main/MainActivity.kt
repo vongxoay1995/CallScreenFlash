@@ -83,7 +83,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         binding.viewpager.adapter = adapter
         binding.tabs.setupWithViewPager(binding.viewpager)
         binding.viewpager.currentItem = 0
-        binding.viewpager.offscreenPageLimit = 2
+        binding.viewpager.offscreenPageLimit = 1
     }
 
     private fun listener() {
@@ -119,7 +119,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         app.enqueue(object : Callback<Data?> {
             override fun onResponse(call: Call<Data?>, response: Response<Data?>) {
                 Log.e("TAN", "onResponse: success")
-                if (response.body() != null && response.body()!!.app!!.size > 0) {
+                if (response.body() != null && response.body()!!.app.size > 0) {
                     checkData(response.body()!!.app, response.body()!!.changeLog!!.version)
                 }
                 val eventBusMain = EventBusMain(true, isRefresh)
