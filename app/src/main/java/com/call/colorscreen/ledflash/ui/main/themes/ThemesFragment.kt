@@ -44,7 +44,7 @@ class ThemesFragment : BaseFragmentt<FragmentThemesBinding>(),
         val gridLayoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
         binding.rcvThemes.layoutManager = gridLayoutManager
         binding.rcvThemes.itemAnimator = DefaultItemAnimator()
-        binding.rcvThemes.addItemDecoration(SimpleDividerItemDecoration(AppUtil.dpToPx(5)))
+        binding.rcvThemes.addItemDecoration(SimpleDividerItem(AppUtil.dpToPx(5)))
         val animator: ItemAnimator = binding.rcvThemes.itemAnimator!!
         if (animator is SimpleItemAnimator) {
             animator.supportsChangeAnimations = false

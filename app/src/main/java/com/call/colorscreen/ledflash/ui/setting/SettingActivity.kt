@@ -201,7 +201,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 }
             }
             R.id.llPolicy -> {
-                openLink("")
+                openLink("https://bluewavevn.wordpress.com/2023/05/03/phone-caller-screen-color-call-app-privacy-policy-2/")
             }
         }
     }

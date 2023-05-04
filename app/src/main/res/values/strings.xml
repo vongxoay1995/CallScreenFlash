@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Call Screen Flash</string>
+    <string name="app_name">Call Color Screen</string>
     <string name="skipAds">Skip</string>
     <string name="descrip_splash">Colorful incoming call screen</string>
     <string name="loading">Loading ...</string>
