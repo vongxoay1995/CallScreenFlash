@@ -7,9 +7,9 @@ plugins {
 
 android {
     compileSdkVersion 32
-    buildToolsVersion "29.0.3"
+    buildToolsVersion "30.0.3"
     defaultConfig {
-        applicationId "com.call.colorscreen.ledflash"
+        applicationId "com.call.screen.themes.color.phone.flash"
         minSdkVersion 21
         targetSdkVersion 32
         versionCode 1

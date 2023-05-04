@@ -47,7 +47,6 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     private fun listener() {
         binding.swOnOff.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             isCallState = isChecked
-            Log.e("TAN", "listener swOnOff: " + isAllowCallScreen)
             if (!isAllowCallScreen) {
                 PermissionUtil.checkPermissionCall(this@SettingActivity, this)
             } else {
