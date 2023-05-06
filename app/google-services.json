@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1003728849109",
+    "project_id": "color-call-51341",
+    "storage_bucket": "color-call-51341.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003728849109:android:5b337ddc9717eb40097a5c",
+        "android_client_info": {
+          "package_name": "com.call.screen.themes.color.phone.flashlight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1003728849109-u4bta8c0qc5cj77709hic05s40mhafu4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnqwhuh10GsQ7YA0yGTqB5PFOkuRQTAOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003728849109-u4bta8c0qc5cj77709hic05s40mhafu4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

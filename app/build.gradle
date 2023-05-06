@@ -2,7 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-   // id 'com.google.gms.google-services'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -12,8 +13,8 @@ android {
         applicationId "com.call.screen.themes.color.phone.flashlight"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     dataBinding {
@@ -48,6 +49,10 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
+    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+
     implementation 'com.facebook.android:facebook-android-sdk:8.1.0'
     implementation 'com.facebook.android:audience-network-sdk:6.8.0'
     implementation 'com.orhanobut:hawk:2.0.1'
