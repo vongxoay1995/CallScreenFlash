@@ -18,6 +18,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.ads.BannerAdsListener
+import com.call.colorscreen.ledflash.ads.BannerAdsUtils
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.ActivityApplyBinding
@@ -25,6 +27,7 @@ import com.call.colorscreen.ledflash.model.EBApplyCustom
 import com.call.colorscreen.ledflash.model.EBApplyTheme
 import com.call.colorscreen.ledflash.ui.contact.SelectContactActivity
 import com.call.colorscreen.ledflash.util.*
+import com.google.android.gms.ads.LoadAdError
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
 
@@ -37,10 +40,29 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     private lateinit var theme: Theme
     private lateinit var dialogDownload: Dialog
     lateinit var txtPercent: TextView
+    private lateinit var bannerAdsUtils: BannerAdsUtils
+
     override fun getLayoutId(): Int {
         return R.layout.activity_apply
     }
+    private fun loadAds() {
+        bannerAdsUtils = BannerAdsUtils(this, AppAdsId.id_banner_apply, binding.llAds)
+        bannerAdsUtils.loadAds()
+        bannerAdsUtils.goneWhenFail = false
+        bannerAdsUtils.setAdsListener(object : BannerAdsListener() {
 
+            override fun onAdFailedToLoad(loadAdError: LoadAdError?) {
+                super.onAdFailedToLoad(loadAdError)
+            }
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+            }
+
+            override fun onAdClicked() {
+                super.onAdClicked()
+            }
+        })
+    }
     override fun onViewReady(savedInstance: Bundle?) {
         AppUtil.overHeaderApply(this, binding.layoutHeader)
         listener()
@@ -48,6 +70,11 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         positionTheme = intent.getIntExtra(Constant.ITEM_POSITION, -1)
         frScreen = intent.getIntExtra(Constant.FR_SCREEN, -1)
         initData()
+        if (AppUtil.checkInternet(this)) {
+            loadAds()
+        } else {
+            binding.llAds.visibility = View.GONE;
+        }
     }
 
     private fun initData() {

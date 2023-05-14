@@ -2,6 +2,7 @@ package com.call.colorscreen.ledflash
 
 import android.app.Application
 import android.util.Log
+import com.call.colorscreen.ledflash.ads.SplashAppOpenManager
 import com.call.colorscreen.ledflash.database.RoomManager
 import com.call.colorscreen.ledflash.di.appModule
 import com.call.colorscreen.ledflash.util.AppUtil
@@ -15,6 +16,8 @@ import java.util.*
 import java.util.concurrent.Executors
 import org.koin.core.context.startKoin
 class MyApplication : Application() {
+    lateinit var splashAppOpenManager: SplashAppOpenManager
+
     override fun onCreate() {
         super.onCreate()
         Log.e("TAN", "onCreate: application")
@@ -29,6 +32,8 @@ class MyApplication : Application() {
         }
         loadDataFirst()
         setupKoin()
+        splashAppOpenManager = SplashAppOpenManager(this)
+
         //FacebookSdk.sdkInitialize(this)
         //AppEventsLogger.activateApp(this)
        // AudienceNetworkAds.initialize(this)

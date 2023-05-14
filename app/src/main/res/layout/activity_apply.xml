@@ -200,7 +200,6 @@
             android:background="@drawable/bd_ads"
             android:gravity="center"
             android:padding="1dp"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

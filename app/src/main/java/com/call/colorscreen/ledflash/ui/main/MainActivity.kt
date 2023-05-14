@@ -8,6 +8,8 @@ import android.widget.LinearLayout
 import androidx.lifecycle.MutableLiveData
 import com.call.colorscreen.ledflash.BuildConfig
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.ads.BannerAdsListener
+import com.call.colorscreen.ledflash.ads.BannerAdsUtils
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.ActivityMainBinding
@@ -19,9 +21,11 @@ import com.call.colorscreen.ledflash.ui.main.custom.CustomFragment
 import com.call.colorscreen.ledflash.ui.main.themes.EventBusMain
 import com.call.colorscreen.ledflash.ui.main.themes.ThemesFragment
 import com.call.colorscreen.ledflash.ui.setting.SettingActivity
+import com.call.colorscreen.ledflash.util.AppAdsId
 import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.Constant
 import com.call.colorscreen.ledflash.util.HawkData
+import com.google.android.gms.ads.LoadAdError
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
@@ -50,6 +54,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     private var adapter: ViewPagerAdapter? = null
     private var themesFragment: ThemesFragment? = null
     private var customFragment: CustomFragment? = null
+    private lateinit var bannerAdsUtils: BannerAdsUtils
 
     override fun getLayoutId(): Int {
         return R.layout.activity_main
@@ -72,7 +77,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         initPager()
     }
     private fun loadAds() {
+        bannerAdsUtils = BannerAdsUtils(this, AppAdsId.id_banner_main, binding.llAds)
+        bannerAdsUtils.loadAds()
+        bannerAdsUtils.goneWhenFail = false
+        bannerAdsUtils.setAdsListener(object : BannerAdsListener() {
 
+            override fun onAdFailedToLoad(loadAdError: LoadAdError?) {
+                super.onAdFailedToLoad(loadAdError)
+            }
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+            }
+
+            override fun onAdClicked() {
+                super.onAdClicked()
+            }
+        })
     }
     private fun initPager() {
         adapter = ViewPagerAdapter(supportFragmentManager)

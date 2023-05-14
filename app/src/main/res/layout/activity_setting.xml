@@ -94,7 +94,8 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#EBDDDADA" />
+                    android:background="#EBDDDADA"
+                    android:visibility="gone"/>
 
                 <RelativeLayout
                     android:id="@+id/llFlash"

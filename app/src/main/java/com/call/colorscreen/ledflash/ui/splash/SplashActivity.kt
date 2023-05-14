@@ -12,7 +12,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.call.colorscreen.ledflash.MyApplication
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.ads.SplashAppOpenAdsListener
+import com.call.colorscreen.ledflash.ads.SplashAppOpenManager
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.databinding.ActivitySplashBinding
 import com.call.colorscreen.ledflash.ui.main.MainActivity
@@ -26,29 +29,27 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import java.util.*
 
-class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListener {
+class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListener,
+    SplashAppOpenAdsListener {
     private var ID_INTER_TEST = "ca-app-pub-3940256099942544/1033173712"
     private var mInterstitialAd: InterstitialAd? = null
     private var idAds: String = ""
     private var fullAdsLoaded = false
     private var loadFailed = false
-    private var activeScreen = false
+    var activeScreen = false
     private var endCountTimer = false
-    private var nativeFB: NativeAd? = null
     private var timer: CountDownTimer? = null
-    private var adView: LinearLayout? = null
-
-
+    private lateinit var splashAppOpenManager: SplashAppOpenManager
     private fun checkAds() {
         if (AppUtil.checkInternet(this)) {
             loadAds()
         } else {
-            skip()
+            skip(3)
         }
     }
 
     private fun loadAds() {
-        idAds = ID_INTER_TEST
+       /* idAds = ID_INTER_TEST
         val adRequest = AdRequest.Builder().build()
         InterstitialAd.load(this, idAds, adRequest,
             object : InterstitialAdLoadCallback() {
@@ -77,28 +78,40 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
                     fullAdsLoaded = false
                     mInterstitialAd = null
                 }
-            })
+            })*/
+        splashAppOpenManager.fetchAd()
         countTimeAds()
     }
 
     private fun countTimeAds() {
-        timer = object : CountDownTimer(6000, 150) {
+        timer = object : CountDownTimer(8000L, 56L) {
             override fun onTick(millisUntilFinished: Long) {
-                var progress = (100 - (millisUntilFinished.toDouble() / 6000) * 100).toInt()
-                if (progress > 98) {
-                    binding.seekbar.progress = 100
-                } else {
-                    binding.seekbar.progress = progress
+                binding.seekbar.progress++
+                if (binding.seekbar.progress < 100) {
+                    if (splashAppOpenManager.isAdLoadEnd) {
+                        if (!splashAppOpenManager.isAdLoadFailed) {
+                            if (splashAppOpenManager.isAdAvailable) {
+                                splashAppOpenManager.showAdIfAvailable()
+                                cancelCountimer()
+                                binding.seekbar.progress = 100
+                                binding.layoutFooter.visibility = View.GONE
+                            }
+                        } else {
+                            cancelCountimer()
+                            onFinish()
+                        }
+                    }
                 }
-                countTimer()
-                Log.e("TAN", "onTick: " + binding.seekbar.progress + "--" + millisUntilFinished)
             }
 
             override fun onFinish() {
+                binding.seekbar.progress = 100
+                skip(2)
                 Log.e("TAN", "onFinish: ")
             }
         }
         (timer as CountDownTimer).start()
+        splashAppOpenManager.setAppOpenAdsListener(this)
     }
 
     private fun cancelCountimer() {
@@ -107,7 +120,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
         }
     }
 
-    private fun countTimer() {
+ /*   private fun countTimer() {
         Log.e("TAN", "countTimer: " + binding.seekbar.progress)
         if (binding.seekbar.progress < 100) {
             if (fullAdsLoaded) {
@@ -130,7 +143,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
                 skip()
             }
         }
-    }
+    }*/
 
     private fun hideLoading() {
         binding.layoutFooter.visibility = View.INVISIBLE
@@ -153,7 +166,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
 
     }
 
-    private fun skip() {
+    private fun skip(from:Int) {
+        Log.e("TAN", "skip: "+from)
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -162,16 +176,18 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        if (binding.seekbar.progress >= 100) {
+            skip(1)
+        }
     }
 
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.btnStart -> {
-                skip()
+                skip(4)
             }
             R.id.ll_skip -> {
-                skip()
+                skip(5)
             }
         }
     }
@@ -190,13 +206,23 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
             .diskCacheStrategy(DiskCacheStrategy.DATA)
             .thumbnail(0.2f)
             .into(binding.imgSplash)
-        Handler().postDelayed(Runnable { skip() }, 3000)
-        //checkAds()
+        checkAds()
         binding.llSkip.setOnClickListener(this)
         binding.btnStart.setOnClickListener(this)
     }
 
     override fun onCreate() {
+        splashAppOpenManager = (application as MyApplication).splashAppOpenManager
+    }
 
+    override fun adShow() {
+
+    }
+
+    override fun adDismiss() {
+        skip(6)
+    }
+
+    override fun adFailedToShow() {
     }
 }

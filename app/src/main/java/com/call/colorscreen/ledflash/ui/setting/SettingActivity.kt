@@ -41,7 +41,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         binding.swOnOff.isChecked = HawkData.getEnableCall()
         binding.swflash.isChecked = HawkData.getEnableFlash()
         listener()
-        //loadAds()
+        loadAds()
     }
 
     private fun listener() {
@@ -68,8 +68,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     }
 
     private fun loadAds() {
-        val ID_ADS_GG = ""
-        val builder = AdLoader.Builder(this, ID_ADS_GG)
+        val builder = AdLoader.Builder(this, AppAdsId.id_native_setting)
             .forNativeAd { nativeAd: NativeAd ->
                 val isDestroyed = isDestroyed
                 if (isDestroyed || isFinishing || isChangingConfigurations) {
