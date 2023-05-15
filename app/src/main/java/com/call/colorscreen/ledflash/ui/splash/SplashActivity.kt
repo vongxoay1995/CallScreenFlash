@@ -3,31 +3,21 @@ package com.call.colorscreen.ledflash.ui.splash
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.MyApplication
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.SplashAppOpenAdsListener
 import com.call.colorscreen.ledflash.ads.SplashAppOpenManager
+import com.call.colorscreen.ledflash.analystic.Analystic
+import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.databinding.ActivitySplashBinding
 import com.call.colorscreen.ledflash.ui.main.MainActivity
 import com.call.colorscreen.ledflash.util.AppUtil
-import com.facebook.ads.*
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import java.util.*
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListener,
     SplashAppOpenAdsListener {
@@ -40,6 +30,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     private var endCountTimer = false
     private var timer: CountDownTimer? = null
     private lateinit var splashAppOpenManager: SplashAppOpenManager
+    private var analystic: Analystic? = null
+
     private fun checkAds() {
         if (AppUtil.checkInternet(this)) {
             loadAds()
@@ -213,6 +205,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
 
     override fun onCreate() {
         splashAppOpenManager = (application as MyApplication).splashAppOpenManager
+        analystic = Analystic.getInstance(this)
+        analystic?.trackEvent(ManagerEvent.splashShow())
     }
 
     override fun adShow() {

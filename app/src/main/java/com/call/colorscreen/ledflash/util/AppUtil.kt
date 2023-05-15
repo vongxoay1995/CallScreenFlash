@@ -30,7 +30,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.analystic.Analystic
+import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.database.Theme
+import com.call.colorscreen.ledflash.ui.listener.DialogDeleteCallBack
 import com.call.colorscreen.ledflash.ui.listener.DialogGalleryListener
 import com.call.colorscreen.ledflash.ui.main.PermissionOverActivity
 import com.google.android.gms.ads.nativead.MediaView
@@ -144,7 +147,7 @@ class AppUtil {
 
             // The headline and mediaContent are guaranteed to be in every NativeAd.
             (adView.headlineView as TextView).text = nativeAd.headline
-            adView.mediaView.setMediaContent(nativeAd.mediaContent)
+            adView.mediaView!!.setMediaContent(nativeAd.mediaContent)
 
             // These assets aren't guaranteed to be in every NativeAd, so it's important to
             // check before trying to display them.
@@ -164,9 +167,9 @@ class AppUtil {
                 adView.iconView.visibility = View.GONE
             } else {
                 (adView.iconView as ImageView).setImageDrawable(
-                    nativeAd.icon.drawable
+                    nativeAd.icon!!.drawable
                 )
-                adView.iconView.visibility = View.VISIBLE
+                (adView.iconView as ImageView).visibility = View.VISIBLE
             }
             if (nativeAd.price == null) {
                 adView.priceView.visibility = View.INVISIBLE
@@ -206,7 +209,7 @@ class AppUtil {
             }
             return true
         }
-        fun showDialogGallery(activity: Activity?, dialogGalleryListener: DialogGalleryListener?) {
+        fun showDialogGallery(activity: Activity?, analystic:Analystic,dialogGalleryListener: DialogGalleryListener?) {
             val dialog = Dialog(activity!!)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(true)
@@ -217,18 +220,18 @@ class AppUtil {
             imgVideo = dialog.findViewById(R.id.imgSelectVideo)
             imgImages = dialog.findViewById(R.id.imgSelectImage)
             dialog.show()
-            //analystic.trackEvent(ManagerEvent.mainDialogOpen())
+            analystic.trackEvent(ManagerEvent.mainDialogOpen())
             imgVideo.setOnClickListener { v: View? ->
                 if (dialogGalleryListener != null) {
                     dialogGalleryListener.onVideoClicked()
-                    //analystic.trackEvent(ManagerEvent.mainDialogVideo())
+                    analystic.trackEvent(ManagerEvent.mainDialogVideo())
                 }
                 dialog.dismiss()
             }
             imgImages.setOnClickListener {
                 if (dialogGalleryListener != null) {
                     dialogGalleryListener.onImagesClicked()
-                    //analystic.trackEvent(ManagerEvent.mainDialogPicture())
+                    analystic.trackEvent(ManagerEvent.mainDialogPicture())
                 }
                 dialog.dismiss()
             }
@@ -493,6 +496,22 @@ class AppUtil {
             val storageDir =
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             return File.createTempFile("ColorCall_image_default", ".jpg", storageDir)
+        }
+        fun showDialogDelete(activity: Activity, dialogDeleteCallBack: DialogDeleteCallBack) {
+            val inflater = activity.layoutInflater
+            val alertLayout: View = inflater.inflate(R.layout.dialog_delete, null)
+            val txtNo: TextView = alertLayout.findViewById(R.id.btnNo)
+            val txtYes: TextView = alertLayout.findViewById(R.id.btnYes)
+            val alert = AlertDialog.Builder(activity)
+            alert.setView(alertLayout)
+            alert.setCancelable(false)
+            val dialog = alert.create()
+            dialog.show()
+            txtNo.setOnClickListener { dialog.dismiss() }
+            txtYes.setOnClickListener {
+                dialogDeleteCallBack.onDelete()
+                dialog.dismiss()
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.base.BaseFragmentt
 import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Theme
@@ -39,6 +40,8 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapte
     var adapter: CustomThemeAdapter? = null
     private var pathUriImage: String? = null
     val database by inject<AppDatabase>()
+    private lateinit var analystic: Analystic
+
     private var positionItemThemeSelected = -1
     override fun init() {
         val gridLayoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
@@ -60,6 +63,7 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapte
                 }
             }
         })
+        analystic = Analystic.getInstance(requireActivity())
     }
 
     override fun onCreateView(
@@ -261,7 +265,7 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapte
 
     private fun openDialogGallery() {
         Log.e("TAN", "openDialogGallery: ")
-        AppUtil.showDialogGallery(activity, this)
+        AppUtil.showDialogGallery(activity, analystic,this)
     }
 
     override fun onVideoClicked() {

@@ -14,26 +14,30 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
 import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
+import com.call.colorscreen.ledflash.analystic.Analystic
+import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
+import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.ActivityApplyBinding
 import com.call.colorscreen.ledflash.model.EBApplyCustom
 import com.call.colorscreen.ledflash.model.EBApplyTheme
 import com.call.colorscreen.ledflash.ui.contact.SelectContactActivity
+import com.call.colorscreen.ledflash.ui.listener.DialogDeleteCallBack
 import com.call.colorscreen.ledflash.util.*
 import com.google.android.gms.ads.LoadAdError
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
+import org.koin.android.ext.android.inject
 
 class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener,
-    DownloadTask.Listener, PermissionCallListener, PermissionCallContact {
+    DownloadTask.Listener, PermissionCallListener, PermissionCallContact,DialogDeleteCallBack {
     private var posRandom = 0
     private var positionTheme = 0
     private var frScreen = 0
@@ -43,6 +47,8 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     lateinit var txtPercent: TextView
     private lateinit var bannerAdsUtils: BannerAdsUtils
     lateinit var interstitialAdsManager: InterstitialAdsManager
+    private lateinit var analystic: Analystic
+    val database by inject<AppDatabase>()
 
     override fun getLayoutId(): Int {
         return R.layout.activity_apply
@@ -88,6 +94,8 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         } else {
             binding.llAds.visibility = View.GONE;
         }
+        analystic = Analystic.getInstance(this)
+        analystic.trackEvent(ManagerEvent.applyShow())
     }
 
     private fun initData() {
@@ -195,7 +203,8 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
             mediaPlayer.isLooping = true
             mediaPlayer.setVolume(0.0f, 0.0f)
         }
-        binding.videoTheme.setOnErrorListener { _, _, _ ->
+        binding.videoTheme.setOnErrorListener { _, _what, _extra->
+            analystic.trackEvent(ManagerEvent.applyVideoViewError(_what, _extra))
             false
         }
         binding.videoTheme.start()
@@ -211,15 +220,19 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.imgBack -> {
+                analystic.trackEvent(ManagerEvent.applyBackClick())
                 finish()
             }
             R.id.llContact -> {
+                analystic.trackEvent(ManagerEvent.applyContactClick())
                 requestPermissionContact()
             }
             R.id.imgDelete -> {
-                finish()
+                analystic.trackEvent(ManagerEvent.applyDeleteClick())
+                AppUtil.showDialogDelete(this, this)
             }
             R.id.llApply -> {
+                analystic.trackEvent(ManagerEvent.applyApplyClick())
                 if (!AppUtil.preventClick()) return
                 if (isDownload) {
                     downloadTheme(theme.path_file, theme.name)
@@ -333,6 +346,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         bundle.putInt("position", positionTheme)
         when (frScreen) {
             Constant.THEME_FRAG_MENT -> {
+                analystic.trackEvent(ManagerEvent.applyVideoThemeSelected(theme.name))
                 EventBus.getDefault().postSticky(ebApplyTheme)
             }
             Constant.CUSTOM_FRAG_MENT -> EventBus.getDefault().postSticky(ebApplyCustom)
@@ -406,4 +420,28 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     override fun onCreate() {
 
     }
+
+    override fun onDelete() {
+        deleteTheme(theme)
+        val signApplyMyTheme = EBApplyCustom(Constant.DELETE_THEME)
+        EventBus.getDefault().postSticky(signApplyMyTheme)
+        finish()
+    }
+    fun deleteTheme(theme: Theme) {
+        if (HawkData.getThemeSelect().path_thumb.equals(theme.path_thumb)) {
+            val bg = Theme(
+                0,
+                0,
+                "thumb/default_1.webp",
+                "/raw/default_1",
+                false,
+                "default_1"
+            )
+            HawkData.setThemeSelect(bg)
+            val signApplyVideo = EBApplyTheme(Constant.APPLY_ITEM_DEFAULT)
+            EventBus.getDefault().postSticky(signApplyVideo)
+        }
+        database.serverDao().deleteTheme(theme.id)
+    }
+
 }

@@ -13,14 +13,17 @@ import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.analystic.Analystic
+import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.databinding.ActivitySettingBinding
 import com.call.colorscreen.ledflash.util.*
 import com.facebook.ads.*
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
-import java.util.*
 
 class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     View.OnClickListener, PermissionCallListener,
@@ -32,6 +35,8 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     private var isCallState = false
     private var isAllowFlash = false
     private var isAllowCallScreen = false
+    private lateinit var analystic: Analystic
+
     override fun getLayoutId(): Int {
         return R.layout.activity_setting
     }
@@ -42,6 +47,8 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         binding.swflash.isChecked = HawkData.getEnableFlash()
         listener()
         loadAds()
+        analystic = Analystic.getInstance(this)
+        analystic.trackEvent(ManagerEvent.settingShow())
     }
 
     private fun listener() {
@@ -168,9 +175,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.btnBack -> {
+                analystic.trackEvent(ManagerEvent.settingBackClick())
                 finish()
             }
             R.id.llShare -> {
+                analystic.trackEvent(ManagerEvent.settingShareAppClick())
                 val sendIntent = Intent()
                 sendIntent.action = "android.intent.action.SEND"
                 val sb2 = StringBuilder()
@@ -199,6 +208,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 }
             }
             R.id.llPolicy -> {
+                analystic.trackEvent(ManagerEvent.settingPolicyClick())
                 openLink("https://bluewavevn.wordpress.com/2023/05/03/phone-caller-screen-color-call-app-privacy-policy-2/")
             }
         }

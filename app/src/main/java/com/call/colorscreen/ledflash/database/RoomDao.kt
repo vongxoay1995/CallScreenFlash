@@ -18,6 +18,8 @@ interface RoomDao {
     fun getContactWithId(id: String): LiveData<MutableList<Contact>>
     @Query("DELETE FROM contact where contact_id = :id")
     fun deleteContactWithId(id:String)
+    @Query("DELETE FROM theme where id = :id")
+    fun deleteTheme(id:Int)
     @Query("SELECT * FROM contact WHERE contact_id =:id")
     fun getContactById(id: String): MutableList<Contact>
     @Update

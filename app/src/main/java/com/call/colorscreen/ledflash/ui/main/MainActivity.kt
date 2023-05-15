@@ -11,6 +11,8 @@ import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
 import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
+import com.call.colorscreen.ledflash.analystic.Analystic
+import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.ActivityMainBinding
@@ -53,6 +55,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     private var themesFragment: ThemesFragment? = null
     private var customFragment: CustomFragment? = null
     private lateinit var bannerAdsUtils: BannerAdsUtils
+    private lateinit var analystic: Analystic
 
     override fun getLayoutId(): Int {
         return R.layout.activity_main
@@ -63,6 +66,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
 
     private fun initView() {
+        analystic = Analystic.getInstance(this)
+        analystic.trackEvent(ManagerEvent.mainShow())
         AppUtil.overHeader(this, binding.layoutHeader)
         listener()
         loadApi(true)
@@ -73,7 +78,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         }
         disableToolTipTextTab()
         initPager()
-
     }
 
     private fun loadAds() {
@@ -113,6 +117,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.btnSetting -> {
+                analystic.trackEvent(ManagerEvent.mainSettingClick())
                 startActivity(Intent(this, SettingActivity::class.java))
             }
         }
@@ -181,6 +186,5 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
 
     override fun onCreate() {
-
     }
 }

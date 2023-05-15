@@ -24,11 +24,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.internal.telephony.ITelephony
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.call.colorscreen.ledflash.analystic.Analystic
+import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Contact
 import com.call.colorscreen.ledflash.database.Theme
-import com.call.colorscreen.ledflash.databinding.ActivityApplyBinding
 import com.call.colorscreen.ledflash.databinding.ActivityIncommingCallBinding
 import com.call.colorscreen.ledflash.service.AcceptCallActivity
 import com.call.colorscreen.ledflash.util.AppUtil
@@ -54,6 +55,7 @@ class IncommingCallActivity : BaseActivity<ActivityIncommingCallBinding>(), View
     private var telephonyManager: TelephonyManager? = null
     private var telephonyService: ITelephony? = null
     var isDisable = false
+    private lateinit var analystic: Analystic
 
     var mBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
@@ -70,8 +72,10 @@ class IncommingCallActivity : BaseActivity<ActivityIncommingCallBinding>(), View
         val mIntentFilter = IntentFilter()
         mIntentFilter.addAction("com.callcolor.endCall")
         mLocalBroadcastManager!!.registerReceiver(mBroadcastReceiver, mIntentFilter)
-        Log.e("TAN", "onViewReady: aaaa", )
+        Log.e("TAN", "onViewReady: aaaa")
         showLayoutCall()
+        analystic = Analystic.getInstance(this)
+        analystic.trackEvent(ManagerEvent.callshow())
     }
 
     override fun onClick(p0: View?) {
@@ -146,6 +150,7 @@ class IncommingCallActivity : BaseActivity<ActivityIncommingCallBinding>(), View
     @SuppressLint("MissingPermission")
     private fun listener() {
         binding.imgAccept.setOnClickListener { v ->
+            analystic.trackEvent(ManagerEvent.callAcceptCall())
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val tm =
                     getSystemService(TELECOM_SERVICE) as TelecomManager
@@ -168,6 +173,7 @@ class IncommingCallActivity : BaseActivity<ActivityIncommingCallBinding>(), View
         }
 
         binding.imgReject.setOnClickListener { v ->
+            analystic.trackEvent(ManagerEvent.callRejectCall())
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     val tm =
@@ -224,6 +230,7 @@ class IncommingCallActivity : BaseActivity<ActivityIncommingCallBinding>(), View
             }
         binding.videoTheme.setVideoURI(Uri.parse(sPath))
         binding.videoTheme.setOnErrorListener { mp, what, extra ->
+            analystic.trackEvent(ManagerEvent.callVideoViewError(what, extra))
             finish()
             true
         }

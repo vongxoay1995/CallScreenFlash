@@ -8,14 +8,18 @@ import com.call.colorscreen.ledflash.di.appModule
 import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.util.PreferencesUtils
+import com.facebook.FacebookSdk
 import com.facebook.ads.AdSettings
+import com.facebook.ads.AudienceNetworkAds
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import com.google.android.gms.ads.initialization.InitializationStatus
 import com.orhanobut.hawk.Hawk
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import java.util.*
 import java.util.concurrent.Executors
-import org.koin.core.context.startKoin
+
 class MyApplication : Application() {
     lateinit var splashAppOpenManager: SplashAppOpenManager
 
@@ -35,7 +39,8 @@ class MyApplication : Application() {
         setupKoin()
         splashAppOpenManager = SplashAppOpenManager(this)
         PreferencesUtils.init(this)
-
+        AudienceNetworkAds.initialize(this)
+        FacebookSdk.sdkInitialize(this)
         //FacebookSdk.sdkInitialize(this)
         //AppEventsLogger.activateApp(this)
        // AudienceNetworkAds.initialize(this)

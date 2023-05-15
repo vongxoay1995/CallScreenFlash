@@ -12,6 +12,9 @@ object Constant {
     const val PERMISSION_REQUEST_CALL_PHONE = 3
     const val PERMISSION_REQUEST_CAMERA = 4
     const val THEME = "THEME"
+    const val DELETE_THEME = "DELETE_THEME"
+    var APPLY_ITEM_DEFAULT = "apply_default"
+
     var SHOW_DELETE = "delete"
     const val COUNT_SELECT_ITEM = "COUNT_SELECT_ITEM"
 
