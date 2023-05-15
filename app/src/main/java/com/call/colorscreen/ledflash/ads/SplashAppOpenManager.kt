@@ -3,6 +3,7 @@ package com.call.colorscreen.ledflash.ads
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -36,6 +37,7 @@ class SplashAppOpenManager(private val application: MyApplication) : LifecycleOb
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
+        Log.e("TAN", "onStart: ")
        // if (!AppPreference.getInstance(application.applicationContext).stateBilling) {
             if (currentActivity is SplashActivity/*&&(currentActivity as SplashActivity).isCheckIAPComplete*/) {
                 showAdIfAvailable()
@@ -60,6 +62,7 @@ class SplashAppOpenManager(private val application: MyApplication) : LifecycleOb
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        Log.e("TAN", "onAdFailedToShowFullScreenContent: "+adError.message)
                         if (appOpenAdsListener != null) {
                             appOpenAdsListener!!.adFailedToShow()
                         }
@@ -109,6 +112,7 @@ class SplashAppOpenManager(private val application: MyApplication) : LifecycleOb
 
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                 super.onAdFailedToLoad(loadAdError)
+                Log.e("TAN", "onAdFailedToLoad: "+loadAdError.message)
                 isAdLoadFailed = true
                 isAdLoadEnd = true
             }

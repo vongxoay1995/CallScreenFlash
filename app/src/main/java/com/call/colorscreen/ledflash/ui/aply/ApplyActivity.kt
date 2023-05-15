@@ -346,10 +346,15 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         bundle.putInt("position", positionTheme)
         when (frScreen) {
             Constant.THEME_FRAG_MENT -> {
+                Log.e("TAN", "applyThemeCall: 1")
+
                 analystic.trackEvent(ManagerEvent.applyVideoThemeSelected(theme.name))
                 EventBus.getDefault().postSticky(ebApplyTheme)
             }
-            Constant.CUSTOM_FRAG_MENT -> EventBus.getDefault().postSticky(ebApplyCustom)
+            Constant.CUSTOM_FRAG_MENT ->{
+                Log.e("TAN", "applyThemeCall: 2")
+                EventBus.getDefault().postSticky(ebApplyCustom)
+            }
         }
         finish()
     }

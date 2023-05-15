@@ -24,14 +24,19 @@ import com.call.colorscreen.ledflash.base.BaseFragmentt
 import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentCustomBinding
+import com.call.colorscreen.ledflash.model.EBApplyCustom
+import com.call.colorscreen.ledflash.model.EBApplyTheme
 import com.call.colorscreen.ledflash.ui.aply.ApplyActivity
 import com.call.colorscreen.ledflash.ui.listener.DialogGalleryListener
 import com.call.colorscreen.ledflash.ui.main.themes.SimpleDividerItemDecoration
 import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.Constant
-import com.call.colorscreen.ledflash.util.Constant.SHOW_DELETE
+import com.call.colorscreen.ledflash.util.Constant.IS_DELETE
 import com.call.colorscreen.ledflash.util.FileUtil
 import com.google.gson.Gson
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.koin.android.ext.android.inject
 import java.io.File
 
@@ -64,6 +69,9 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapte
             }
         })
         analystic = Analystic.getInstance(requireActivity())
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
     }
 
     override fun onCreateView(
@@ -215,7 +223,7 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapte
         val intent = Intent(activity, ApplyActivity::class.java)
         intent.putExtra(Constant.FR_SCREEN, Constant.CUSTOM_FRAG_MENT)
         if (delete) {
-            intent.putExtra(SHOW_DELETE, true)
+            intent.putExtra(IS_DELETE, true)
         }
         val gson = Gson()
         intent.putExtra(Constant.THEME, gson.toJson(background))
@@ -282,5 +290,22 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapte
 
     override fun onImagesClicked() {
         pathUriImage = AppUtil.openCameraIntent(this, requireActivity(), Constant.CODE_IMAGE)
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onEBApplyCustom(ebApplyCustom: EBApplyCustom) {
+        Log.e("TAN", "onSignApplyCT: vaoooooo")
+        when (ebApplyCustom.action) {
+            Constant.INTENT_APPLY_THEME -> adapter!!.notifyDataSetChanged()
+            Constant.DELETE_THEME -> {
+                Log.e("TAN", "onSignApplyCT: 2222")
+                adapter!!.setNewListBg()
+                adapter!!.notifyDataSetChanged()
+            }
+        }
+        EventBus.getDefault().removeStickyEvent(ebApplyCustom)
     }
 }

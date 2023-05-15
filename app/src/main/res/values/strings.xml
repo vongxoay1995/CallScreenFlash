@@ -42,5 +42,8 @@
     <string name="your_video">Open camera or select a new video</string>
     <string name="select_picture">Select a picture</string>
     <string name="file_not_found">File not found !</string>
-    <string name="facebook_app_id" ></string>
+    <string name="facebook_app_id" >782678399926869</string>
+    <string name="contentDelete">Are you sure delete theme?</string>
+    <string name="nope">Nope</string>
+    <string name="sure">Sure, I want</string>
 </resources>
