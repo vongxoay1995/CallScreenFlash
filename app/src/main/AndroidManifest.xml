@@ -39,6 +39,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/App.NoActionBar"
         tools:targetApi="n">
         <activity android:name=".call.IncommingCallActivity"></activity>
