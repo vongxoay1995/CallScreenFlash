@@ -13,6 +13,7 @@ object Constant {
     const val PERMISSION_REQUEST_CAMERA = 4
     const val THEME = "THEME"
     var SHOW_DELETE = "delete"
+    const val COUNT_SELECT_ITEM = "COUNT_SELECT_ITEM"
 
     const val POS_RANDOM = "POS_RANDOM"
     const val PHONE_NUMBER = "phone_number"

@@ -1,6 +1,7 @@
 package com.call.colorscreen.ledflash.ui.main.themes
 
 import android.content.Intent
+import android.os.FileUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
 import com.call.colorscreen.ledflash.base.BaseFragmentt
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentThemesBinding
@@ -17,6 +19,7 @@ import com.call.colorscreen.ledflash.model.EBApplyTheme
 import com.call.colorscreen.ledflash.ui.aply.ApplyActivity
 import com.call.colorscreen.ledflash.ui.main.MainActivity
 import com.call.colorscreen.ledflash.util.*
+import com.call.colorscreen.ledflash.util.Constant.COUNT_SELECT_ITEM
 import com.call.colorscreen.ledflash.util.Constant.IS_DELETE
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
@@ -29,6 +32,8 @@ class ThemesFragment : BaseFragmentt<FragmentThemesBinding>(),
     private lateinit var listThemes: MutableList<Theme>
     private lateinit var adapter: ThemesAdapter
     private var posDownload = -1
+    lateinit var interstitialAdsManager: InterstitialAdsManager
+    var count: Int = 0
 
     override fun init() {
         if (!EventBus.getDefault().isRegistered(this)) {
@@ -64,8 +69,15 @@ class ThemesFragment : BaseFragmentt<FragmentThemesBinding>(),
                 }
             }
         })
+        interstitialAdsManager = InterstitialAdsManager(requireActivity(), AppAdsId.inter_select_item)
+        loadInterAds()
     }
-
+    private fun loadInterAds() {
+        count = PreferencesUtils.getInt(Constant.COUNT_SELECT_ITEM, 0)
+        if (!interstitialAdsManager.isLoading) {
+            interstitialAdsManager.loadAds()
+        }
+    }
     override fun onResume() {
         super.onResume()
         adapter.reloadAll()
@@ -122,7 +134,22 @@ class ThemesFragment : BaseFragmentt<FragmentThemesBinding>(),
             isDelete: Boolean,
             posRandom: Int
     ) {
-        moveApplyTheme(themes, position, isDelete, posRandom)
+
+        count++
+        PreferencesUtils.putInt(COUNT_SELECT_ITEM, count)
+        if (interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
+            if (count % 2 == 0) {
+                interstitialAdsManager.showInterstitial()
+                interstitialAdsManager.onAdClosed = {
+                    interstitialAdsManager.loadAds()
+                    moveApplyTheme(themes, position, isDelete, posRandom)
+                }
+            }else{
+                moveApplyTheme(themes, position, isDelete, posRandom)
+            }
+        }else{
+            moveApplyTheme(themes, position, isDelete, posRandom)
+        }
     }
 
     private fun moveApplyTheme(

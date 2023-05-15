@@ -3,6 +3,7 @@ package com.call.colorscreen.ledflash.util;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
+import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

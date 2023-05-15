@@ -7,6 +7,7 @@ import com.call.colorscreen.ledflash.database.RoomManager
 import com.call.colorscreen.ledflash.di.appModule
 import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.HawkData
+import com.call.colorscreen.ledflash.util.PreferencesUtils
 import com.facebook.ads.AdSettings
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
@@ -33,6 +34,7 @@ class MyApplication : Application() {
         loadDataFirst()
         setupKoin()
         splashAppOpenManager = SplashAppOpenManager(this)
+        PreferencesUtils.init(this)
 
         //FacebookSdk.sdkInitialize(this)
         //AppEventsLogger.activateApp(this)

@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -15,11 +14,13 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
+import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.ActivityApplyBinding
@@ -41,10 +42,12 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     private lateinit var dialogDownload: Dialog
     lateinit var txtPercent: TextView
     private lateinit var bannerAdsUtils: BannerAdsUtils
+    lateinit var interstitialAdsManager: InterstitialAdsManager
 
     override fun getLayoutId(): Int {
         return R.layout.activity_apply
     }
+
     private fun loadAds() {
         bannerAdsUtils = BannerAdsUtils(this, AppAdsId.id_banner_apply, binding.llAds)
         bannerAdsUtils.loadAds()
@@ -54,6 +57,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
             override fun onAdFailedToLoad(loadAdError: LoadAdError?) {
                 super.onAdFailedToLoad(loadAdError)
             }
+
             override fun onAdLoaded() {
                 super.onAdLoaded()
             }
@@ -63,6 +67,13 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
             }
         })
     }
+
+    private fun loadInterAds() {
+        if (!interstitialAdsManager.isLoading) {
+            interstitialAdsManager.loadAds()
+        }
+    }
+
     override fun onViewReady(savedInstance: Bundle?) {
         AppUtil.overHeaderApply(this, binding.layoutHeader)
         listener()
@@ -70,8 +81,10 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         positionTheme = intent.getIntExtra(Constant.ITEM_POSITION, -1)
         frScreen = intent.getIntExtra(Constant.FR_SCREEN, -1)
         initData()
+        interstitialAdsManager = InterstitialAdsManager(this, AppAdsId.inter_apply)
         if (AppUtil.checkInternet(this)) {
             loadAds()
+            loadInterAds()
         } else {
             binding.llAds.visibility = View.GONE;
         }
@@ -208,7 +221,6 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
             }
             R.id.llApply -> {
                 if (!AppUtil.preventClick()) return
-                Log.e("TAN", "onClick: " + isDownload)
                 if (isDownload) {
                     downloadTheme(theme.path_file, theme.name)
                 } else {
@@ -227,7 +239,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         dialogDownload.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         txtPercent = dialogDownload.findViewById(R.id.txtPercent)
         var path = Environment.getDataDirectory()
-            .toString() + "/data/com.call.colorscreen.ledflash/themes/"
+            .toString() + "/data/com.call.screen.themes.color.phone.flashlight/themes/"
         AppUtil.createFolder(path)
         val downloadTask = DownloadTask(this)
         downloadTask.setListener(this)
@@ -269,7 +281,6 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         } else {
             val arr: MutableList<Theme> = HawkData.getListThemes()
             theme.path_file = pathDownload
-            Log.e("TAN", "onPostExecute: " + theme.position)
             arr[theme.position].path_file = pathDownload
             HawkData.setListThemes(arr)
             binding.videoTheme.setVideoURI(Uri.parse(pathDownload))
@@ -292,7 +303,18 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     }
 
     override fun onHasCall() {
-        applyThemeCall()
+        checkShowAds()
+    }
+
+    private fun checkShowAds() {
+        if (interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
+            interstitialAdsManager.showInterstitial()
+            interstitialAdsManager.onAdClosed = {
+                applyThemeCall()
+            }
+        } else {
+            applyThemeCall()
+        }
     }
 
     private fun applyThemeCall() {
@@ -357,6 +379,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 ).show()
             }
         }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.e("TAN", "onActivityResult: aaaaaaaa")
@@ -372,6 +395,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
             }
         }
     }
+
     override fun onHasContact() {
         val intent = Intent(this, SelectContactActivity::class.java)
         val gson = Gson()

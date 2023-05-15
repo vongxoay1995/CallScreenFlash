@@ -26,23 +26,20 @@ import java.util.*
 class ThemesAdapter(val context: Context) :
     RecyclerView.Adapter<ThemesAdapter.ViewHolder>() {
     private var listThemes:MutableList<Theme> = mutableListOf()
+    private var listThemesImage:MutableList<Theme> = mutableListOf()
+    private var listThemeVideo:MutableList<Theme> = mutableListOf()
     constructor(context: Context, arr: MutableList<Theme>): this(context) {
         distributeData(arr)
     }
     open fun distributeData(data: MutableList<Theme>) {
-        listThemes = data.filterIndexed { ix, element ->
+        listThemeVideo = data.filterIndexed { ix, element ->
              element.type == 0
         }.toMutableList()
-        /*for (i in 0 until data.size) {
-            Log.e("TAN", "distributeData: "+data.size+"--"+i )
-            if (data[i].type == 1) {
-                Log.e("TAN", "remove: "+i )
-                data.removeAt(i)
-                i--
-            } else {
-                listThemes.add(data[i])
-            }
-        }*/
+        listThemesImage = data.filterIndexed { ix, element ->
+             element.type == 1
+        }.toMutableList()
+        listThemes.addAll(listThemeVideo)
+        listThemes.addAll(listThemesImage)
     }
     fun resetListTheme(){
         listThemes = mutableListOf()
@@ -76,12 +73,22 @@ class ThemesAdapter(val context: Context) :
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .thumbnail(0.1f)
                     .into(binding.imgThumb)
+                if (theme.type==0){
+                    binding.imgPlay.visibility = View.VISIBLE
+                }else{
+                    binding.imgPlay.visibility = View.GONE
+                }
             }
-            if (theme.path_thumb.equals(themeSelected!!.path_thumb) && HawkData.getEnableCall()) {
+            if (theme.path_thumb == themeSelected!!.path_thumb && HawkData.getEnableCall()) {
                 binding.layoutSelected.visibility = View.VISIBLE
                 binding.layoutBorderItemSelect.visibility = View.VISIBLE
-                binding.imgThumb.visibility = View.GONE
-                binding.videoThemes.visibility = View.VISIBLE
+                if (theme.type==0){
+                    binding.imgThumb.visibility = View.GONE
+                    binding.videoThemes.visibility = View.VISIBLE
+                }else{
+                    binding.imgThumb.visibility = View.VISIBLE
+                    binding.videoThemes.visibility = View.GONE
+                }
                 playVideo(theme)
                 animation()
             } else {
