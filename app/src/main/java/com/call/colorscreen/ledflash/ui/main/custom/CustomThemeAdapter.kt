@@ -78,8 +78,11 @@ class CustomThemeAdapter(private val context: Context,val database: AppDatabase)
                     //.diskCacheStrategy(DiskCacheStrategy.DATA)
                     //.thumbnail(0.1f)
                     .into(binding.imgThumb)
-                Log.e("TAN", "T3: ")
-
+                if (theme.type==0){
+                    binding.imgPlay.visibility = View.VISIBLE
+                }else{
+                    binding.imgPlay.visibility = View.GONE
+                }
             }
 
             if (theme.path_thumb == themeSelected!!.path_thumb && HawkData.getEnableCall()) {
