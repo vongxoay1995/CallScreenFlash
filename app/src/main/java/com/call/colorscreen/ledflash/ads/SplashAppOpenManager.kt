@@ -37,7 +37,6 @@ class SplashAppOpenManager(private val application: MyApplication) : LifecycleOb
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
-        Log.e("TAN", "onStart: ")
        // if (!AppPreference.getInstance(application.applicationContext).stateBilling) {
             if (currentActivity is SplashActivity/*&&(currentActivity as SplashActivity).isCheckIAPComplete*/) {
                 showAdIfAvailable()
@@ -62,7 +61,6 @@ class SplashAppOpenManager(private val application: MyApplication) : LifecycleOb
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                        Log.e("TAN", "onAdFailedToShowFullScreenContent: "+adError.message)
                         if (appOpenAdsListener != null) {
                             appOpenAdsListener!!.adFailedToShow()
                         }
@@ -91,6 +89,7 @@ class SplashAppOpenManager(private val application: MyApplication) : LifecycleOb
                 }
             }
         } else {
+            Log.e("TAN", "showAdIfAvailable: 222")
             fetchAd()
         }
     }
@@ -108,6 +107,7 @@ class SplashAppOpenManager(private val application: MyApplication) : LifecycleOb
                 this@SplashAppOpenManager.appOpenAd = appOpenAd
                 loadTime = Date().time
                 isAdLoadEnd = true
+                Log.e("TAN", "onAdLoaded: ")
             }
 
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {

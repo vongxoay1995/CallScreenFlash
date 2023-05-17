@@ -19,18 +19,14 @@ import com.call.colorscreen.ledflash.ui.main.MainActivity
 import com.call.colorscreen.ledflash.util.AppUtil
 import com.google.android.gms.ads.interstitial.InterstitialAd
 
+
 class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListener,
     SplashAppOpenAdsListener {
-    private var ID_INTER_TEST = "ca-app-pub-3940256099942544/1033173712"
-    private var mInterstitialAd: InterstitialAd? = null
-    private var idAds: String = ""
-    private var fullAdsLoaded = false
-    private var loadFailed = false
     var activeScreen = false
-    private var endCountTimer = false
     private var timer: CountDownTimer? = null
     private lateinit var splashAppOpenManager: SplashAppOpenManager
     private var analystic: Analystic? = null
+
 
     private fun checkAds() {
         if (AppUtil.checkInternet(this)) {
@@ -41,36 +37,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     }
 
     private fun loadAds() {
-       /* idAds = ID_INTER_TEST
-        val adRequest = AdRequest.Builder().build()
-        InterstitialAd.load(this, idAds, adRequest,
-            object : InterstitialAdLoadCallback() {
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    fullAdsLoaded = true
-                    mInterstitialAd = interstitialAd
-                    mInterstitialAd?.fullScreenContentCallback =
-                        object : FullScreenContentCallback() {
-                            override fun onAdDismissedFullScreenContent() {
-                                skip()
-                            }
-
-                            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-                                skip()
-                            }
-
-                            override fun onAdShowedFullScreenContent() {
-                                mInterstitialAd = null
-                            }
-                        }
-                }
-
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    // Handle the error
-                    loadFailed = true
-                    fullAdsLoaded = false
-                    mInterstitialAd = null
-                }
-            })*/
         splashAppOpenManager.fetchAd()
         countTimeAds()
     }
@@ -112,54 +78,17 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
         }
     }
 
- /*   private fun countTimer() {
-        Log.e("TAN", "countTimer: " + binding.seekbar.progress)
-        if (binding.seekbar.progress < 100) {
-            if (fullAdsLoaded) {
-                showAds()
-                hideLoading()
-                cancelCountimer()
-            } else if (loadFailed) {
-                hideLoading()
-                endCountTimer = true
-                cancelCountimer()
-                if (activeScreen) {
-                    skip()
-                }
-            }
-        } else {
-            hideLoading()
-            endCountTimer = true
-            cancelCountimer()
-            if (activeScreen) {
-                skip()
-            }
-        }
-    }*/
-
-    private fun hideLoading() {
-        binding.layoutFooter.visibility = View.INVISIBLE
-    }
-
-    private fun showAds() {
-        if (mInterstitialAd != null) {
-            mInterstitialAd?.show(this)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        activeScreen = true
-    }
-
     override fun onStop() {
-        super.onStop()
         activeScreen = false
+        super.onStop()
+    }
 
+    override fun onStart() {
+        activeScreen = true
+        super.onStart()
     }
 
     private fun skip(from:Int) {
-        Log.e("TAN", "skip: "+from)
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -169,7 +98,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
 
     override fun onBackPressed() {
         if (binding.seekbar.progress >= 100) {
-            skip(1)
+            skip(1);
         }
     }
 
@@ -218,5 +147,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     }
 
     override fun adFailedToShow() {
+        Log.e("TAN", "adFailedToShow: ")
     }
 }
