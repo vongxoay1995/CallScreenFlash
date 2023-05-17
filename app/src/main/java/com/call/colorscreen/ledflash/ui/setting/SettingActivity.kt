@@ -209,7 +209,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             }
             R.id.llPolicy -> {
                 analystic.trackEvent(ManagerEvent.settingPolicyClick())
-                openLink("https://bluewavevn.wordpress.com/2023/05/03/phone-caller-screen-color-call-app-privacy-policy-2/")
+                openLink("https://sites.google.com/view/privacy-policy-for-call-color")
             }
         }
     }
