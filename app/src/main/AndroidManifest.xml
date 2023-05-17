@@ -115,7 +115,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-5314991202974730~7876307129" />
         <service
             android:name=".service.NotificationService"
             android:enabled="true"
