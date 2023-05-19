@@ -95,13 +95,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#EBDDDADA"
-                    android:visibility="gone"/>
+                    android:visibility="visible"/>
 
                 <RelativeLayout
                     android:id="@+id/llFlash"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/imgFlash"
@@ -127,6 +127,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:visibility="gone"
                         android:layout_centerVertical="true" />
                 </RelativeLayout>
 
