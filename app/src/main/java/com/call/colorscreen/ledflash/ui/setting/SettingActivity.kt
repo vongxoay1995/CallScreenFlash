@@ -8,10 +8,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.CompoundButton
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.analystic.ManagerEvent
@@ -72,6 +69,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         binding.llPolicy.setOnClickListener(this)
         binding.llRate.setOnClickListener(this)
         binding.llShare.setOnClickListener(this)
+        binding.llFlash.setOnClickListener(this)
     }
 
     private fun loadAds() {
@@ -206,6 +204,10 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                         )
                     )
                 }
+            }
+            R.id.llFlash -> {
+                analystic.trackEvent(ManagerEvent.settingFlashClick())
+               Toast.makeText(this,"Developing",Toast.LENGTH_SHORT).show();
             }
             R.id.llPolicy -> {
                 analystic.trackEvent(ManagerEvent.settingPolicyClick())

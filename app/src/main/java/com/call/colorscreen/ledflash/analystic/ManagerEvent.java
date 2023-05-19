@@ -67,6 +67,9 @@ public class ManagerEvent {
     public static Event settingPolicyClick(){
         return new Event(EventKey.SETTING_POLICY_CLICKED,new Bundle());
     }
+    public static Event settingFlashClick(){
+        return new Event(EventKey.SETTING_FLASH_CLICKED,new Bundle());
+    }
     public static Event settingShareAppClick(){
         return new Event(EventKey.SETTING_SHAREAPP_CLICKED,new Bundle());
     }
