@@ -19,7 +19,6 @@
     <string name="prompt_permission_notification_msg">Notification Access</string>
     <string name="turn_on_noti">Allows access to the notification to answer the call in call screen</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="themesFragmentTitle">Themes</string>
     <string name="customFragmentTitle">Custom</string>
     <string name="turn_on_network">Connection errors! Please turn on the internet connection to update the latest themes</string>

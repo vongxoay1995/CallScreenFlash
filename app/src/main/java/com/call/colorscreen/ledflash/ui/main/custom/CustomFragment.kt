@@ -1,6 +1,7 @@
 package com.call.colorscreen.ledflash.ui.main.custom
 
 import android.Manifest.permission
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.media.ThumbnailUtils
@@ -94,27 +95,21 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapte
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constant.CODE_VIDEO) {
                 val uriData = data!!.data
                 val path: String = FileUtil.getRealPathFromUri(requireContext(), uriData)!!
-                Log.e("TAN", "onActivityResult:11111" + path)
-
                 resetListVideo(path)
                 adapter!!.setNewListBg()
                 adapter!!.notifyDataSetChanged()
             } else if (requestCode == Constant.CODE_IMAGE) {
-                Log.e("TAN", "onActivityResult: " + data + "--" + data!!.data)
-
                 val path: String
                 if (data != null && data.data != null) {
                     path = FileUtil.getRealPathFromUri(requireContext(), data.data)!!
-                    Log.e("TAN", "onActivityResult:1 " + path)
-
                 } else {
-                    Log.e("TAN", "onActivityResult:2 ")
                     path = pathUriImage!!
                 }
                 resetListImage(path)
@@ -192,7 +187,6 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapte
                 )
                 bitmap?.let { FileUtil.saveBitmap(imageUrl, it) }
             }
-            Log.e("TAN", "resetListVideo: "+video)
             database.serverDao().saveTheme(video)
         }
     }

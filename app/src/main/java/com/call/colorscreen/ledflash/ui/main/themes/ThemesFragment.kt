@@ -94,11 +94,15 @@ class ThemesFragment : BaseFragmentt<FragmentThemesBinding>(),
 
     override fun netWorkStateChanged(isNetWork: Boolean) {
         if (!isNetWork && HawkData.getListThemes().size < 10) {
-            binding.llNoNetwork.visibility = View.VISIBLE
+            Log.e("TAN", "netWorkStateChanged: 2", )
         } else {
-            binding.llNoNetwork.visibility = View.GONE
+            if (binding!=null){
+                binding.llNoNetwork.visibility = View.GONE
+            }
             if (HawkData.getListThemes().size < 10) {
-                binding.llLoading.visibility = View.VISIBLE
+                if (binding!=null){
+                    binding.llLoading.visibility = View.VISIBLE
+                }
                 (activity as MainActivity).refreshApi()
             }
         }

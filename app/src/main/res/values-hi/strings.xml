@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Call Color Screen</string>
+    <string name="skipAds">छोडना</string>रंगीन आने वाली कॉल डिस्प्ले
+    <string name="descrip_splash">रंगीन आने वाली कॉल स्क्रीन</string>
+    <string name="loading">लागू ...</string>
+    <string name="start">शुरू</string>
+    <string name="titleSetting">सेटिंग</string>
+    <string name="callscreen">कॉल स्क्रीन</string>
+    <string name="LEDFlash">एलईडी फ़्लैश</string>
+    <string name="shareApp">ऐप शेयर करें</string>
+    <string name="rateApp">एप्प का मूल्यांकन</string>
+    <string name="policy">गोपनीयता नीति</string>
+    <string name="overlay_permision">अनुमति संवाद</string>
+    <string name="overlay_permision_content">कृपया अन्य एप्लिकेशन पर कॉल स्क्रीन बनाने की अनुमति दें</string>
+    <string name="ok">ठीक</string>
+    <string name="titleDrawOver">कॉल स्क्रीन दिखाने के लिए</string>
+    <string name="titleNotification">कॉल स्क्रीन में कॉल का उत्तर देने और फोन नंबर दिखाने के</string>
+    <string name="prompt_permission_draw_window_msg">स्क्रीन अनुमति</string>
+    <string name="prompt_permission_notification_msg">अधिसूचना पहुंच</string>
+    <string name="turn_on_noti">कॉल स्क्रीन में कॉल का उत्तर देने के लिए अधिसूचना तक पहुंच की अनुमति देता है</string>
+    <string name="themesFragmentTitle">विषय-वस्त</string>
+    <string name="customFragmentTitle">रिवाज़</string>
+    <string name="turn_on_network">कनेक्शन त्रुटियां! नवीनतम विषयों को अपडेट करने के लिए कृपया इंटरनेट कनेक्शन चालू करें</string>
+    <string name="err_network">अनुरोध विफल रहा, कृपया नेटवर्क जांचें</string>
+    <string name="caller">कोलर</string>
+    <string name="apply_done">सफलतापूर्वक आवेदन किया</string>
+    <string name="applyForAllContact">सभी संपर्क के लिए आवेदन करें</string>
+    <string name="applied">लागू</string>
+    <string name="download">डाउनलोड करना</string>
+    <string name="downloading">डाउनलोड हो रहा है...</string>
+    <string name="down_err">डाउनलोड त्रुटि। कुछ गलत हो गया!</string>
+    <string name="downloadSs">डाउनलोड सफलता</string>
+    <string name="select_contact">संपर्क चुनें</string>
+    <string name="set">तय करना</string>
+    <string name="unknowContact">अज्ञात</string>
+    <string name="set_theme_success">थीम सफलता सेट करें</string>
+    <string name="addYourVideo">अपना वीडियो या छवि बनाएं</string>
+    <string name="video">वीडियो</string>
+    <string name="images">इमेजिस</string>
+    <string name="your_video">कैमरा खोलें या एक नया वीडियो चुनें</string>
+    <string name="select_picture">एक चित्र चुनें</string>
+    <string name="file_not_found">फ़ाइल प्राप्त नहीं हुई !</string>
+    <string name="contentDelete">क्या आप निश्चित रूप से थीम हटाएं?</string>
+    <string name="nope">नहीं</string>
+    <string name="sure">मैं बिल्कुल चाहता हूँ</string>
+</resources>

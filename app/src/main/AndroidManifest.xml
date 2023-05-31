@@ -42,7 +42,9 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/App.NoActionBar"
         tools:targetApi="n">
-        <activity android:name=".call.IncommingCallActivity"></activity>
+        <activity
+            android:name=".call.IncommingCallActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.contact.SelectContactActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -83,7 +85,6 @@
             android:name=".ui.main.PermissionOverActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
             android:theme="@style/PromptActivityTheme" />
         <activity
             android:name=".ui.setting.SettingActivity"

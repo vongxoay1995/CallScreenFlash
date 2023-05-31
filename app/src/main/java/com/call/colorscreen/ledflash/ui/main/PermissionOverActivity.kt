@@ -2,6 +2,8 @@ package com.call.colorscreen.ledflash.ui.main
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +12,7 @@ import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.databinding.ActivityPermissionOverBinding
 import com.call.colorscreen.ledflash.util.Constant
+import com.call.colorscreen.ledflash.util.PhoneUtils.context
 
 class PermissionOverActivity : BaseActivity<ActivityPermissionOverBinding>(){
     private var typePromt = 0
@@ -19,6 +22,10 @@ class PermissionOverActivity : BaseActivity<ActivityPermissionOverBinding>(){
     }
 
     override fun onViewReady(savedInstance: Bundle?) {
+        requestedOrientation = if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O)
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        else
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.setLayout(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
