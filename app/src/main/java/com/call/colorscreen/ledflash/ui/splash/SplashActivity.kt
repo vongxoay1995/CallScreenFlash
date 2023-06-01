@@ -14,6 +14,7 @@ import com.call.colorscreen.ledflash.ads.SplashAppOpenManager
 import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
+import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.ActivitySplashBinding
 import com.call.colorscreen.ledflash.ui.main.MainActivity
 import com.call.colorscreen.ledflash.util.AppAdsId
@@ -192,6 +193,17 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
         )
         jobScreen = JobScreen()
         initRemoteConfig()
+        if(HawkData.getThemeSelect().name == "default_3" || HawkData.getThemeSelect().name == "default_4"){
+            val bg = Theme(
+                0,
+                0,
+                "thumb/default_1.webp",
+                "/raw/default_1",
+                false,
+                "default_1"
+            )
+            HawkData.setThemeSelect(bg)
+        }
     }
 
     override fun adShow() {
