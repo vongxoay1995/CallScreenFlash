@@ -9,18 +9,33 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.databinding.ActivitySettingBinding
+import com.call.colorscreen.ledflash.databinding.LayoutBottomSheetRateBinding
 import com.call.colorscreen.ledflash.util.*
+import com.call.colorscreen.ledflash.util.Constant.MAIL_LIST
+import com.call.colorscreen.ledflash.util.Constant.PLAY_STORE_LINK
+import com.call.colorscreen.ledflash.util.Constant.RATE_FEED_BACK
+import com.call.colorscreen.ledflash.util.Constant.RATE_IN_APP
+import com.call.colorscreen.ledflash.util.Constant.RATE_LATER
+import com.call.colorscreen.ledflash.view.AnimationRatingBar
 import com.facebook.ads.*
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
+import java.util.*
 
 class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     View.OnClickListener, PermissionCallListener,
@@ -33,7 +48,8 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     private var isAllowFlash = false
     private var isAllowCallScreen = false
     private lateinit var analystic: Analystic
-
+    private var bottomSheetDialog: BottomSheetDialog? = null
+    var TYPE_RATE = RATE_LATER
     override fun getLayoutId(): Int {
         return R.layout.activity_setting
     }
@@ -181,28 +197,18 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 val sendIntent = Intent()
                 sendIntent.action = "android.intent.action.SEND"
                 val sb2 = StringBuilder()
-                sb2.append(Constant.PLAY_STORE_LINK)
+                sb2.append(PLAY_STORE_LINK)
                 sb2.append(packageName)
                 sendIntent.putExtra("android.intent.extra.TEXT", sb2.toString())
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
             }
             R.id.llRate -> {
-                val appPackageName = packageName
-                try {
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("market://details?id=$appPackageName")
-                        )
-                    )
-                } catch (ex: ActivityNotFoundException) {
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
-                        )
-                    )
+                analystic.trackEvent(ManagerEvent.settingRateClick())
+                if (HawkData.isRated()!!) {
+                    goToStoreApp()
+                } else {
+                    initBottomSheetRate()
                 }
             }
             R.id.llFlash -> {
@@ -225,7 +231,16 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             ex.printStackTrace()
         }
     }
-
+    private fun goToStoreApp() {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW)
+            val linkRateApp: String = PLAY_STORE_LINK + packageName
+            intent.data = Uri.parse(linkRateApp)
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+        }
+    }
     override fun onDestroy() {
         if (nativeAd != null) {
             nativeAd!!.destroy()
@@ -303,7 +318,88 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             }
         }
     }
-
+    private fun initBottomSheetRate() {
+        bottomSheetDialog = BottomSheetDialog(this, R.style.SheetDialog)
+        val bottomBinding: LayoutBottomSheetRateBinding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.layout_bottom_sheet_rate, null, false)
+        bottomSheetDialog!!.setContentView(bottomBinding.root)
+        bottomSheetDialog!!.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetDialog!!.show()
+        bottomBinding.tvRate.setOnClickListener {
+            when (TYPE_RATE) {
+                RATE_IN_APP -> {
+                    rateInApp()
+                }
+                RATE_FEED_BACK -> {
+                    sendFeedBack()
+                }
+            }
+            bottomSheetDialog!!.dismiss()
+        }
+        bottomSheetDialog!!.setOnDismissListener {
+        }
+        Handler().postDelayed({
+            bottomBinding.ratingbar.setRating(5, true)
+        }, 500)
+        bottomBinding.ratingbar.setListener(object : AnimationRatingBar.Listener {
+            override fun getRate(rate: Int) {
+                when (rate) {
+                    5 -> {
+                        TYPE_RATE = RATE_IN_APP
+                        bottomBinding.icRate.setImageDrawable(
+                            ContextCompat
+                            .getDrawable(this@SettingActivity, R.drawable.image_rate_happy))
+                        bottomBinding.tvRate.text = getString(R.string.rate_on_gg_play)
+                        bottomBinding.tvContentRate.text = getString(R.string.rate_title3)
+                        bottomBinding.tvGuideRate.text = getString(R.string.rate_content3)
+                        bottomBinding.tvRate.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
+                        bottomBinding.tvRate.background =
+                            ContextCompat.getDrawable(this@SettingActivity, R.drawable.bg_button_rate)
+                    }
+                    0 -> {
+                        TYPE_RATE = RATE_LATER
+                    }
+                    else -> {
+                        TYPE_RATE = RATE_FEED_BACK
+                        bottomBinding.icRate.setImageDrawable(
+                            ContextCompat
+                            .getDrawable(this@SettingActivity, R.drawable.image_rate_sad))
+                        bottomBinding.tvRate.text = getString(R.string.feed_back_rate)
+                        bottomBinding.tvContentRate.text = getString(R.string.rate_title2)
+                        bottomBinding.tvGuideRate.text = getString(R.string.rate_content2)
+                        bottomBinding.tvRate.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
+                        bottomBinding.tvRate.background =
+                            ContextCompat.getDrawable(this@SettingActivity, R.drawable.bg_button_rate)
+                    }
+                }
+            }
+        })
+    }
+    private fun rateInApp() {
+        val reviewManager: ReviewManager = ReviewManagerFactory.create(this)
+        val request: com.google.android.play.core.tasks.Task<ReviewInfo> =
+            reviewManager.requestReviewFlow()
+        request.addOnSuccessListener { result ->
+            val flow: com.google.android.play.core.tasks.Task<Void> =
+                reviewManager.launchReviewFlow(this, result)
+            flow.addOnSuccessListener {
+                HawkData.setRate(true)
+            }
+        }.addOnFailureListener { goToStoreApp() }
+    }
+    private fun sendFeedBack() {
+        val mailSubject = getString(R.string.mail_subject)
+        val mailContent = ""
+        val mailIntent = Intent(Intent.ACTION_SEND)
+        mailIntent.type = "text/email"
+        mailIntent.putExtra(Intent.EXTRA_EMAIL, MAIL_LIST)
+        mailIntent.putExtra(Intent.EXTRA_SUBJECT, mailSubject)
+        mailIntent.putExtra(Intent.EXTRA_TEXT, mailContent)
+        if (packageManager.getLaunchIntentForPackage("com.google.android.gm") != null) {
+            mailIntent.setPackage("com.google.android.gm")
+        }
+        startActivity(Intent.createChooser(mailIntent, "$mailSubject:"))
+    }
     override fun onCreate() {
 
     }

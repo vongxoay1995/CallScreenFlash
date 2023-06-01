@@ -36,4 +36,7 @@ abstract class BaseActivity<B : ViewDataBinding> : AppCompatActivity() {
             onViewReady(savedInstanceState)
         }
     }
+    fun hasActive(): Boolean {
+        return !isFinishing && !isDestroyed
+    }
 }

@@ -12,7 +12,26 @@ class HawkData {
         var IS_FIRST_LOAD_DATA :String = "IS_FIRST_LOAD_DATA"
         var LIST_THEME :String = "LIST_THEME"
         var LIST_THEME_DEFAULT :String = "LIST_THEME_DEFAULT"
+        private const val IS_RATED = "IS_RATED"
+        private const val ALLOW_RATE = "ALLOW_RATE"
+        private const val COUNT_EXIT_APP = "COUNT_EXIT_APP"
 
+        @JvmStatic
+        fun setExitApp(value: Int) {
+            Hawk.put(COUNT_EXIT_APP, value)
+        }
+        @JvmStatic
+        fun getCountExitApp(): Int {
+            return Hawk.get(COUNT_EXIT_APP, 0)
+        }
+        @JvmStatic
+        fun setAllowRate(value: Boolean) {
+            Hawk.put(ALLOW_RATE, value)
+        }
+        @JvmStatic
+        fun isAllowRate(): Boolean {
+            return Hawk.get(ALLOW_RATE, true)
+        }
         @JvmStatic
         fun setVersion(ver: Int) {
             Hawk.put(VERSION_API, ver)
@@ -20,6 +39,14 @@ class HawkData {
         @JvmStatic
         fun getVersion(): Int {
             return Hawk.get(VERSION_API, 0)
+        }
+        @JvmStatic
+        fun isRated(): Boolean? {
+            return Hawk.get(IS_RATED, false)
+        }
+        @JvmStatic
+        fun setRate(value: Boolean) {
+            Hawk.put(IS_RATED, value)
         }
         @JvmStatic
         fun setListThemes(themes: MutableList<Theme>) {

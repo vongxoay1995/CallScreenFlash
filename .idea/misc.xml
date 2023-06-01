@@ -3,20 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/bd_ads.xml" value="0.239" />
         <entry key="app/src/main/res/layout/activity_apply.xml" value="0.40331491712707185" />
         <entry key="app/src/main/res/layout/activity_incomming_call.xml" value="0.3948919449901768" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/activity_permission_over.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/activity_setting.xml" value="0.4713541666666667" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/dialog_delete.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/fragment_custom.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/fragment_themes.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/item_custom.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/item_theme.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/layout_bottom_sheet_rate.xml" value="0.4713541666666667" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.4165" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -91,7 +91,6 @@ class ContactAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                   }
               }
               ).submit()
-         // Glide.with(context!!).load(path).into(binding.imgAvatar)
           binding.txtName.text = contactInfor.displayName
           binding.imgSelectContact.isChecked = contactInfor.isChecked
           binding.layoutItem.setOnClickListener {

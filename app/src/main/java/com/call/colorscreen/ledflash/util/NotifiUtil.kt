@@ -16,6 +16,7 @@ class NotifiUtil {
         private val ID_NOTIFICATION = 1
         var CHANNEL = "Color_Call_channel"
         private val CHANNEL_ID = "ColorCall"
+
         @JvmStatic
         @RequiresApi(api = Build.VERSION_CODES.Q)
         fun initNotificationAndroidQ(context: Context): Notification? {
@@ -28,10 +29,18 @@ class NotifiUtil {
             )
             notificationManager.createNotificationChannel(channel)
             val fullScreenIntent = Intent(context, IncommingCallActivity::class.java)
-            val fullScreenPendingIntent = PendingIntent.getActivity(
-                context, 0,
-                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT
-            )
+            var fullScreenPendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getActivity(
+                    context,
+                    0, fullScreenIntent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+            } else {
+                PendingIntent.getActivity(
+                    context, 0,
+                    fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
             val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_CALL) // Use a full-screen intent only for the highest-priority alerts where you
@@ -42,6 +51,7 @@ class NotifiUtil {
                 .setFullScreenIntent(fullScreenPendingIntent, true)
             return notificationBuilder.build()
         }
+
         @JvmStatic
         @RequiresApi(api = Build.VERSION_CODES.O)
         fun initNotificationAndroidO(context: Context): Notification? {
@@ -56,6 +66,7 @@ class NotifiUtil {
             return NotificationCompat.Builder(context, CHANNEL_ID)
                 .build()
         }
+
         @JvmStatic
         fun hideNotification(context: Context) {
             val notificationManager =

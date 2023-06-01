@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Call Color Screen</string>
+    <string name="skipAds">Bỏ qua</string>
+    <string name="descrip_splash">Màn hình cuộc gọi đến đầy màu sắc</string>
+    <string name="loading">Đang tải ...</string>
+
+    <string name="start">Bắt đầu</string>
+
+    <string name="titleSetting">Cài đặt</string>
+
+    <string name="callscreen">Màn hình cuộc gọi</string>
+
+    <string name="LEDFlash">Đèn Flash</string>
+
+    <string name="shareApp">Chia sẻ ứng dụng</string>
+    <string name="rateApp">Đánh giá ứng dụng</string>
+
+    <string name="policy">Chính sách bảo mật</string>
+
+    <string name="overlay_permision">Hộp thoại cấp phép</string>
+
+    <string name="overlay_permision_content">Vui lòng cho phép vẽ màn hình cuộc gọi trên các ứng dụng khác</string>
+
+    <string name="ok">OK</string>
+
+    <string name="titleDrawOver">Để hiển thị màn hình cuộc gọi</string>
+
+    <string name="titleNotification">Để cho phép nhận cuộc gọi đến và hiển thị số điện thoại</string>
+
+    <string name="prompt_permission_draw_window_msg">Quyền màn hình</string>
+
+    <string name="prompt_permission_notification_msg">Quyền truy cập thông báo</string>
+
+    <string name="turn_on_noti">Cho phép truy cập vào thông báo để trả lời cuộc gọi trong màn hình cuộc gọi</string>
+
+
+    <string name="themesFragmentTitle">Chủ đề</string>
+
+    <string name="customFragmentTitle">Tùy chỉnh</string>
+
+    <string name="turn_on_network">Lỗi kết nối! Hãy bật kết nối internet để cập nhật những theme mới nhất</string>
+
+    <string name="err_network">Yêu cầu không thành công, vui lòng kiểm tra mạng</string>
+    <string name="caller">Người gọi</string>
+    <string name="apply_done">Áp dụng thành công</string>
+
+    <string name="applyForAllContact">Áp dụng cho tất cả các liên hệ</string>
+
+    <string name="applied">Đã áp dụng</string>
+
+    <string name="download">Tải xuống</string>
+
+    <string name="downloading">Đang tải xuống...</string>
+
+    <string name="down_err">Lỗi tải xuống. Đã xảy ra sự cố!</string>
+
+    <string name="downloadSs">Tải xuống thành công</string>
+
+    <string name="select_contact">Chọn liên hệ</string>
+
+    <string name="set">Đặt</string>
+
+    <string name="unknowContact">Không xác định</string>
+
+    <string name="set_theme_success">Đặt chủ đề thành công</string>
+
+    <string name="addYourVideo">Tạo video hoặc hình ảnh của bạn</string>
+
+    <string name="video">Video</string>
+
+    <string name="images">Hình ảnh</string>
+
+    <string name="your_video">Mở máy ảnh hoặc chọn một video mới</string>
+
+    <string name="select_picture">Chọn một hình ảnh</string>
+
+    <string name="file_not_found">Không tìm thấy tập tin!</string>
+
+    <string name="facebook_app_id">1389962418463800</string>
+
+    <string name="contentDelete">Bạn có chắc chắn xóa chủ đề?</string>
+
+    <string name="nope">Không</string>
+
+    <string name="sure">Chắc chắn, tôi muốn</string>
+</resources>

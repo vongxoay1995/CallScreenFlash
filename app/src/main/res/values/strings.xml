@@ -19,7 +19,6 @@
     <string name="prompt_permission_notification_msg">Notification Access</string>
     <string name="turn_on_noti">Allows access to the notification to answer the call in call screen</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="themesFragmentTitle">Themes</string>
     <string name="customFragmentTitle">Custom</string>
     <string name="turn_on_network">Connection errors! Please turn on the internet connection to update the latest themes</string>
@@ -46,4 +45,15 @@
     <string name="contentDelete">Are you sure delete theme?</string>
     <string name="nope">Nope</string>
     <string name="sure">Sure, I want</string>
+    <string name="maybe_later">Maybe later</string>
+    <string name="rate_your_experience_with">Rate your experience with Call Color Screen</string>
+    <string name="the_best_we_can_get_is_5_stars">The best we can get is 5 stars!</string>
+    <string name="mail_subject">Feedback to the developer</string>
+    <string name="rate_on_gg_play">Rate on Google Play</string>
+    <string name="rate_title2">Let us know where we can improve</string>
+    <string name="rate_title3">Wonderful!</string>
+    <string name="rate_content2">Send us some feedback!</string>
+    <string name="rate_content3">Take a second to rate us on Google Play</string>
+    <string name="feed_back_rate">Feedback</string>
+
 </resources>

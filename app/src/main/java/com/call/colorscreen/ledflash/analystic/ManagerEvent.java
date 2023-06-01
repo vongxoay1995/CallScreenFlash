@@ -70,6 +70,9 @@ public class ManagerEvent {
     public static Event settingFlashClick(){
         return new Event(EventKey.SETTING_FLASH_CLICKED,new Bundle());
     }
+    public static Event settingRateClick(){
+        return new Event(EventKey.SETTING_RATE_CLICKED,new Bundle());
+    }
     public static Event settingShareAppClick(){
         return new Event(EventKey.SETTING_SHAREAPP_CLICKED,new Bundle());
     }

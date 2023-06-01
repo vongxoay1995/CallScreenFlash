@@ -14,12 +14,8 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
@@ -29,8 +25,7 @@ import com.call.colorscreen.ledflash.databinding.ItemCustomBinding
 import com.call.colorscreen.ledflash.databinding.ItemThemeBinding
 import com.call.colorscreen.ledflash.util.Constant
 import com.call.colorscreen.ledflash.util.HawkData
-import com.call.colorscreen.ledflash.view.TextureVideoView
-import kotlinx.coroutines.NonDisposableHandle.parent
+import java.util.*
 
 class CustomThemeAdapter(private val context: Context,val database: AppDatabase) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
