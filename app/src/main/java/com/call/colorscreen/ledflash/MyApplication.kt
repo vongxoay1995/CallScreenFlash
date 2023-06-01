@@ -15,6 +15,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.android.gms.common.util.CollectionUtils.listOf
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.orhanobut.hawk.Hawk
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -36,6 +37,7 @@ class MyApplication : Application() {
             MobileAds.setRequestConfiguration(configuration)
             AdSettings.addTestDevice("d9db6482-fb0e-4df0-81ca-d47544569596")
         }
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
         loadDataFirst()
         setupKoin()
        // splashAppOpenManager = SplashAppOpenManager(this)
