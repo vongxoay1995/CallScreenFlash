@@ -13,6 +13,7 @@ class HawkData {
         var LIST_THEME :String = "LIST_THEME"
         var LIST_THEME_DEFAULT :String = "LIST_THEME_DEFAULT"
         private const val IS_RATED = "IS_RATED"
+        private const val ALLOW_RATE = "ALLOW_RATE"
         private const val COUNT_EXIT_APP = "COUNT_EXIT_APP"
 
         @JvmStatic
@@ -22,6 +23,14 @@ class HawkData {
         @JvmStatic
         fun getCountExitApp(): Int {
             return Hawk.get(COUNT_EXIT_APP, 0)
+        }
+        @JvmStatic
+        fun setAllowRate(value: Boolean) {
+            Hawk.put(ALLOW_RATE, value)
+        }
+        @JvmStatic
+        fun isAllowRate(): Boolean {
+            return Hawk.get(ALLOW_RATE, true)
         }
         @JvmStatic
         fun setVersion(ver: Int) {

@@ -8,6 +8,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import com.call.colorscreen.ledflash.BuildConfig
@@ -215,14 +216,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
 
     fun initBottomSheetRate() {
         bottomSheetDialog = BottomSheetDialog(this, R.style.SheetDialog)
-        val bottombinding: LayoutBottomSheetRateBinding =
+        val bottomBinding: LayoutBottomSheetRateBinding =
             DataBindingUtil.inflate(layoutInflater, R.layout.layout_bottom_sheet_rate, null, false)
-        bottomSheetDialog!!.setContentView(bottombinding.root)
+        bottomSheetDialog!!.setContentView(bottomBinding.root)
         bottomSheetDialog!!.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog!!.show()
-        var backPressToDismiss = true
-        bottombinding.tvRate.setOnClickListener {
-            backPressToDismiss = false
+        bottomBinding.tvRate.setOnClickListener {
             when (TYPE_RATE) {
                 RATE_IN_APP -> {
                     rateInApp()
@@ -234,42 +233,45 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
             bottomSheetDialog!!.dismiss()
         }
         bottomSheetDialog!!.setOnDismissListener {
-            if (backPressToDismiss) {
-            }
         }
         Handler().postDelayed({
-            bottombinding.ratingbar.setRating(5, true)
+            bottomBinding.ratingbar.setRating(5, true)
         }, 500)
-        bottombinding.ratingbar.setListener(object : AnimationRatingBar.Listener {
+        bottomBinding.ratingbar.setListener(object : AnimationRatingBar.Listener {
             override fun getRate(rate: Int) {
                 when (rate) {
                     5 -> {
                         TYPE_RATE = RATE_IN_APP
-                        bottombinding.icRate.setImageDrawable(resources.getDrawable(R.drawable.image_rate_happy))
-                        bottombinding.tvRate.text = getString(R.string.rate_on_gg_play)
-                        bottombinding.tvContentRate.text = getString(R.string.rate_title3)
-                        bottombinding.tvGuideRate.text = getString(R.string.rate_content3)
-                        bottombinding.tvRate.setTextColor(resources.getColor(R.color.white))
-                        bottombinding.tvRate.background =
-                            resources.getDrawable(R.drawable.bg_button_rate)
+                        bottomBinding.icRate.setImageDrawable(
+                            ContextCompat
+                            .getDrawable(baseContext, R.drawable.image_rate_happy))
+                        bottomBinding.tvRate.text = getString(R.string.rate_on_gg_play)
+                        bottomBinding.tvContentRate.text = getString(R.string.rate_title3)
+                        bottomBinding.tvGuideRate.text = getString(R.string.rate_content3)
+                        bottomBinding.tvRate.setTextColor(ContextCompat.getColor(baseContext, R.color.white))
+                        bottomBinding.tvRate.background =
+                            ContextCompat.getDrawable(baseContext, R.drawable.bg_button_rate)
                     }
                     0 -> {
                         TYPE_RATE = RATE_LATER
                     }
                     else -> {
                         TYPE_RATE = RATE_FEED_BACK
-                        bottombinding.icRate.setImageDrawable(resources.getDrawable(R.drawable.image_rate_sad))
-                        bottombinding.tvRate.text = getString(R.string.feed_back_rate)
-                        bottombinding.tvContentRate.text = getString(R.string.rate_title2)
-                        bottombinding.tvGuideRate.text = getString(R.string.rate_content2)
-                        bottombinding.tvRate.setTextColor(resources.getColor(R.color.white))
-                        bottombinding.tvRate.background =
-                            resources.getDrawable(R.drawable.bg_button_rate)
+                        bottomBinding.icRate.setImageDrawable(ContextCompat
+                            .getDrawable(baseContext, R.drawable.image_rate_sad))
+                        bottomBinding.tvRate.text = getString(R.string.feed_back_rate)
+                        bottomBinding.tvContentRate.text = getString(R.string.rate_title2)
+                        bottomBinding.tvGuideRate.text = getString(R.string.rate_content2)
+                        bottomBinding.tvRate.setTextColor(ContextCompat.getColor(baseContext, R.color.white))
+                        bottomBinding.tvRate.background =
+                            ContextCompat.getDrawable(baseContext, R.drawable.bg_button_rate)
                     }
                 }
             }
         })
     }
+
+
 
     private fun sendFeedBack() {
         val mailSubject = getString(R.string.mail_subject)
@@ -310,13 +312,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
 
     override fun onBackPressed() {
-        var countExitApp = HawkData.getCountExitApp()
-        countExitApp++
-        HawkData.setExitApp(countExitApp)
-        if (numberExitAllowShowRate.contains(countExitApp) && !HawkData.isRated()!!) {
-            initBottomSheetRate()
-        } else {
+        if (!HawkData.isAllowRate()){
             super.onBackPressed()
+        }else{
+            var countExitApp = HawkData.getCountExitApp()
+            countExitApp++
+            HawkData.setExitApp(countExitApp)
+            if (numberExitAllowShowRate.contains(countExitApp) && !HawkData.isRated()!!) {
+                initBottomSheetRate()
+            } else {
+                super.onBackPressed()
+            }
         }
     }
 }

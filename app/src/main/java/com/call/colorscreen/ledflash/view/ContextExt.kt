@@ -1,4 +1,4 @@
-package com.eco.flashalert.ui.screen.extension
+package com.call.colorscreen.ledflash.view
 
 import android.annotation.SuppressLint
 import android.app.Activity

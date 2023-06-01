@@ -13,7 +13,6 @@ import android.view.animation.LinearInterpolator
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.call.colorscreen.ledflash.R
-import com.eco.flashalert.ui.screen.extension.dpToPx
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 

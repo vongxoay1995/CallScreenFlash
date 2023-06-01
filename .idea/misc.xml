@@ -13,11 +13,12 @@
         <entry key="app/src/main/res/layout/fragment_themes.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/item_custom.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/item_theme.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/layout_bottom_sheet_rate.xml" value="0.4713541666666667" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.4165" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
