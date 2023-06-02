@@ -4,25 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import java.lang.reflect.ParameterizedType
 
-abstract class BaseFragmentt<VB : ViewDataBinding> : Fragment() {
+abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
     private var _binding : VB? = null
     val binding :VB get() = _binding!!
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val type = javaClass.genericSuperclass
-        val clazz = (type as ParameterizedType).actualTypeArguments[0] as Class<VB>
-        val method = clazz.getMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
-        _binding = method.invoke(null, layoutInflater, container, false) as VB
-        return _binding!!.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
     }
+
+    abstract fun getLayoutRes(): Int
 
     abstract fun init()
 
@@ -30,5 +26,21 @@ abstract class BaseFragmentt<VB : ViewDataBinding> : Fragment() {
         _binding = null
         super.onDestroyView()
     }
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        if (getLayoutRes() != 0) {
+           _binding = DataBindingUtil.inflate(inflater, getLayoutRes(), container, false)
+            _binding!!.setLifecycleOwner { lifecycle}
+            return  _binding!!.root
+        } else {
+            throw IllegalArgumentException("layout resource cannot be null")
+        }
+    }
+
 
 }

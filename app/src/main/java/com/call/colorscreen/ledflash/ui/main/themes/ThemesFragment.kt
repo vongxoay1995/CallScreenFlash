@@ -1,7 +1,6 @@
 package com.call.colorscreen.ledflash.ui.main.themes
 
 import android.content.Intent
-import android.os.FileUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
-import com.call.colorscreen.ledflash.base.BaseFragmentt
+import com.call.colorscreen.ledflash.base.BaseFragment
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentThemesBinding
 import com.call.colorscreen.ledflash.model.EBApplyTheme
@@ -26,7 +25,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class ThemesFragment : BaseFragmentt<FragmentThemesBinding>(),
+class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
         NetworkChangeReceiver.Listener, ThemesAdapter.Listener {
     private var networkChangeReceiver: NetworkChangeReceiver? = null
     private lateinit var listThemes: MutableList<Theme>
@@ -194,5 +193,9 @@ class ThemesFragment : BaseFragmentt<FragmentThemesBinding>(),
             Constant.APPLY_THEME_DEFAULT -> adapter.notifyItemChanged(0)
         }
         EventBus.getDefault().removeStickyEvent(ebApplyTheme)
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.fragment_themes
     }
 }

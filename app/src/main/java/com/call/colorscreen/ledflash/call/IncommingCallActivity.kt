@@ -72,7 +72,6 @@ class IncommingCallActivity : BaseActivity<ActivityIncommingCallBinding>(), View
         val mIntentFilter = IntentFilter()
         mIntentFilter.addAction("com.callcolor.endCall")
         mLocalBroadcastManager!!.registerReceiver(mBroadcastReceiver, mIntentFilter)
-        Log.e("TAN", "onViewReady: aaaa")
         showLayoutCall()
         analystic = Analystic.getInstance(this)
         analystic.trackEvent(ManagerEvent.callshow())

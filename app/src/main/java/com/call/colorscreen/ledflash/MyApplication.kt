@@ -30,7 +30,6 @@ class MyApplication : Application() {
         Log.e("TAN", "onCreate: application")
         MobileAds.initialize(this)
         Hawk.init(this).build()
-        RoomManager.create(this)
         if(BuildConfig.DEBUG){
             val testDeviceIds = listOf("C672C9D51F65E8B9B0345F9F8E4F7CC1")
             val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
