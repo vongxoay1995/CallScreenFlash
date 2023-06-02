@@ -21,12 +21,11 @@ import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.analystic.Analystic
-import com.call.colorscreen.ledflash.base.BaseFragmentt
+import com.call.colorscreen.ledflash.base.BaseFragment
 import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentCustomBinding
 import com.call.colorscreen.ledflash.model.EBApplyCustom
-import com.call.colorscreen.ledflash.model.EBApplyTheme
 import com.call.colorscreen.ledflash.ui.aply.ApplyActivity
 import com.call.colorscreen.ledflash.ui.listener.DialogGalleryListener
 import com.call.colorscreen.ledflash.ui.main.themes.SimpleDividerItemDecoration
@@ -41,7 +40,7 @@ import org.greenrobot.eventbus.ThreadMode
 import org.koin.android.ext.android.inject
 import java.io.File
 
-class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapter.Listener,
+class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter.Listener,
     DialogGalleryListener {
     var adapter: CustomThemeAdapter? = null
     private var pathUriImage: String? = null
@@ -301,5 +300,9 @@ class CustomFragment : BaseFragmentt<FragmentCustomBinding>(), CustomThemeAdapte
             }
         }
         EventBus.getDefault().removeStickyEvent(ebApplyCustom)
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.fragment_custom
     }
 }

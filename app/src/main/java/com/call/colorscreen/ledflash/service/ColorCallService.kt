@@ -1,6 +1,7 @@
 package com.call.colorscreen.ledflash.service
 
 import android.Manifest
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,7 +24,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.LifecycleService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.internal.telephony.ITelephony
 import com.bumptech.glide.Glide
@@ -33,12 +33,12 @@ import com.call.colorscreen.ledflash.call.IncommingCallActivity
 import com.call.colorscreen.ledflash.database.Contact
 import com.call.colorscreen.ledflash.database.RoomManager
 import com.call.colorscreen.ledflash.database.Theme
-import com.call.colorscreen.ledflash.view.TextureVideoView
 import com.call.colorscreen.ledflash.util.*
+import com.call.colorscreen.ledflash.view.TextureVideoView
 import com.google.gson.Gson
 import de.hdodenhof.circleimageview.CircleImageView
 
-class ColorCallService:LifecycleService() {
+class ColorCallService: Service() {
     private var phone: String = ""
     private lateinit var viewCall: View
     private lateinit var vdoBgThemeCall: TextureVideoView
@@ -66,7 +66,6 @@ class ColorCallService:LifecycleService() {
     private lateinit var inflater: LayoutInflater
 
     override fun onBind(intent: Intent): IBinder? {
-        super.onBind(intent)
         return null
     }
 
@@ -106,7 +105,7 @@ class ColorCallService:LifecycleService() {
             startActivity(intent2)
         }
         // showViewCallColor();*/
-        Log.e("TAN", "checkDevice: 111", )
+        Log.e("TAN", "checkDevice: 111")
         val intent2 = Intent(applicationContext, IncommingCallActivity::class.java)
         intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent2.putExtra(Constant.PHONE_NUMBER, phone)
