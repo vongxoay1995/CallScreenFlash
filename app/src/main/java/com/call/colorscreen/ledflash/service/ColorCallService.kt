@@ -30,13 +30,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.call.IncommingCallActivity
+import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Contact
-import com.call.colorscreen.ledflash.database.RoomManager
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.util.*
 import com.call.colorscreen.ledflash.view.TextureVideoView
 import com.google.gson.Gson
 import de.hdodenhof.circleimageview.CircleImageView
+import org.koin.android.ext.android.inject
 
 class ColorCallService: Service() {
     private var phone: String = ""
@@ -64,6 +65,7 @@ class ColorCallService: Service() {
     private var contactId = ""
     private var mContact: Contact? = null
     private lateinit var inflater: LayoutInflater
+  //  val database by inject<AppDatabase>()
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -172,8 +174,7 @@ class ColorCallService: Service() {
                     or View.SYSTEM_UI_FLAG_FULLSCREEN
                     or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
             mWindowManager!!.addView(viewCall, mLayoutParams)
-           // analystic.trackEvent(ManagerEvent.callWinDowShow())
-            RoomManager.get().liveContactListWithId(contactId).observe(this) {
+          /*  RoomManager.get().liveContactListWithId(contactId).observe(this) {
                 val listQueryContactID: List<Contact> = it
                 if (listQueryContactID.isNotEmpty()) {
                     mContact = listQueryContactID[0]
@@ -183,7 +184,7 @@ class ColorCallService: Service() {
                 themeSelect = theme_contact
                 typeBgCall = theme_contact.type
                 checkTypeCall(typeBgCall)
-            }
+            }*/
             Handler().postDelayed({ startAnimation() }, 400)
             handlingCallState()
             listener()
@@ -216,7 +217,7 @@ class ColorCallService: Service() {
         //analystic.trackEvent(ManagerEvent.callServiceOncreate())
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this)
         val mIntentFilter = IntentFilter()
-        mIntentFilter.addAction("com.colorcall.endCall")
+        mIntentFilter.addAction("com.callcolor.endCall")
         mLocalBroadcastManager!!.registerReceiver(mBroadcastReceiver, mIntentFilter)
         super.onCreate()
     }
@@ -225,7 +226,7 @@ class ColorCallService: Service() {
         override fun onReceive(context: Context, intent: Intent) {
             val t: Thread = object : Thread() {
                 override fun run() {
-                    if (intent.action == "com.colorcall.endCall") {
+                    if (intent.action == "com.callcolor.endCall") {
                         stopCallService()
                     }
                 }
