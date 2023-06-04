@@ -2,7 +2,9 @@ package com.call.colorscreen.ledflash.ui.main.themes
 
 import android.content.Intent
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,13 +28,19 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
-        NetworkChangeReceiver.Listener, ThemesAdapter.Listener {
+    NetworkChangeReceiver.Listener, ThemesAdapter.Listener {
     private var networkChangeReceiver: NetworkChangeReceiver? = null
     private lateinit var listThemes: MutableList<Theme>
     private lateinit var adapter: ThemesAdapter
     private var posDownload = -1
     lateinit var interstitialAdsManager: InterstitialAdsManager
     var count: Int = 0
+    override fun getViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentThemesBinding {
+        return FragmentThemesBinding.inflate(LayoutInflater.from(requireContext()))
+    }
 
     override fun init() {
         if (!EventBus.getDefault().isRegistered(this)) {
@@ -60,7 +68,7 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (!context?.let { AppUtil.checkInternet(it) }!!) {
                         Toast.makeText(context, getString(R.string.err_network), Toast.LENGTH_SHORT)
-                                .show()
+                            .show()
                     }
                 }
                 if (newState == 0) {
@@ -68,15 +76,18 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
                 }
             }
         })
-        interstitialAdsManager = InterstitialAdsManager(requireActivity(), AppAdsId.inter_select_item)
+        interstitialAdsManager =
+            InterstitialAdsManager(requireActivity(), AppAdsId.inter_select_item)
         loadInterAds()
     }
+
     private fun loadInterAds() {
         count = PreferencesUtils.getInt(Constant.COUNT_SELECT_ITEM, 0)
         if (!interstitialAdsManager.isLoading) {
             interstitialAdsManager.loadAds()
         }
     }
+
     override fun onResume() {
         super.onResume()
         adapter.reloadAll()
@@ -93,18 +104,12 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
 
     override fun netWorkStateChanged(isNetWork: Boolean) {
         if (!isNetWork && HawkData.getListThemes().size < 10) {
-            Log.e("TAN", "netWorkStateChanged: 2", )
-            if (binding!=null){
-                binding.llNoNetwork.visibility = View.VISIBLE
-            }
+            binding.llNoNetwork.visibility = View.VISIBLE
+
         } else {
-            if (binding!=null){
-                binding.llNoNetwork.visibility = View.GONE
-            }
+            binding.llNoNetwork.visibility = View.GONE
             if (HawkData.getListThemes().size < 10) {
-                if (binding!=null){
-                    binding.llLoading.visibility = View.VISIBLE
-                }
+                binding.llLoading.visibility = View.VISIBLE
                 (activity as MainActivity).refreshApi()
             }
         }
@@ -135,10 +140,10 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
     }
 
     override fun onItemClick(
-            themes: MutableList<Theme>,
-            position: Int,
-            isDelete: Boolean,
-            posRandom: Int
+        themes: MutableList<Theme>,
+        position: Int,
+        isDelete: Boolean,
+        posRandom: Int
     ) {
 
         count++
@@ -150,22 +155,22 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
                     interstitialAdsManager.loadAds()
                     moveApplyTheme(themes, position, isDelete, posRandom)
                 }
-            }else{
+            } else {
                 moveApplyTheme(themes, position, isDelete, posRandom)
             }
-        }else{
+        } else {
             moveApplyTheme(themes, position, isDelete, posRandom)
         }
     }
 
     private fun moveApplyTheme(
-            themes: MutableList<Theme>,
-            position: Int,
-            isDelete: Boolean,
-            posRandom: Int,
+        themes: MutableList<Theme>,
+        position: Int,
+        isDelete: Boolean,
+        posRandom: Int,
     ) {
         val theme: Theme = themes[position]
-        Log.e("TAN", "onItemClick: " + position+"--"+theme)
+        Log.e("TAN", "onItemClick: " + position + "--" + theme)
 
         if (!theme.path_file.contains("/data/data")) {
             posDownload = position
@@ -189,13 +194,10 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
                 adapter.resetListTheme()
                 adapter.notifyItemChanged(posDownload)
             }
+
             Constant.INTENT_APPLY_THEME -> adapter.notifyDataSetChanged()
             Constant.APPLY_THEME_DEFAULT -> adapter.notifyItemChanged(0)
         }
         EventBus.getDefault().removeStickyEvent(ebApplyTheme)
-    }
-
-    override fun getLayoutRes(): Int {
-        return R.layout.fragment_themes
     }
 }

@@ -25,6 +25,7 @@ import com.call.colorscreen.ledflash.base.BaseFragment
 import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentCustomBinding
+import com.call.colorscreen.ledflash.databinding.FragmentThemesBinding
 import com.call.colorscreen.ledflash.model.EBApplyCustom
 import com.call.colorscreen.ledflash.ui.aply.ApplyActivity
 import com.call.colorscreen.ledflash.ui.listener.DialogGalleryListener
@@ -48,6 +49,13 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     private lateinit var analystic: Analystic
 
     private var positionItemThemeSelected = -1
+    override fun getViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentCustomBinding {
+        return FragmentCustomBinding.inflate(LayoutInflater.from(requireContext()))
+    }
+
     override fun init() {
         val gridLayoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
         binding.rcvBgMyTheme.layoutManager = gridLayoutManager
@@ -288,21 +296,16 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
         super.onDestroy()
         EventBus.getDefault().unregister(this)
     }
+    @SuppressLint("NotifyDataSetChanged")
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onEBApplyCustom(ebApplyCustom: EBApplyCustom) {
-        Log.e("TAN", "onSignApplyCT: vaoooooo")
         when (ebApplyCustom.action) {
             Constant.INTENT_APPLY_THEME -> adapter!!.notifyDataSetChanged()
             Constant.DELETE_THEME -> {
-                Log.e("TAN", "onSignApplyCT: 2222")
                 adapter!!.setNewListBg()
                 adapter!!.notifyDataSetChanged()
             }
         }
         EventBus.getDefault().removeStickyEvent(ebApplyCustom)
-    }
-
-    override fun getLayoutRes(): Int {
-        return R.layout.fragment_custom
     }
 }
