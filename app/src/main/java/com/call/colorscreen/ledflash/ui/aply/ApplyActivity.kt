@@ -20,6 +20,7 @@ import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
 import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
+import com.call.colorscreen.ledflash.ads.InterstitialApply
 import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
@@ -46,7 +47,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     private lateinit var dialogDownload: Dialog
     lateinit var txtPercent: TextView
     private lateinit var bannerAdsUtils: BannerAdsUtils
-    lateinit var interstitialAdsManager: InterstitialAdsManager
+    lateinit var interstitialAdsManager: InterstitialApply
     private lateinit var analystic: Analystic
     val database by inject<AppDatabase>()
 
@@ -87,10 +88,11 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         positionTheme = intent.getIntExtra(Constant.ITEM_POSITION, -1)
         frScreen = intent.getIntExtra(Constant.FR_SCREEN, -1)
         initData()
-        interstitialAdsManager = InterstitialAdsManager(this, AppAdsId.inter_apply)
+        interstitialAdsManager =InterstitialApply.getInstance(this)
         if (AppUtil.checkInternet(this)) {
             loadAds()
-            loadInterAds()
+            interstitialAdsManager.loadAds()
+           // loadInterAds()
         } else {
             binding.llAds.visibility = View.GONE;
         }
