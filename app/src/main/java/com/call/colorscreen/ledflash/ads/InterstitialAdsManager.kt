@@ -125,7 +125,7 @@ class InterstitialAdsManager {
        return isShowAds
    }
     fun isAdAvailable(): Boolean {
-        return interstitialAd != null && wasLoadTimeLessThanNHoursAgo(4)
+        return interstitialAd != null && wasLoadTimeLessThanNHoursAgo(1)
     }
     private fun wasLoadTimeLessThanNHoursAgo(numHours: Long): Boolean {
         val dateDifference: Long = Date().time - this.loadTime

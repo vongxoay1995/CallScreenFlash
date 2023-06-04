@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Call Color Screen</string>
+    <string name="skipAds">يتخطى</string>
+
+    <string name="descrip_splash">شاشة المكالمات الواردة الملونة</string>
+
+    <string name="loading">تحميل …</string>
+
+    <string name="start">يبدأ</string>
+
+    <string name="titleSetting">جلسة</string>
+
+    <string name="callscreen">شاشة الاتصال</string>
+
+    <string name="LEDFlash">فلاش LED</string>
+
+    <string name="shareApp">شارك التطبيق</string>
+
+    <string name="rateApp">قيم التطبيق</string>
+
+    <string name="policy">سياسة الخصوصية</string>
+
+    <string name="overlay_permision">مربع حوار الإذن</string>
+
+    <string name="overlay_permision_content">يرجى السماح برسم شاشة الاتصال على التطبيقات الأخرى</string>
+
+    <string name="ok">نعم</string>
+    <string name="titleDrawOver">لإظهار شاشة الاتصال</string>
+
+    <string name="titleNotification">للرد على المكالمة في شاشة الاتصال وإظهار رقم الهاتف</string>
+
+    <string name="prompt_permission_draw_window_msg">إذن الشاشة</string>
+
+    <string name="prompt_permission_notification_msg">الوصول إلى الإخطار</string>
+
+    <string name="turn_on_noti">يسمح بالوصول إلى الإشعار للرد على المكالمة في شاشة الاتصال</string>
+
+
+    <string name="themesFragmentTitle">ثيمات</string>
+    <string name="customFragmentTitle">مخصص</string>
+
+    <string name="turn_on_network">أخطاء الاتصال! يرجى تشغيل اتصال الإنترنت لتحديث أحدث السمات</string>
+
+    <string name="err_network">فشل الطلب ، يرجى التحقق من الشبكة</string>
+
+    <string name="caller">المتصل</string>
+
+    <string name="apply_done">تم التطبيق بنجاح</string>
+
+    <string name="applyForAllContact">تقدم لجميع جهات الاتصال</string>
+
+    <string name="applied">مُطبَّق</string>
+
+    <string name="download">تحميل</string>
+
+    <string name="downloading">جارى التحميل ...</string>
+
+    <string name="down_err">الخطأ تحميل. حدث خطأ ما!</string>
+
+    <string name="downloadSs">نجاح التنزيل</string>
+
+    <string name="select_contact">حدد جهة اتصال</string>
+
+    <string name="set">تعيين</string>
+    <string name="unknowContact">غير معروف</string>
+    <string name="set_theme_success">تعيين موضوع النجاح</string>
+
+    <string name="addYourVideo">قم بإنشاء الفيديو أو الصورة الخاصة بك</string>
+
+    <string name="video">أشرطة فيديو</string>
+
+    <string name="images">الصور</string>
+
+    <string name="your_video">افتح الكاميرا أو حدد مقطع فيديو جديدًا</string>
+
+    <string name="select_picture">حدد صورة</string>
+
+    <string name="file_not_found">لم يتم العثور على الملف !</string>
+
+    <string name="facebook_app_id">1389962418463800</string>
+    <string name="contentDelete">هل أنت متأكد من حذف الموضوع؟</string>
+
+    <string name="nope">لا</string>
+    <string name="sure">بالتأكيد أريد</string>
+    <string name="maybe_later">ربما في وقت لاحق</string>
+
+    <string name="rate_your_experience_with">قيم تجربتك مع Call Color Screen</string>
+
+    <string name="the_best_we_can_get_is_5_stars">أفضل ما يمكننا الحصول عليه هو 5 نجوم!</string>
+    <string name="mail_subject">ردود الفعل للمطور</string>
+
+    <string name="rate_on_gg_play">معدل على Google Play</string>
+    <string name="rate_title2">دعنا نعرف أين يمكننا أن نتحسن</string>
+
+    <string name="rate_title3">رائع!</string>
+
+    <string name="rate_content2">أرسل لنا بعض التعليقات!</string>
+
+    <string name="rate_content3">خذ ثانية لتقييمنا على Google Play</string>
+    <string name="feed_back_rate">تعليق</string>
+</resources>
