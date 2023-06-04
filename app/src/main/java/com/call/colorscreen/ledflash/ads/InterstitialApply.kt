@@ -2,15 +2,19 @@ package com.call.colorscreen.ledflash.ads
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.util.Log
 import com.call.colorscreen.ledflash.util.AppAdsId
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import java.util.*
+import java.util.Date
 
-class InterstitialAdsManager {
+class InterstitialApply {
     private var interstitialAd: InterstitialAd? = null
-    private var activity: Activity
+    private lateinit var activity: Activity
     private var ID_ADS = ""
     private var listener: InterstitialAdListener? = null
     var onAdClosed: (() -> Unit)? = null
@@ -69,7 +73,7 @@ class InterstitialAdsManager {
                     isLoaded = true
                     isLoading = false
                     loadTime = Date().time
-                    this@InterstitialAdsManager.interstitialAd = interstitialAd
+                    this@InterstitialApply.interstitialAd = interstitialAd
                     if (listener != null) {
                         listener!!.onAdLoaded(interstitialAd)
                     }
@@ -77,15 +81,16 @@ class InterstitialAdsManager {
                         override fun onAdDismissedFullScreenContent() {
                             isLoaded = false
                             isShowAds = false
-                            this@InterstitialAdsManager.interstitialAd = null
+                            this@InterstitialApply.interstitialAd = null
                             onAdClosed?.invoke()
+                            loadAds()
                             if (listener != null) {
                                 listener!!.onAdDismissedFullScreenContent()
                             }
                         }
 
                         override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                            this@InterstitialAdsManager.interstitialAd = null
+                            this@InterstitialApply.interstitialAd = null
                             isShowAds = false
                             isLoaded = false
                             if (listener != null) {
@@ -121,9 +126,9 @@ class InterstitialAdsManager {
                 }
             })
     }
-   fun isShowAdsInter():Boolean{
-       return isShowAds
-   }
+    fun isShowAdsInter():Boolean{
+        return isShowAds
+    }
     fun isAdAvailable(): Boolean {
         return interstitialAd != null && wasLoadTimeLessThanNHoursAgo(4)
     }
@@ -139,12 +144,12 @@ class InterstitialAdsManager {
     }
     companion object{
         @SuppressLint("StaticFieldLeak")
-        private var sInterstitial: InterstitialAdsManager?=null
-        fun getInstance(activity: Activity): InterstitialAdsManager {
+        private var sInterstitial: InterstitialApply?=null
+        fun getInstance(activity: Activity): InterstitialApply {
             if (sInterstitial == null) {
-                sInterstitial = InterstitialAdsManager(activity, AppAdsId.inter_select_item)
+                sInterstitial = InterstitialApply(activity, AppAdsId.inter_apply)
             }
-            return sInterstitial as InterstitialAdsManager
+            return sInterstitial as InterstitialApply
         }
     }
 }

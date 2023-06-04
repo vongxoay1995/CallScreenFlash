@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
+import com.call.colorscreen.ledflash.ads.InterstitialApply
 import com.call.colorscreen.ledflash.base.BaseFragment
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentThemesBinding
@@ -76,8 +77,10 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
                 }
             }
         })
-        interstitialAdsManager =
-            InterstitialAdsManager(requireActivity(), AppAdsId.inter_select_item)
+        interstitialAdsManager = InterstitialAdsManager.getInstance(requireActivity())
+
+      /*  interstitialAdsManager =
+            InterstitialAdsManager(requireActivity(), AppAdsId.inter_select_item)*/
         loadInterAds()
     }
 
@@ -145,9 +148,6 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
         isDelete: Boolean,
         posRandom: Int
     ) {
-
-        count++
-        PreferencesUtils.putInt(COUNT_SELECT_ITEM, count)
         if (interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
             if (count % 2 == 0) {
                 interstitialAdsManager.showInterstitial()
@@ -161,6 +161,8 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
         } else {
             moveApplyTheme(themes, position, isDelete, posRandom)
         }
+        count++
+        PreferencesUtils.putInt(COUNT_SELECT_ITEM, count)
     }
 
     private fun moveApplyTheme(
