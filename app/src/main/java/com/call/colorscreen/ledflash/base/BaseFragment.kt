@@ -10,37 +10,21 @@ import androidx.fragment.app.Fragment
 import java.lang.reflect.ParameterizedType
 
 abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
-    private var _binding : VB? = null
-    val binding :VB get() = _binding!!
+    lateinit var binding : VB
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
     }
-
-    abstract fun getLayoutRes(): Int
-
+    protected abstract fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
     abstract fun init()
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (getLayoutRes() != 0) {
-           _binding = DataBindingUtil.inflate(inflater, getLayoutRes(), container, false)
-            _binding!!.setLifecycleOwner { lifecycle}
-            return  _binding!!.root
-        } else {
-            throw IllegalArgumentException("layout resource cannot be null")
-        }
+        binding = getViewBinding(inflater, container)
+        return binding.root
     }
-
-
 }

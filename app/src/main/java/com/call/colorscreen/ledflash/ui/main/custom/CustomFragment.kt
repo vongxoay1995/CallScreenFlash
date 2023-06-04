@@ -25,6 +25,7 @@ import com.call.colorscreen.ledflash.base.BaseFragment
 import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentCustomBinding
+import com.call.colorscreen.ledflash.databinding.FragmentThemesBinding
 import com.call.colorscreen.ledflash.model.EBApplyCustom
 import com.call.colorscreen.ledflash.ui.aply.ApplyActivity
 import com.call.colorscreen.ledflash.ui.listener.DialogGalleryListener
@@ -48,6 +49,13 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     private lateinit var analystic: Analystic
 
     private var positionItemThemeSelected = -1
+    override fun getViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentCustomBinding {
+        return FragmentCustomBinding.inflate(LayoutInflater.from(requireContext()))
+    }
+
     override fun init() {
         val gridLayoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
         binding.rcvBgMyTheme.layoutManager = gridLayoutManager
@@ -97,24 +105,29 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     @SuppressLint("NotifyDataSetChanged")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == Constant.CODE_VIDEO) {
-                val uriData = data!!.data
-                val path: String = FileUtil.getRealPathFromUri(requireContext(), uriData)!!
-                resetListVideo(path)
-                adapter!!.setNewListBg()
-                adapter!!.notifyDataSetChanged()
-            } else if (requestCode == Constant.CODE_IMAGE) {
-                val path: String
-                if (data != null && data.data != null) {
-                    path = FileUtil.getRealPathFromUri(requireContext(), data.data)!!
-                } else {
-                    path = pathUriImage!!
+        try {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                if (requestCode == Constant.CODE_VIDEO) {
+                    val uriData = data.data
+                    val path: String = FileUtil.getRealPathFromUri(requireContext(), uriData)!!
+                    resetListVideo(path)
+                    adapter!!.setNewListBg()
+                    adapter!!.notifyDataSetChanged()
+                } else if (requestCode == Constant.CODE_IMAGE) {
+                    val path: String
+                    if (data.data != null) {
+                        path = FileUtil.getRealPathFromUri(requireContext(), data.data)!!
+                    } else {
+                        path = pathUriImage!!
+                    }
+                    resetListImage(path)
+                    adapter!!.setNewListBg()
+                    adapter!!.notifyDataSetChanged()
                 }
-                resetListImage(path)
-                adapter!!.setNewListBg()
-                adapter!!.notifyDataSetChanged()
             }
+        }
+        catch (e:Exception){
+            e.printStackTrace()
         }
     }
 
@@ -131,9 +144,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
                     1, file.absolutePath, file.absolutePath, true,
                     file.absolutePath.substring(file.absolutePath.lastIndexOf("/") + 1)
                 )
-                Log.e("TAN", "resetListImage: "+picture.path_thumb)
                 database.serverDao().saveTheme(picture)
-
             } else {
                 Toast.makeText(context, getString(R.string.file_not_found), Toast.LENGTH_LONG)
                     .show()
@@ -150,7 +161,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + Constant.PATH_THUMB_CALL_VIDEO
             )
             val folderInternal = File(
-                (requireActivity().filesDir.absolutePath+ Constant.PATH_THUMB_CALL_VIDEO)
+                (requireActivity().filesDir.absolutePath + Constant.PATH_THUMB_CALL_VIDEO)
             )
             if (!folder.exists()) folder.mkdirs()
             if (!folderInternal.exists()) folderInternal.mkdirs()
@@ -159,7 +170,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
             var imageUrl = ""
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 imageUrl =
-                    ((requireActivity().filesDir.absolutePath + Constant.PATH_THUMB_CALL_VIDEO) + "thumb_" + listThemeDb.size+".jpg")
+                    ((requireActivity().filesDir.absolutePath + Constant.PATH_THUMB_CALL_VIDEO) + "thumb_" + listThemeDb.size + ".jpg")
                 video = Theme(
                     0,
                     imageUrl,
@@ -170,13 +181,14 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
                 bitmap?.let {
                     FileUtil.saveBitmap(
                         requireActivity().filesDir.absolutePath
-                                + Constant.PATH_THUMB_CALL_VIDEO + "thumb_" + listThemeDb.size+".jpg", it
+                                + Constant.PATH_THUMB_CALL_VIDEO + "thumb_" + listThemeDb.size + ".jpg",
+                        it
                     )
                 }
             } else {
                 imageUrl =
                     (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-                            + Constant.PATH_THUMB_CALL_VIDEO + "thumb_" + listThemeDb.size+".jpg")
+                            + Constant.PATH_THUMB_CALL_VIDEO + "thumb_" + listThemeDb.size + ".jpg")
                 video = Theme(
                     0,
                     imageUrl,
@@ -206,6 +218,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     ) {
         backgrounds?.let { moveApplyTheme(it, position, delete, posRandom) }
     }
+
     private fun moveApplyTheme(
         backgrounds: java.util.ArrayList<Theme>,
         position: Int,
@@ -266,7 +279,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
 
     private fun openDialogGallery() {
         Log.e("TAN", "openDialogGallery: ")
-        AppUtil.showDialogGallery(activity, analystic,this)
+        AppUtil.showDialogGallery(activity, analystic, this)
     }
 
     override fun onVideoClicked() {
@@ -284,25 +297,22 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     override fun onImagesClicked() {
         pathUriImage = AppUtil.openCameraIntent(this, requireActivity(), Constant.CODE_IMAGE)
     }
+
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
     }
+
+    @SuppressLint("NotifyDataSetChanged")
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onEBApplyCustom(ebApplyCustom: EBApplyCustom) {
-        Log.e("TAN", "onSignApplyCT: vaoooooo")
         when (ebApplyCustom.action) {
             Constant.INTENT_APPLY_THEME -> adapter!!.notifyDataSetChanged()
             Constant.DELETE_THEME -> {
-                Log.e("TAN", "onSignApplyCT: 2222")
                 adapter!!.setNewListBg()
                 adapter!!.notifyDataSetChanged()
             }
         }
         EventBus.getDefault().removeStickyEvent(ebApplyCustom)
-    }
-
-    override fun getLayoutRes(): Int {
-        return R.layout.fragment_custom
     }
 }
