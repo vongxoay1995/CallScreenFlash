@@ -94,4 +94,23 @@ public class ManagerEvent {
         bundle.putInt("extra",extra);
         return new Event("CallVideoViewError",bundle);
     }
+
+    public static Event rateShow(){
+        return new Event(EventKey.RATE_SHOW,new Bundle());
+    }
+    public static Event rateDismiss(){
+        return new Event(EventKey.RATE_DISMISS,new Bundle());
+    }
+    public static Event rateClick(){
+        return new Event(EventKey.RATE_CLICK,new Bundle());
+    }
+    public static Event rateSendFeedBack(){
+        return new Event(EventKey.RATE_FEED_BACK,new Bundle());
+    }
+    public static Event rateInApp(){
+        return new Event(EventKey.RATE_IN_APP,new Bundle());
+    }
+    public static Event rateGotoStore(){
+        return new Event(EventKey.RATE_GO_TO_STORE,new Bundle());
+    }
 }

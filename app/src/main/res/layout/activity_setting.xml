@@ -47,9 +47,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/llAds"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="@dimen/_10sdp"
             app:layout_constraintTop_toBottomOf="@id/layout_header">
 
             <LinearLayout
@@ -245,11 +246,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#EBDDDADA" />
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_35sdp"
+                    android:visibility="gone"
                     android:layout_marginBottom="@dimen/_15sdp">
 
                     <FrameLayout
@@ -265,5 +266,14 @@
                 </RelativeLayout>
             </LinearLayout>
         </ScrollView>
+        <RelativeLayout
+            android:id="@+id/llAds"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/bd_ads"
+            android:padding="1dp"
+            android:gravity="center"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

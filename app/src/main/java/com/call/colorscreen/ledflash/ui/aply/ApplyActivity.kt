@@ -19,6 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
+import com.call.colorscreen.ledflash.ads.InterstitialAdListener
 import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
 import com.call.colorscreen.ledflash.ads.InterstitialApply
 import com.call.colorscreen.ledflash.analystic.Analystic
@@ -32,6 +33,7 @@ import com.call.colorscreen.ledflash.model.EBApplyTheme
 import com.call.colorscreen.ledflash.ui.contact.SelectContactActivity
 import com.call.colorscreen.ledflash.ui.listener.DialogDeleteCallBack
 import com.call.colorscreen.ledflash.util.*
+import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.LoadAdError
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
@@ -49,6 +51,8 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     private lateinit var bannerAdsUtils: BannerAdsUtils
     lateinit var interstitialAdsManager: InterstitialApply
     private lateinit var analystic: Analystic
+    private var isShowInterApply = false
+    private var isApplied = false
     val database by inject<AppDatabase>()
 
     override fun getLayoutId(): Int {
@@ -73,13 +77,37 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 super.onAdClicked()
             }
         })
+        interstitialAdsManager
+        interstitialAdsManager.setListener(object: InterstitialAdListener(){
+            override fun onAdShowedFullScreenContent() {
+                super.onAdShowedFullScreenContent()
+            }
+
+            override fun onAdDismissedFullScreenContent() {
+                super.onAdDismissedFullScreenContent()
+                if(isShowInterApply){
+                    applyThemeCall()
+                }else{
+                    finish()
+                }
+            }
+
+            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                super.onAdFailedToShowFullScreenContent(adError)
+                if(isShowInterApply){
+                    applyThemeCall()
+                }else{
+                    finish()
+                }
+            }
+        })
     }
 
-    private fun loadInterAds() {
+    /*private fun loadInterAds() {
         if (!interstitialAdsManager.isLoading) {
             interstitialAdsManager.loadAds()
         }
-    }
+    }*/
 
     override fun onViewReady(savedInstance: Bundle?) {
         AppUtil.overHeaderApply(this, binding.layoutHeader)
@@ -91,7 +119,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         interstitialAdsManager =InterstitialApply.getInstance(this)
         if (AppUtil.checkInternet(this)) {
             loadAds()
-            interstitialAdsManager.loadAds()
+           // interstitialAdsManager.loadAds()
            // loadInterAds()
         } else {
             binding.llAds.visibility = View.GONE;
@@ -223,7 +251,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         when (p0?.id) {
             R.id.imgBack -> {
                 analystic.trackEvent(ManagerEvent.applyBackClick())
-                finish()
+                onBackPressed()
             }
             R.id.llContact -> {
                 analystic.trackEvent(ManagerEvent.applyContactClick())
@@ -323,16 +351,15 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
 
     private fun checkShowAds() {
         if (interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
+            isShowInterApply = true
             interstitialAdsManager.showInterstitial()
-            interstitialAdsManager.onAdClosed = {
-                applyThemeCall()
-            }
         } else {
             applyThemeCall()
         }
     }
 
     private fun applyThemeCall() {
+        isApplied = true
         HawkData.setThemeSelect(theme)
         HawkData.setEnableCall(true)
         Toast.makeText(applicationContext, getString(R.string.apply_done), Toast.LENGTH_SHORT)
@@ -358,7 +385,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 EventBus.getDefault().postSticky(ebApplyCustom)
             }
         }
-        finish()
+        //finish()
     }
 
     private fun requestPermissionContact() {
@@ -451,4 +478,15 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         database.serverDao().deleteTheme(theme.id)
     }
 
+    override fun onBackPressed() {
+        if (!isShowInterApply&&isApplied){
+            if (interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
+                interstitialAdsManager.showInterstitial()
+            }else{
+                super.onBackPressed()
+            }
+        }else{
+            super.onBackPressed()
+        }
+    }
 }

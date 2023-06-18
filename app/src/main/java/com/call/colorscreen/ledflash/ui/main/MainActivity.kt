@@ -16,6 +16,7 @@ import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
 import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
+import com.call.colorscreen.ledflash.ads.InterstitialApply
 import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
@@ -76,6 +77,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     var bottomSheetDialog: BottomSheetDialog? = null
     var TYPE_RATE = RATE_LATER
     var numberExitAllowShowRate = arrayOf(1,4,7)
+    lateinit var interApply: InterstitialApply
+    lateinit var interTheme: InterstitialAdsManager
 
     override fun getLayoutId(): Int {
         return R.layout.activity_main
@@ -118,6 +121,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
                 super.onAdClicked()
             }
         })
+        loadCacheInter()
+    }
+
+    private fun loadCacheInter() {
+        interApply =InterstitialApply.getInstance(this)
+        interTheme =InterstitialAdsManager.getInstance(this)
+        if (!interApply.isLoading) {
+            interApply.loadAds()
+        }
+        if (!interTheme.isLoading) {
+            interTheme.loadAds()
+        }
     }
 
     private fun initPager() {
@@ -221,18 +236,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         bottomSheetDialog!!.setContentView(bottomBinding.root)
         bottomSheetDialog!!.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetDialog!!.show()
+        analystic.trackEvent(ManagerEvent.rateShow())
         bottomBinding.tvRate.setOnClickListener {
+            analystic.trackEvent(ManagerEvent.rateClick())
             when (TYPE_RATE) {
                 RATE_IN_APP -> {
+                    analystic.trackEvent(ManagerEvent.rateInApp())
                     rateInApp()
                 }
                 RATE_FEED_BACK -> {
+                    analystic.trackEvent(ManagerEvent.rateSendFeedBack())
                     sendFeedBack()
                 }
             }
             bottomSheetDialog!!.dismiss()
         }
         bottomSheetDialog!!.setOnDismissListener {
+            analystic.trackEvent(ManagerEvent.rateDismiss())
         }
         Handler().postDelayed({
             bottomBinding.ratingbar.setRating(5, true)
@@ -301,6 +321,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
 
     private fun goToStoreApp() {
+        analystic.trackEvent(ManagerEvent.rateGotoStore())
         try {
             val intent = Intent(Intent.ACTION_VIEW)
             val linkRateApp: String = PLAY_STORE_LINK + packageName

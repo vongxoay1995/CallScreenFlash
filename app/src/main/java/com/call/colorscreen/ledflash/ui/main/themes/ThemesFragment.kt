@@ -85,10 +85,10 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
     }
 
     private fun loadInterAds() {
-        count = PreferencesUtils.getInt(Constant.COUNT_SELECT_ITEM, 0)
-        if (!interstitialAdsManager.isLoading) {
+        count = PreferencesUtils.getInt(COUNT_SELECT_ITEM, 0)
+     /*   if (!interstitialAdsManager.isLoading) {
             interstitialAdsManager.loadAds()
-        }
+        }*/
     }
 
     override fun onResume() {
@@ -106,15 +106,20 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
     }
 
     override fun netWorkStateChanged(isNetWork: Boolean) {
-        if (!isNetWork && HawkData.getListThemes().size < 10) {
-            binding.llNoNetwork.visibility = View.VISIBLE
-
-        } else {
-            binding.llNoNetwork.visibility = View.GONE
-            if (HawkData.getListThemes().size < 10) {
-                binding.llLoading.visibility = View.VISIBLE
-                (activity as MainActivity).refreshApi()
+        try {
+            if (!isNetWork && HawkData.getListThemes().size < 10) {
+                binding.llNoNetwork.visibility = View.VISIBLE
+            } else {
+                binding.llNoNetwork.visibility = View.GONE
+                if (HawkData.getListThemes().size < 10) {
+                    binding.llLoading.visibility = View.VISIBLE
+                    if(activity!=null){
+                        (requireActivity() as MainActivity).refreshApi()
+                    }
+                }
             }
+        }catch (e:Exception){
+            e.printStackTrace()
         }
     }
 
