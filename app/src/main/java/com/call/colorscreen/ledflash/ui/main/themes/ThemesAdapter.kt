@@ -73,10 +73,10 @@ class ThemesAdapter(val context: Context) :
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .thumbnail(0.1f)
                     .into(binding.imgThumb)
-                if (theme.type==0){
-                    binding.imgPlay.visibility = View.VISIBLE
+                if (theme.type==1){
+                    binding.txtPicture.visibility = View.VISIBLE
                 }else{
-                    binding.imgPlay.visibility = View.GONE
+                    binding.txtPicture.visibility = View.GONE
                 }
             }
             if (theme.path_thumb == themeSelected!!.path_thumb && HawkData.getEnableCall()) {

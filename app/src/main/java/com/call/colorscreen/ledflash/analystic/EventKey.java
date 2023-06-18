@@ -24,4 +24,13 @@ public interface EventKey {
     String CALL_SHOW = "CALL_SHOW";
     String CALL_ACCETP_CALL = "CALL_ACCETP_CALL";
     String CALL_REJECT_CALL = "CALL_REJECT_CALL";
+
+    String RATE_SHOW = "RATE_SHOW";
+    String RATE_DISMISS = "RATE_DISMISS";
+    String RATE_CLICK = "RATE_CLICK";
+    String RATE_IN_APP = "RATE_IN_APP";
+    String RATE_GO_TO_STORE = "RATE_GO_TO_STORE";
+    String RATE_FEED_BACK = "RATE_FEED_BACK";
+
+
 }

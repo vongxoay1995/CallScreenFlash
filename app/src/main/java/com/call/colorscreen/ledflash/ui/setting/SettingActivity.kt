@@ -12,6 +12,8 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.ads.BannerAdsListener
+import com.call.colorscreen.ledflash.ads.BannerAdsUtils
 import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
@@ -50,6 +52,8 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     private lateinit var analystic: Analystic
     private var bottomSheetDialog: BottomSheetDialog? = null
     var TYPE_RATE = RATE_LATER
+    private lateinit var bannerAdsUtils: BannerAdsUtils
+
     override fun getLayoutId(): Int {
         return R.layout.activity_setting
     }
@@ -59,9 +63,34 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         binding.swOnOff.isChecked = HawkData.getEnableCall()
         binding.swflash.isChecked = HawkData.getEnableFlash()
         listener()
-        loadAds()
+        if (AppUtil.checkInternet(this)) {
+            loadBannerAds()
+        } else {
+            binding.llAds.visibility = View.GONE;
+        }
+        //loadAds()
         analystic = Analystic.getInstance(this)
         analystic.trackEvent(ManagerEvent.settingShow())
+    }
+
+    private fun loadBannerAds() {
+        bannerAdsUtils = BannerAdsUtils(this, AppAdsId.id_banner_setting, binding.llAds)
+        bannerAdsUtils.loadAds()
+        bannerAdsUtils.goneWhenFail = false
+        bannerAdsUtils.setAdsListener(object : BannerAdsListener() {
+
+            override fun onAdFailedToLoad(loadAdError: LoadAdError?) {
+                super.onAdFailedToLoad(loadAdError)
+            }
+
+            override fun onAdLoaded() {
+                super.onAdLoaded()
+            }
+
+            override fun onAdClicked() {
+                super.onAdClicked()
+            }
+        })
     }
 
     private fun listener() {

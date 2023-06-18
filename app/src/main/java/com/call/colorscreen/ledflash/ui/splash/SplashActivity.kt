@@ -173,7 +173,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
             return
         }
         Glide.with(this)
-            .load(R.drawable.ic_splash)
+            .load(R.drawable.ic_bg_splash_test)
             .diskCacheStrategy(DiskCacheStrategy.DATA)
             .thumbnail(0.2f)
             .into(binding.imgSplash)

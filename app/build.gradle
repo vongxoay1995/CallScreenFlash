@@ -13,8 +13,8 @@ android {
         applicationId "com.call.screen.themes.color.phone.flashlight"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 8
-        versionName "1.0.6"
+        versionCode 9
+        versionName "1.0.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     dataBinding {
