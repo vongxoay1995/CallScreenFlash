@@ -55,5 +55,6 @@
     <string name="rate_content2">Send us some feedback!</string>
     <string name="rate_content3">Take a second to rate us on Google Play</string>
     <string name="feed_back_rate">Feedback</string>
-
+    <string name="flash_not_support">Your device doesn\'t support flash light</string>
+    <string name="notify_msg_foreground">Call Screen is running</string>
 </resources>
