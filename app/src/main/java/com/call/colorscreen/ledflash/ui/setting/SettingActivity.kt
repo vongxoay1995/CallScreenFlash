@@ -240,10 +240,10 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                     initBottomSheetRate()
                 }
             }
-            R.id.llFlash -> {
+           /* R.id.llFlash -> {
                 analystic.trackEvent(ManagerEvent.settingFlashClick())
                Toast.makeText(this,"Developing",Toast.LENGTH_SHORT).show();
-            }
+            }*/
             R.id.llPolicy -> {
                 analystic.trackEvent(ManagerEvent.settingPolicyClick())
                 openLink("https://sites.google.com/view/privacy-policy-for-call-color")
@@ -292,14 +292,14 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        /* if (requestCode == Constant.PERMISSION_REQUEST_CAMERA) {
+         if (requestCode == Constant.PERMISSION_REQUEST_CAMERA) {
              if (grantResults.isNotEmpty() && AppUtil.checkPermission(grantResults)) {
                  HawkData.setEnableFlash(isFlashState)
              } else {
                 isAllowFlash = true
                  binding.swflash.isChecked = !isFlashState
              }
-         } else*/ if (requestCode == Constant.PERMISSION_REQUEST_CALL_PHONE) {
+         } else if (requestCode == Constant.PERMISSION_REQUEST_CALL_PHONE) {
             if (grantResults.isNotEmpty() && AppUtil.checkPermission(grantResults)) {
                 if (AppUtil.canDrawOverlays(this)) {
                     if (!AppUtil.checkNotificationAccessSettings(this)) {
