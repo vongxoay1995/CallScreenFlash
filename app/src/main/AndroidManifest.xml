@@ -116,7 +116,10 @@
             android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/App" />
-
+        <service
+            android:name=".service.PhoneStateService"
+            android:enabled="true"
+            android:exported="true" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5314991202974730~7876307129" />
@@ -142,7 +145,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".service.BootReceiver"
+            android:name=".receive.BootReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

@@ -1,6 +1,7 @@
 package com.call.colorscreen.ledflash.util
 
 import android.app.Activity
+import android.app.AppOpsManager
 import android.app.Dialog
 import android.content.*
 import android.content.res.Resources
@@ -11,6 +12,7 @@ import android.graphics.PixelFormat
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Binder
 import android.os.Build
 import android.os.Environment
 import android.os.SystemClock
@@ -23,7 +25,6 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -122,14 +123,16 @@ class AppUtil {
             return passed
         }
         fun checkDrawOverlayApp(context: Context?) {
-            if (Build.VERSION.SDK_INT >= 23 && !context?.let { canDrawOverlays(it) }!!
+            if (Build.VERSION.SDK_INT >= 23 && !checkDrawOverlayAppNew(
+                    context
+                )
             ) {
-                showDrawOverlayPermissionDialog(context)
+                context?.let { showDrawOverlayPermissionDialog(it) }
             }
         }
-        fun checkDrawOverlay(context: Context?): Boolean {
+       /* fun checkDrawOverlay(context: Context?): Boolean {
             return Build.VERSION.SDK_INT < 23 || context?.let { canDrawOverlays(it) } == true
-        }
+        }*/
 
         fun populateNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
             // Set the media view.
@@ -236,7 +239,79 @@ class AppUtil {
                 dialog.dismiss()
             }
         }
-        @RequiresApi(Build.VERSION_CODES.M)
+
+        fun checkDrawOverlayAppNew(context: Context?): Boolean {
+            return if (context == null) {
+                false
+            } else canDrawOverlayViews(context)
+        }
+
+        /* public static boolean canDrawOverlays(Context context) {
+     */
+        /*  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
+        else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            return Settings.canDrawOverlays(context);
+        } else {
+            Log.e("TAN", "canDrawOverlays: 1");
+            if (Settings.canDrawOverlays(context)) return true;
+            try {
+                WindowManager mgr = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                if (mgr == null) return false; //getSystemService might return null
+                Log.e("TAN", "canDrawOverlays: 2");
+                View viewToAdd = new View(context);
+                WindowManager.LayoutParams params = new WindowManager.LayoutParams(0, 0, android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ?
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSPARENT);
+                viewToAdd.setLayoutParams(params);
+                mgr.addView(viewToAdd, params);
+                mgr.removeView(viewToAdd);
+                Log.e("TAN", "canDrawOverlays: 3");
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.e("TAN", "canDrawOverlays: 4");
+            return false;
+        }*/
+        /*
+        Log.e("TAN", "canDrawOverlays: "+checkDrawOverlayApp2(context));
+        return checkDrawOverlayApp2(context);
+    }*/
+        fun canDrawOverlayViews(context: Context): Boolean {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) return true
+            val manager = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+            try {
+                val result: Int = manager.checkOp(
+                    AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW,
+                    Binder.getCallingUid(),
+                    context.packageName
+                )
+                return result == AppOpsManager.MODE_ALLOWED
+            } catch (e: java.lang.Exception) {
+            }
+            try {
+                val mgr = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                    ?: return false
+                //getSystemService might return null
+                val viewToAdd = View(context)
+                val params = WindowManager.LayoutParams(
+                    0,
+                    0,
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSPARENT
+                )
+                viewToAdd.layoutParams = params
+                mgr.addView(viewToAdd, params)
+                mgr.removeView(viewToAdd)
+                return true
+            } catch (e: java.lang.Exception) {
+            }
+            return false
+        }
+
+       /* @RequiresApi(Build.VERSION_CODES.M)
         fun canDrawOverlays(context: Context): Boolean {
             return when {
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> true
@@ -267,7 +342,7 @@ class AppUtil {
                     false
                 }
             }
-        }
+        }*/
 
         fun showDrawOverlayPermissionDialog(context: Context) {
             val alertDialog = AlertDialog.Builder(context).create()

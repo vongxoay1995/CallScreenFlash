@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.SystemClock
 import android.telephony.TelephonyManager
+import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.call.colorscreen.ledflash.service.ColorCallService
 import com.call.colorscreen.ledflash.util.AppUtil
@@ -32,8 +33,10 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
         if (intent.extras != null) {
             val state = intent.extras!!.getString("state")
             phoneNumber = intent.extras!!.getString("incoming_number")
+            Log.e("TAN", "onReceive: 1"+phoneNumber)
             if (phoneNumber == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 isBiggerAndroidP = true
+                Log.e("TAN", "onReceive: 2")
                 PhoneUtils.get(context).getNumberPhoneWhenNull(this@PhoneReceiver)
             }
             if (state != null && state == TelephonyManager.EXTRA_STATE_IDLE) {
@@ -84,7 +87,7 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
                 }
             }
 
-            TYPE_END_CALL, TYPE_IN_CALL -> finishCall()
+            /*TYPE_END_CALL, TYPE_IN_CALL -> finishCall()*/
         }
         /* if (flashUtils != null && flashUtils.isRunning()) {
              flashUtils.stop()
@@ -92,14 +95,15 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
     }
 
     private fun onIncommingCall(context: Context?, number: String) {
-        if (AppUtil.checkDrawOverlay(context) && HawkData.getEnableCall()) {
-            intentCallService = Intent(context, ColorCallService::class.java)
+        Log.e("TAN", "onIncommingCall receiver: "+number)
+        if (AppUtil.checkDrawOverlayAppNew(context) && HawkData.getEnableCall()) {
+         /*   intentCallService = Intent(context, ColorCallService::class.java)
             intentCallService!!.putExtra(Constant.PHONE_NUMBER, number)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context?.startForegroundService(intentCallService)
             } else {
                 context?.startService(intentCallService)
-            }
+            }*/
         }
     }
 
@@ -112,6 +116,7 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
     }
 
     override fun getNumPhone(phoneNumb: String?) {
+        Log.e("TAN", "getNumPhone receiver: "+phoneNumb)
         if (!isFirstRun) {
             phoneNumber = phoneNumb
             isFirstRun = true

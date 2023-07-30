@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
-import com.call.colorscreen.ledflash.BuildConfig
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
@@ -26,6 +25,7 @@ import com.call.colorscreen.ledflash.databinding.LayoutBottomSheetRateBinding
 import com.call.colorscreen.ledflash.model.Data
 import com.call.colorscreen.ledflash.repository.RetrofitInstance
 import com.call.colorscreen.ledflash.service.ApiService
+import com.call.colorscreen.ledflash.service.PhoneStateService
 import com.call.colorscreen.ledflash.ui.main.adapter.ViewPagerAdapter
 import com.call.colorscreen.ledflash.ui.main.custom.CustomFragment
 import com.call.colorscreen.ledflash.ui.main.themes.EventBusMain
@@ -89,6 +89,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
 
     private fun initView() {
+        if (HawkData.getEnableCall()) {
+            PhoneStateService.startService(this)
+        }
         analystic = Analystic.getInstance(this)
         analystic.trackEvent(ManagerEvent.mainShow())
         AppUtil.overHeader(this, binding.layoutHeader)
@@ -227,6 +230,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     }
 
     override fun onCreate() {
+
     }
 
     fun initBottomSheetRate() {

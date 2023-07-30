@@ -17,14 +17,18 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.receive.PhoneStateListenerHighAPI
 import com.call.colorscreen.ledflash.receive.PhoneStateListenerLowAPI
 import com.call.colorscreen.ledflash.ui.main.MainActivity
+import org.koin.android.ext.android.inject
+import org.koin.java.KoinJavaComponent.inject
 
 class PhoneStateService : Service() {
     var telephony: TelephonyManager? = null
     var phoneStateListener: PhoneStateListener? = null
     var callStateListener: TelephonyCallback? = null
+    val database by inject<AppDatabase>()
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
@@ -51,7 +55,7 @@ class PhoneStateService : Service() {
         )
         builder.setContentTitle(getString(R.string.app_name))
         builder.setContentText(getString(R.string.notify_msg_foreground))
-        builder.setSmallIcon(R.mipmap.ic_launcher)
+        builder.setSmallIcon(R.drawable.icon_app)
         startForeground(1, builder.build())
         val telephonyManager = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
         telephony = telephonyManager
@@ -69,7 +73,7 @@ class PhoneStateService : Service() {
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
                     Log.e("TAN", "registerCallStateListener: 1")
-                    callStateListener = PhoneStateListenerHighAPI(this)
+                    callStateListener = PhoneStateListenerHighAPI(this,database)
                     telephonyManager.registerTelephonyCallback(
                         mainExecutor,
                         callStateListener!!
@@ -78,7 +82,7 @@ class PhoneStateService : Service() {
                 }
             } else {
                 Log.e("TAN", "registerCallStateListener: 2222")
-                phoneStateListener = PhoneStateListenerLowAPI(this)
+                phoneStateListener = PhoneStateListenerLowAPI(this,database)
                 telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
                 callStateListenerRegistered = true
             }

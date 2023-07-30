@@ -20,7 +20,6 @@ import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
 import com.call.colorscreen.ledflash.ads.InterstitialAdListener
-import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
 import com.call.colorscreen.ledflash.ads.InterstitialApply
 import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.analystic.ManagerEvent
@@ -30,6 +29,7 @@ import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.ActivityApplyBinding
 import com.call.colorscreen.ledflash.model.EBApplyCustom
 import com.call.colorscreen.ledflash.model.EBApplyTheme
+import com.call.colorscreen.ledflash.service.PhoneStateService
 import com.call.colorscreen.ledflash.ui.contact.SelectContactActivity
 import com.call.colorscreen.ledflash.ui.listener.DialogDeleteCallBack
 import com.call.colorscreen.ledflash.util.*
@@ -360,6 +360,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
 
     private fun applyThemeCall() {
         isApplied = true
+        PhoneStateService.startService(this)
         HawkData.setThemeSelect(theme)
         HawkData.setEnableCall(true)
         Toast.makeText(applicationContext, getString(R.string.apply_done), Toast.LENGTH_SHORT)
@@ -402,7 +403,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 grantResults
             )
         ) {
-            if (AppUtil.canDrawOverlays(this)) {
+            if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
                     AppUtil.showNotificationAccess(this)
                 }
@@ -432,7 +433,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         super.onActivityResult(requestCode, resultCode, data)
         Log.e("TAN", "onActivityResult: aaaaaaaa")
         if (requestCode == Constant.REQUEST_DRAW_OVER) {
-            if (AppUtil.canDrawOverlays(this)) {
+            if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
                     AppUtil.showNotificationAccess(this);
                 }

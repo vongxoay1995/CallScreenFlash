@@ -17,7 +17,6 @@ class PermissionUtil {
         @JvmStatic val permissionContact = arrayOf(
             permission.READ_CONTACTS
         )
-        @RequiresApi(Build.VERSION_CODES.O)
         @JvmStatic val permissionCall: Array<String> = when {
             Build.VERSION.SDK_INT < Build.VERSION_CODES.O -> {
                 arrayOf(
@@ -52,7 +51,7 @@ class PermissionUtil {
                 )
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (!activity?.let { AppUtil.canDrawOverlays(it) }!!) {
+                    if (!activity?.let { AppUtil.checkDrawOverlayAppNew(it) }!!) {
                         Log.e("TAN", "checkPermissionCall: draw")
                         AppUtil.showDrawOverlayPermissionDialog(activity)
                     } else if (!AppUtil.checkNotificationAccessSettings(activity)) {

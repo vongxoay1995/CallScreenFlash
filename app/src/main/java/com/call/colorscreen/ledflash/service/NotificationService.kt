@@ -5,6 +5,7 @@ import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.telecom.TelecomManager
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.call.colorscreen.ledflash.util.PhoneUtils
 import java.lang.ref.WeakReference
@@ -36,6 +37,7 @@ class NotificationService : NotificationListenerService() {
     override fun onNotificationPosted(statusBarNotification: StatusBarNotification) {
         super.onNotificationPosted(statusBarNotification)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Log.e("TAN", "onNotificationPosted: 1")
             if (!statusBarNotification.packageName.contains("incallui") && !statusBarNotification.packageName.contains(
                     "dialer"
                 )
@@ -47,6 +49,8 @@ class NotificationService : NotificationListenerService() {
             if (telecomManager != null) {
                 str = telecomManager.defaultDialerPackage + ""
             }
+            Log.e("TAN", "onNotificationPosted: 2")
+
             if (!statusBarNotification.packageName.contains("incallui") && statusBarNotification.packageName != str) {
                 return
             }
@@ -54,6 +58,8 @@ class NotificationService : NotificationListenerService() {
                 object : Thread() {
                     override fun run() {
                         super.run()
+                        Log.e("TAN", "onNotificationPosted: 3")
+
                         PhoneUtils.get(applicationContext)?.getPhoneFromNotificationListen(statusBarNotification)
                     }
                 }.start()

@@ -19,6 +19,7 @@ import com.call.colorscreen.ledflash.analystic.ManagerEvent
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.databinding.ActivitySettingBinding
 import com.call.colorscreen.ledflash.databinding.LayoutBottomSheetRateBinding
+import com.call.colorscreen.ledflash.service.PhoneStateService
 import com.call.colorscreen.ledflash.util.*
 import com.call.colorscreen.ledflash.util.Constant.MAIL_LIST
 import com.call.colorscreen.ledflash.util.Constant.PLAY_STORE_LINK
@@ -279,6 +280,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     }
 
     override fun onHasCall() {
+        if (isCallState) {
+            PhoneStateService.startService(this)
+        } else {
+            PhoneStateService.stopService(this)
+        }
         HawkData.setEnableCall(isCallState)
     }
 
@@ -301,7 +307,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
              }
          } else if (requestCode == Constant.PERMISSION_REQUEST_CALL_PHONE) {
             if (grantResults.isNotEmpty() && AppUtil.checkPermission(grantResults)) {
-                if (AppUtil.canDrawOverlays(this)) {
+                if (AppUtil.checkDrawOverlayAppNew(this)) {
                     if (!AppUtil.checkNotificationAccessSettings(this)) {
                         resetOnOffCall()
                         AppUtil.showNotificationAccess(this)
@@ -324,13 +330,13 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.e("TAN", "onActivityResult: aaaaaaaa")
-        if (!AppUtil.canDrawOverlays(this) || !AppUtil.checkNotificationAccessSettings(this)) {
+        if (!AppUtil.checkDrawOverlayAppNew(this) || !AppUtil.checkNotificationAccessSettings(this)) {
             isAllowCallScreen = true
             binding.swOnOff.isChecked = false
             Handler().postDelayed({ isAllowCallScreen = false }, 100);
         }
         if (requestCode == Constant.REQUEST_DRAW_OVER) {
-            if (AppUtil.canDrawOverlays(this)) {
+            if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
                     isCallState = true
                     resetOnOffCall()

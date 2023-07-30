@@ -21,6 +21,7 @@ import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.database.*
 import com.call.colorscreen.ledflash.databinding.ActivitySelectContactBinding
 import com.call.colorscreen.ledflash.model.ContactInfor
+import com.call.colorscreen.ledflash.service.PhoneStateService
 import com.call.colorscreen.ledflash.util.*
 import com.google.gson.Gson
 import org.koin.android.ext.android.inject
@@ -189,6 +190,7 @@ class SelectContactActivity : BaseActivity<
 
     fun setThemetoContactId() {
         HawkData.setEnableCall(true)
+        PhoneStateService.startService(this)
         val listContactIdSelected: List<String> = adapter.getContactSelected()
         val listContactDB:MutableList<Contact> = database.serverDao().getContactWithPath2(theme.path_file)
         for (i in listContactDB.indices) {
@@ -261,7 +263,7 @@ class SelectContactActivity : BaseActivity<
     override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constant.REQUEST_DRAW_OVER) {
-            if (AppUtil.canDrawOverlays(this)) {
+            if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
                     AppUtil.showNotificationAccess(this)
                 }
@@ -283,7 +285,7 @@ class SelectContactActivity : BaseActivity<
                 grantResults
             )
         ) {
-            if (AppUtil.canDrawOverlays(this)) {
+            if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
                     AppUtil.showNotificationAccess(this)
                 }

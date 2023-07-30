@@ -52,12 +52,18 @@ public class PhoneUtils {
         new Thread() {
             public void run() {
                 super.run();
+                Log.e("TAN", "run: 0");
                 getListNameContact();
                 NotificationService notificationReceiverService = NotificationService.Companion.get();
+                Log.e("TAN", "run: 1");
+
                 if (notificationReceiverService != null) {
+                    Log.e("TAN", "run: 2");
+
                     StatusBarNotification inCallNotification = notificationReceiverService.getInCallNotification();
                     if (inCallNotification != null) {
                         if (System.currentTimeMillis() - inCallNotification.getPostTime() < 10000) {
+                            Log.e("TAN", "run: 3");
                             String phoneNumber = getPhoneFromNotification(inCallNotification, contacts);
                             if (phoneNumber != null) {
                                 if (listener != null) {
@@ -99,6 +105,7 @@ public class PhoneUtils {
     public String getPhoneFromNotification(StatusBarNotification statusBarNotification, Map<String, String> map) {
         String string = statusBarNotification.getNotification().extras.getString(NotificationCompat.EXTRA_TEXT);
         String string2 = statusBarNotification.getNotification().extras.getString(NotificationCompat.EXTRA_TITLE);
+        Log.e("TAN", "getPhoneFromNotification: chi tiet "+string+"##"+string2);
         if (!TextUtils.isEmpty(string)) {
             if (map.containsKey(string)) {
                 return map.get(string);
@@ -115,6 +122,7 @@ public class PhoneUtils {
                 return string2;
             }
         }
+        Log.e("TAN", "getPhoneFromNotification: 1");
         Context createContext = createContext(context, statusBarNotification);
         if (createContext == null) {
             return null;
@@ -124,11 +132,13 @@ public class PhoneUtils {
         if (remoteViews == null) {
             return null;
         }
+        Log.e("TAN", "getPhoneFromNotification: 2");
         try {
             ViewGroup viewGroup = (ViewGroup) ((LayoutInflater) createContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(remoteViews.getLayoutId(), null);
             remoteViews.reapply(createContext, viewGroup);
             Iterator it = new RecursiveFinder(TextView.class).expand(viewGroup).iterator();
             while (it.hasNext()) {
+                Log.e("TAN", "getPhoneFromNotification: 3");
                 String charSequence = ((TextView) it.next()).getText().toString();
                 if (!TextUtils.isEmpty(charSequence)) {
                     if (map.containsKey(charSequence)) {

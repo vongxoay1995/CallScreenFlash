@@ -11,18 +11,22 @@ import android.telephony.PhoneStateListener
 import android.util.Log
 import android.view.View
 import com.call.colorscreen.ledflash.R
+import com.call.colorscreen.ledflash.database.AppDatabase
+import com.call.colorscreen.ledflash.ui.main.PermissionOverActivity
+import com.call.colorscreen.ledflash.util.Constant
 import com.call.colorscreen.ledflash.util.PhoneUtils
+import com.call.colorscreen.ledflash.view.RingingCallView
 
-class PhoneStateListenerLowAPI(var context: Context) : PhoneStateListener(),
+class PhoneStateListenerLowAPI(var context: Context,var database: AppDatabase) : PhoneStateListener(),
     PhoneUtils.PhoneListener {
     var handler = Handler()
     var audio: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     var ringerMode = -1
-    var incomingCallView: IncomingCallView? = null
+    var incomingCallView: RingingCallView? = null
     var isFirstRun = false
     fun grantPermissionActivity() {
-        val intent = Intent(context, PermissionOverLayActivity::class.java)
-        intent.putExtra(TYPE_PROMPT, 1)
+        val intent = Intent(context, PermissionOverActivity::class.java)
+        intent.putExtra(Constant.TYPE_PERMISSION, 1)
         context.startActivity(intent)
     }
 
@@ -46,7 +50,7 @@ class PhoneStateListenerLowAPI(var context: Context) : PhoneStateListener(),
                 setRinger(i)
                 ringerMode = -1
             }
-            incomingCallView.release()
+            incomingCallView!!.release()
             incomingCallView = null
         }
     }
@@ -64,12 +68,12 @@ class PhoneStateListenerLowAPI(var context: Context) : PhoneStateListener(),
 
     var state = 0
 
-    fun getNumPhone(str: String?) {
+    override fun getNumPhone(str: String?) {
         if (!isFirstRun) {
             isFirstRun = true
             Handler(Looper.getMainLooper()).post {
                 if (incomingCallView != null) {
-                    incomingCallView.setNumberPhone(str)
+                    incomingCallView!!.setNumberPhone(str)
                 }
             }
         }
@@ -80,10 +84,11 @@ class PhoneStateListenerLowAPI(var context: Context) : PhoneStateListener(),
         if (state != 0) {
             if (state == 1) {
                 incomingCallView =
-                    View.inflate(context, R.layout.layout_call_color, null) as IncomingCallView
-                incomingCallView.phoneState = this
-                incomingCallView.initData()
-                incomingCallView.setNumberPhone(str)
+                    View.inflate(context, R.layout.layout_ringing_call, null) as RingingCallView
+                incomingCallView!!.phoneStateLowAPI = this
+                incomingCallView!!.setDatabaseApp(database)
+                incomingCallView!!.initData()
+                incomingCallView!!.setNumberPhone(str)
                 if (ringerMode == -1) {
                     ringerMode = audio.ringerMode
                     setRinger(1)

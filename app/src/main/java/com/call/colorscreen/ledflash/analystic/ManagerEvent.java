@@ -87,7 +87,9 @@ public class ManagerEvent {
     public static Event callRejectCall(){
         return new Event(EventKey.CALL_REJECT_CALL,new Bundle());
     }
-
+    public static Event callExit(){
+        return new Event("CALL_EXIT",new Bundle());
+    }
     public static Event callVideoViewError(int what,int extra){
         Bundle bundle =  new Bundle();
         bundle.putInt("what",what);
