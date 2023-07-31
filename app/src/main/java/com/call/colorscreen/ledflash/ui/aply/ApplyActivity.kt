@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.call.colorscreen.ledflash.MyApplication
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
@@ -35,12 +36,14 @@ import com.call.colorscreen.ledflash.ui.listener.DialogDeleteCallBack
 import com.call.colorscreen.ledflash.util.*
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.gson.Gson
+import isActive
 import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
 
 class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener,
-    DownloadTask.Listener, PermissionCallListener, PermissionCallContact,DialogDeleteCallBack {
+    DownloadTask.Listener, PermissionCallListener, AppOpenManager.AppOpenManagerObserver,PermissionCallContact,DialogDeleteCallBack {
     private var posRandom = 0
     private var positionTheme = 0
     private var frScreen = 0
@@ -54,6 +57,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     private var isShowInterApply = false
     private var isApplied = false
     val database by inject<AppDatabase>()
+    private lateinit var appOpenManager: AppOpenManager
 
     override fun getLayoutId(): Int {
         return R.layout.activity_apply
@@ -126,8 +130,18 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         }
         analystic = Analystic.getInstance(this)
         analystic.trackEvent(ManagerEvent.applyShow())
+        appOpenManager = (application as MyApplication).appOpenManager
+
+    }
+    override fun onStart() {
+        super.onStart()
+        appOpenManager.registerObserver(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        appOpenManager.unregisterObserver()
+    }
     private fun initData() {
         if (intent.getBooleanExtra(Constant.IS_DELETE, false)) {
             binding.imgDelete.visibility = View.VISIBLE
@@ -489,5 +503,18 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         }else{
             super.onBackPressed()
         }
+    }
+    override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
+        if (isActive() && !interstitialAdsManager.isShowAdsInter()) {
+            appOpenAd.show(this)
+        }
+    }
+
+    override fun lifecycleShowAd() {
+
+    }
+
+    override fun lifecycleStop() {
+
     }
 }

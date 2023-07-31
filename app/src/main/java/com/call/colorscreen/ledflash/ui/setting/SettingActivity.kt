@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.DataBindingUtil
+import com.call.colorscreen.ledflash.MyApplication
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
@@ -31,6 +33,7 @@ import com.facebook.ads.*
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -38,10 +41,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
+import isActive
 import java.util.*
 
 class SettingActivity : BaseActivity<ActivitySettingBinding>(),
-    View.OnClickListener, PermissionCallListener,
+    View.OnClickListener,  AppOpenManager.AppOpenManagerObserver, PermissionCallListener,
     PermissionFlashListener {
     private var nativeAd: NativeAd? = null
     private var nativeFb: com.facebook.ads.NativeAd? = null
@@ -54,6 +58,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     private var bottomSheetDialog: BottomSheetDialog? = null
     var TYPE_RATE = RATE_LATER
     private lateinit var bannerAdsUtils: BannerAdsUtils
+    private lateinit var appOpenManager: AppOpenManager
 
     override fun getLayoutId(): Int {
         return R.layout.activity_setting
@@ -72,6 +77,12 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         //loadAds()
         analystic = Analystic.getInstance(this)
         analystic.trackEvent(ManagerEvent.settingShow())
+        appOpenManager = (application as MyApplication).appOpenManager
+
+    }
+    override fun onStart() {
+        super.onStart()
+        appOpenManager.registerObserver(this)
     }
 
     private fun loadBannerAds() {
@@ -276,6 +287,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             nativeAd!!.destroy()
         }
         nativeFb?.destroy()
+        appOpenManager.unregisterObserver()
         super.onDestroy()
     }
 
@@ -436,6 +448,19 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         startActivity(Intent.createChooser(mailIntent, "$mailSubject:"))
     }
     override fun onCreate() {
+
+    }
+    override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
+        if (isActive()) {
+            appOpenAd.show(this)
+        }
+    }
+
+    override fun lifecycleShowAd() {
+
+    }
+
+    override fun lifecycleStop() {
 
     }
 }

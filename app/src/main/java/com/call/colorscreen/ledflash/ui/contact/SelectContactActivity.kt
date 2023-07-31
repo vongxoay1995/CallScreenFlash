@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.annotation.Nullable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.call.colorscreen.ledflash.MyApplication
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.database.*
@@ -23,20 +24,23 @@ import com.call.colorscreen.ledflash.databinding.ActivitySelectContactBinding
 import com.call.colorscreen.ledflash.model.ContactInfor
 import com.call.colorscreen.ledflash.service.PhoneStateService
 import com.call.colorscreen.ledflash.util.*
+import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.gson.Gson
+import isActive
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 
 class SelectContactActivity : BaseActivity<
-        ActivitySelectContactBinding>(), View.OnClickListener, PermissionCallListener {
+        ActivitySelectContactBinding>(), View.OnClickListener, AppOpenManager.AppOpenManagerObserver, PermissionCallListener {
     private lateinit var theme: Theme
     private lateinit var adapter: ContactAdapter
     val selectModel: SelectContactModel by viewModel()
    // val db by inject<RoomDatabaseHelper>()
     private var isSearchShow = false
     val database by inject<AppDatabase>()
+    private lateinit var appOpenManager: AppOpenManager
 
     override fun getLayoutId(): Int {
         return R.layout.activity_select_contact
@@ -45,6 +49,8 @@ class SelectContactActivity : BaseActivity<
     override fun onViewReady(savedInstance: Bundle?) {
         setTranslucent()
         init()
+        appOpenManager = (application as MyApplication).appOpenManager
+
     }
 
     override fun onClick(p0: View?) {
@@ -294,5 +300,26 @@ class SelectContactActivity : BaseActivity<
             }
         }
     }
+    override fun onStart() {
+        super.onStart()
+        appOpenManager.registerObserver(this)
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        appOpenManager.unregisterObserver()
+    }
+    override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
+        if (isActive()) {
+            appOpenAd.show(this)
+        }
+    }
+
+    override fun lifecycleShowAd() {
+
+    }
+
+    override fun lifecycleStop() {
+
+    }
 }

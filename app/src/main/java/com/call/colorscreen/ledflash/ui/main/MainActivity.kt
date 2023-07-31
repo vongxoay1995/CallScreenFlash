@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
+import com.call.colorscreen.ledflash.MyApplication
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
@@ -39,11 +40,13 @@ import com.call.colorscreen.ledflash.util.Constant.RATE_IN_APP
 import com.call.colorscreen.ledflash.util.Constant.RATE_LATER
 import com.call.colorscreen.ledflash.view.AnimationRatingBar
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
+import isActive
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
@@ -68,7 +71,7 @@ int search(int a[],int l,int r,int x)
         return search(a,m+1,r,x);
 
 }*/
-class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
+class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpenManagerObserver,View.OnClickListener {
     private var adapter: ViewPagerAdapter? = null
     private var themesFragment: ThemesFragment? = null
     private var customFragment: CustomFragment? = null
@@ -79,6 +82,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
     var numberExitAllowShowRate = arrayOf(1,4,7)
     lateinit var interApply: InterstitialApply
     lateinit var interTheme: InterstitialAdsManager
+    private lateinit var appOpenManager: AppOpenManager
 
     override fun getLayoutId(): Int {
         return R.layout.activity_main
@@ -104,29 +108,26 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
         }
         disableToolTipTextTab()
         initPager()
+        appOpenManager = (application as MyApplication).appOpenManager
+
     }
 
     private fun loadAds() {
         bannerAdsUtils = BannerAdsUtils(this, AppAdsId.id_banner_main, binding.llAds)
         bannerAdsUtils.loadAds()
         bannerAdsUtils.goneWhenFail = false
-        bannerAdsUtils.setAdsListener(object : BannerAdsListener() {
-
-            override fun onAdFailedToLoad(loadAdError: LoadAdError?) {
-                super.onAdFailedToLoad(loadAdError)
-            }
-
-            override fun onAdLoaded() {
-                super.onAdLoaded()
-            }
-
-            override fun onAdClicked() {
-                super.onAdClicked()
-            }
-        })
         loadCacheInter()
     }
 
+    override fun onStart() {
+        super.onStart()
+        appOpenManager.registerObserver(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        appOpenManager.unregisterObserver()
+    }
     private fun loadCacheInter() {
         interApply =InterstitialApply.getInstance(this)
         interTheme =InterstitialAdsManager.getInstance(this)
@@ -349,5 +350,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), View.OnClickListener {
                 super.onBackPressed()
             }
         }
+    }
+
+    override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
+        if (isActive() && !interTheme.isShowAdsInter()) {
+            appOpenAd.show(this)
+        }
+    }
+
+    override fun lifecycleShowAd() {
+
+    }
+
+    override fun lifecycleStop() {
+
     }
 }

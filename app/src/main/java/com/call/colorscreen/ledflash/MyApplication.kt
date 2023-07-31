@@ -5,6 +5,7 @@ import android.util.Log
 import com.call.colorscreen.ledflash.ads.SplashAppOpenManager
 import com.call.colorscreen.ledflash.database.RoomManager
 import com.call.colorscreen.ledflash.di.appModule
+import com.call.colorscreen.ledflash.util.AppOpenManager
 import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.util.PreferencesUtils
@@ -24,6 +25,7 @@ import java.util.concurrent.Executors
 
 class MyApplication : Application() {
    // lateinit var splashAppOpenManager: SplashAppOpenManager
+   lateinit var appOpenManager: AppOpenManager
 
     override fun onCreate() {
         super.onCreate()
@@ -36,6 +38,10 @@ class MyApplication : Application() {
             MobileAds.setRequestConfiguration(configuration)
             AdSettings.addTestDevice("d9db6482-fb0e-4df0-81ca-d47544569596")
         }
+        appOpenManager = AppOpenManager(this)
+       // if (!PreferencesUtils.getBoolean(AppConstant.IS_PURCHASED, false)) {
+        appOpenManager.fetchAd()
+        //}
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
         loadDataFirst()
         setupKoin()
