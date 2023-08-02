@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextUtils
@@ -41,6 +42,7 @@ class SelectContactActivity : BaseActivity<
     private var isSearchShow = false
     val database by inject<AppDatabase>()
     private lateinit var appOpenManager: AppOpenManager
+    private var isShowAdsOpen = true
 
     override fun getLayoutId(): Int {
         return R.layout.activity_select_contact
@@ -249,6 +251,7 @@ class SelectContactActivity : BaseActivity<
             //selectModel.getListContact(db,contactID)
         }
         Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show()
+        setResult(RESULT_OK)
         finish()
 
 
@@ -271,12 +274,26 @@ class SelectContactActivity : BaseActivity<
         if (requestCode == Constant.REQUEST_DRAW_OVER) {
             if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
+                    isShowAdsOpen = false
                     AppUtil.showNotificationAccess(this)
+                }
+                else {
+                    isShowAdsOpen = false
+                    Handler().postDelayed(Runnable {
+                        isShowAdsOpen = true
+                    }, 500)
                 }
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION) {
             if (AppUtil.checkNotificationAccessSettings(this)) {
+                isShowAdsOpen = false
                 setThemetoContactId()
+            }
+            else {
+                isShowAdsOpen = false
+                Handler().postDelayed(Runnable {
+                    isShowAdsOpen = true
+                }, 500)
             }
         }
     }
@@ -310,7 +327,8 @@ class SelectContactActivity : BaseActivity<
         appOpenManager.unregisterObserver()
     }
     override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
-        if (isActive()) {
+        Log.e("TAN", "lifecycleStart: "+isShowAdsOpen )
+        if (isActive()  && isShowAdsOpen) {
             appOpenAd.show(this)
         }
     }

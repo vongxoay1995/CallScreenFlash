@@ -45,7 +45,7 @@ import isActive
 import java.util.*
 
 class SettingActivity : BaseActivity<ActivitySettingBinding>(),
-    View.OnClickListener,  AppOpenManager.AppOpenManagerObserver, PermissionCallListener,
+    View.OnClickListener, AppOpenManager.AppOpenManagerObserver, PermissionCallListener,
     PermissionFlashListener {
     private var nativeAd: NativeAd? = null
     private var nativeFb: com.facebook.ads.NativeAd? = null
@@ -59,7 +59,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     var TYPE_RATE = RATE_LATER
     private lateinit var bannerAdsUtils: BannerAdsUtils
     private lateinit var appOpenManager: AppOpenManager
-
+    private var isShowAdsOpen = false
     override fun getLayoutId(): Int {
         return R.layout.activity_setting
     }
@@ -80,6 +80,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         appOpenManager = (application as MyApplication).appOpenManager
 
     }
+
     override fun onStart() {
         super.onStart()
         appOpenManager.registerObserver(this)
@@ -233,6 +234,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 analystic.trackEvent(ManagerEvent.settingBackClick())
                 finish()
             }
+
             R.id.llShare -> {
                 analystic.trackEvent(ManagerEvent.settingShareAppClick())
                 val sendIntent = Intent()
@@ -244,6 +246,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
             }
+
             R.id.llRate -> {
                 analystic.trackEvent(ManagerEvent.settingRateClick())
                 if (HawkData.isRated()!!) {
@@ -252,10 +255,10 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                     initBottomSheetRate()
                 }
             }
-           /* R.id.llFlash -> {
-                analystic.trackEvent(ManagerEvent.settingFlashClick())
-               Toast.makeText(this,"Developing",Toast.LENGTH_SHORT).show();
-            }*/
+            /* R.id.llFlash -> {
+                 analystic.trackEvent(ManagerEvent.settingFlashClick())
+                Toast.makeText(this,"Developing",Toast.LENGTH_SHORT).show();
+             }*/
             R.id.llPolicy -> {
                 analystic.trackEvent(ManagerEvent.settingPolicyClick())
                 openLink("https://sites.google.com/view/privacy-policy-for-call-color")
@@ -272,6 +275,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             ex.printStackTrace()
         }
     }
+
     private fun goToStoreApp() {
         try {
             val intent = Intent(Intent.ACTION_VIEW)
@@ -282,6 +286,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             e.printStackTrace()
         }
     }
+
     override fun onDestroy() {
         if (nativeAd != null) {
             nativeAd!!.destroy()
@@ -310,14 +315,14 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-         if (requestCode == Constant.PERMISSION_REQUEST_CAMERA) {
-             if (grantResults.isNotEmpty() && AppUtil.checkPermission(grantResults)) {
-                 HawkData.setEnableFlash(isFlashState)
-             } else {
+        if (requestCode == Constant.PERMISSION_REQUEST_CAMERA) {
+            if (grantResults.isNotEmpty() && AppUtil.checkPermission(grantResults)) {
+                HawkData.setEnableFlash(isFlashState)
+            } else {
                 isAllowFlash = true
-                 binding.swflash.isChecked = !isFlashState
-             }
-         } else if (requestCode == Constant.PERMISSION_REQUEST_CALL_PHONE) {
+                binding.swflash.isChecked = !isFlashState
+            }
+        } else if (requestCode == Constant.PERMISSION_REQUEST_CALL_PHONE) {
             if (grantResults.isNotEmpty() && AppUtil.checkPermission(grantResults)) {
                 if (AppUtil.checkDrawOverlayAppNew(this)) {
                     if (!AppUtil.checkNotificationAccessSettings(this)) {
@@ -351,20 +356,33 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
                     isCallState = true
+                    isShowAdsOpen = false
                     resetOnOffCall()
-                    Log.e("TAN", "onActivityResult: showNotificationAccess")
-
                     AppUtil.showNotificationAccess(this)
                 }
+            } else {
+                isShowAdsOpen = false
+                Handler().postDelayed(Runnable {
+                    isShowAdsOpen = true
+                }, 500)
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION) {
             if (AppUtil.checkNotificationAccessSettings(this)) {
                 isCallState = true
                 binding.swOnOff.isChecked = true
+                Handler().postDelayed(Runnable {
+                    isShowAdsOpen = true
+                }, 500)
                 onHasCall()
+            } else {
+                isShowAdsOpen = false
+                Handler().postDelayed(Runnable {
+                    isShowAdsOpen = true
+                }, 500)
             }
         }
     }
+
     private fun initBottomSheetRate() {
         bottomSheetDialog = BottomSheetDialog(this, R.style.SheetDialog)
         val bottomBinding: LayoutBottomSheetRateBinding =
@@ -377,6 +395,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 RATE_IN_APP -> {
                     rateInApp()
                 }
+
                 RATE_FEED_BACK -> {
                     sendFeedBack()
                 }
@@ -395,33 +414,54 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                         TYPE_RATE = RATE_IN_APP
                         bottomBinding.icRate.setImageDrawable(
                             ContextCompat
-                            .getDrawable(this@SettingActivity, R.drawable.image_rate_happy))
+                                .getDrawable(this@SettingActivity, R.drawable.image_rate_happy)
+                        )
                         bottomBinding.tvRate.text = getString(R.string.rate_on_gg_play)
                         bottomBinding.tvContentRate.text = getString(R.string.rate_title3)
                         bottomBinding.tvGuideRate.text = getString(R.string.rate_content3)
-                        bottomBinding.tvRate.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
+                        bottomBinding.tvRate.setTextColor(
+                            ContextCompat.getColor(
+                                this@SettingActivity,
+                                R.color.white
+                            )
+                        )
                         bottomBinding.tvRate.background =
-                            ContextCompat.getDrawable(this@SettingActivity, R.drawable.bg_button_rate)
+                            ContextCompat.getDrawable(
+                                this@SettingActivity,
+                                R.drawable.bg_button_rate
+                            )
                     }
+
                     0 -> {
                         TYPE_RATE = RATE_LATER
                     }
+
                     else -> {
                         TYPE_RATE = RATE_FEED_BACK
                         bottomBinding.icRate.setImageDrawable(
                             ContextCompat
-                            .getDrawable(this@SettingActivity, R.drawable.image_rate_sad))
+                                .getDrawable(this@SettingActivity, R.drawable.image_rate_sad)
+                        )
                         bottomBinding.tvRate.text = getString(R.string.feed_back_rate)
                         bottomBinding.tvContentRate.text = getString(R.string.rate_title2)
                         bottomBinding.tvGuideRate.text = getString(R.string.rate_content2)
-                        bottomBinding.tvRate.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
+                        bottomBinding.tvRate.setTextColor(
+                            ContextCompat.getColor(
+                                this@SettingActivity,
+                                R.color.white
+                            )
+                        )
                         bottomBinding.tvRate.background =
-                            ContextCompat.getDrawable(this@SettingActivity, R.drawable.bg_button_rate)
+                            ContextCompat.getDrawable(
+                                this@SettingActivity,
+                                R.drawable.bg_button_rate
+                            )
                     }
                 }
             }
         })
     }
+
     private fun rateInApp() {
         val reviewManager: ReviewManager = ReviewManagerFactory.create(this)
         val request: com.google.android.play.core.tasks.Task<ReviewInfo> =
@@ -434,6 +474,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             }
         }.addOnFailureListener { goToStoreApp() }
     }
+
     private fun sendFeedBack() {
         val mailSubject = getString(R.string.mail_subject)
         val mailContent = ""
@@ -447,11 +488,13 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         }
         startActivity(Intent.createChooser(mailIntent, "$mailSubject:"))
     }
+
     override fun onCreate() {
 
     }
+
     override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
-        if (isActive()) {
+        if (isActive() && isShowAdsOpen) {
             appOpenAd.show(this)
         }
     }

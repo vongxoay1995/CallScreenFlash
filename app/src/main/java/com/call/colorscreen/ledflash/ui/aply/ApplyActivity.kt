@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -43,7 +44,8 @@ import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
 
 class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener,
-    DownloadTask.Listener, PermissionCallListener, AppOpenManager.AppOpenManagerObserver,PermissionCallContact,DialogDeleteCallBack {
+    DownloadTask.Listener, PermissionCallListener, AppOpenManager.AppOpenManagerObserver,
+    PermissionCallContact, DialogDeleteCallBack {
     private var posRandom = 0
     private var positionTheme = 0
     private var frScreen = 0
@@ -58,6 +60,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     private var isApplied = false
     val database by inject<AppDatabase>()
     private lateinit var appOpenManager: AppOpenManager
+    private var isShowAdsOpen = true
 
     override fun getLayoutId(): Int {
         return R.layout.activity_apply
@@ -82,25 +85,25 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
             }
         })
         interstitialAdsManager
-        interstitialAdsManager.setListener(object: InterstitialAdListener(){
+        interstitialAdsManager.setListener(object : InterstitialAdListener() {
             override fun onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent()
             }
 
             override fun onAdDismissedFullScreenContent() {
                 super.onAdDismissedFullScreenContent()
-                if(isShowInterApply){
+                if (isShowInterApply) {
                     applyThemeCall()
-                }else{
+                } else {
                     finish()
                 }
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
                 super.onAdFailedToShowFullScreenContent(adError)
-                if(isShowInterApply){
+                if (isShowInterApply) {
                     applyThemeCall()
-                }else{
+                } else {
                     finish()
                 }
             }
@@ -120,11 +123,11 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         positionTheme = intent.getIntExtra(Constant.ITEM_POSITION, -1)
         frScreen = intent.getIntExtra(Constant.FR_SCREEN, -1)
         initData()
-        interstitialAdsManager =InterstitialApply.getInstance(this)
+        interstitialAdsManager = InterstitialApply.getInstance(this)
         if (AppUtil.checkInternet(this)) {
             loadAds()
-           // interstitialAdsManager.loadAds()
-           // loadInterAds()
+            // interstitialAdsManager.loadAds()
+            // loadInterAds()
         } else {
             binding.llAds.visibility = View.GONE;
         }
@@ -133,6 +136,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         appOpenManager = (application as MyApplication).appOpenManager
 
     }
+
     override fun onStart() {
         super.onStart()
         appOpenManager.registerObserver(this)
@@ -142,6 +146,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         super.onDestroy()
         appOpenManager.unregisterObserver()
     }
+
     private fun initData() {
         if (intent.getBooleanExtra(Constant.IS_DELETE, false)) {
             binding.imgDelete.visibility = View.VISIBLE
@@ -247,7 +252,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
             mediaPlayer.isLooping = true
             mediaPlayer.setVolume(0.0f, 0.0f)
         }
-        binding.videoTheme.setOnErrorListener { _, _what, _extra->
+        binding.videoTheme.setOnErrorListener { _, _what, _extra ->
             analystic.trackEvent(ManagerEvent.applyVideoViewError(_what, _extra))
             false
         }
@@ -267,14 +272,17 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 analystic.trackEvent(ManagerEvent.applyBackClick())
                 onBackPressed()
             }
+
             R.id.llContact -> {
                 analystic.trackEvent(ManagerEvent.applyContactClick())
                 requestPermissionContact()
             }
+
             R.id.imgDelete -> {
                 analystic.trackEvent(ManagerEvent.applyDeleteClick())
                 AppUtil.showDialogDelete(this, this)
             }
+
             R.id.llApply -> {
                 analystic.trackEvent(ManagerEvent.applyApplyClick())
                 if (!AppUtil.preventClick()) return
@@ -395,7 +403,8 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 analystic.trackEvent(ManagerEvent.applyVideoThemeSelected(theme.name))
                 EventBus.getDefault().postSticky(ebApplyTheme)
             }
-            Constant.CUSTOM_FRAG_MENT ->{
+
+            Constant.CUSTOM_FRAG_MENT -> {
                 Log.e("TAN", "applyThemeCall: 2")
                 EventBus.getDefault().postSticky(ebApplyCustom)
             }
@@ -449,13 +458,32 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         if (requestCode == Constant.REQUEST_DRAW_OVER) {
             if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
+                    isShowAdsOpen = false
                     AppUtil.showNotificationAccess(this);
                 }
+            } else {
+                isShowAdsOpen = false
+                Handler().postDelayed(Runnable {
+                    isShowAdsOpen = true
+                }, 500)
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION) {
             if (AppUtil.checkNotificationAccessSettings(this)) {
+                Handler().postDelayed(Runnable {
+                    isShowAdsOpen = true
+                }, 500)
                 applyThemeCall()
+            } else {
+                isShowAdsOpen = false
+                Handler().postDelayed(Runnable {
+                    isShowAdsOpen = true
+                }, 500)
             }
+        } else if (requestCode == 95 && resultCode == RESULT_OK) {
+            isShowAdsOpen = false
+            Handler().postDelayed(Runnable {
+                isShowAdsOpen = true
+            }, 500)
         }
     }
 
@@ -463,7 +491,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         val intent = Intent(this, SelectContactActivity::class.java)
         val gson = Gson()
         intent.putExtra(Constant.THEME, gson.toJson(theme))
-        startActivity(intent)
+        startActivityForResult(intent, 95)
     }
 
     override fun onCreate() {
@@ -476,6 +504,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         EventBus.getDefault().postSticky(signApplyMyTheme)
         finish()
     }
+
     fun deleteTheme(theme: Theme) {
         if (HawkData.getThemeSelect().path_thumb.equals(theme.path_thumb)) {
             val bg = Theme(
@@ -494,18 +523,20 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     }
 
     override fun onBackPressed() {
-        if (!isShowInterApply&&isApplied){
+        if (!isShowInterApply && isApplied) {
             if (interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
                 interstitialAdsManager.showInterstitial()
-            }else{
+            } else {
                 super.onBackPressed()
             }
-        }else{
+        } else {
             super.onBackPressed()
         }
     }
+
     override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
-        if (isActive() && !interstitialAdsManager.isShowAdsInter()) {
+        Log.e("TAN", "lifecycleStart: " + isShowAdsOpen)
+        if (isActive() && !interstitialAdsManager.isShowAdsInter() && isShowAdsOpen) {
             appOpenAd.show(this)
         }
     }
