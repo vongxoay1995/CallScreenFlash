@@ -54,8 +54,8 @@ public class PhoneUtils {
                 super.run();
                 Log.e("TAN", "run: 0");
                 getListNameContact();
-                NotificationService notificationReceiverService = NotificationService.Companion.get();
-                Log.e("TAN", "run: 1");
+                NotificationService notificationReceiverService = NotificationService.get();
+                Log.e("TAN", "run: 1"+notificationReceiverService);
 
                 if (notificationReceiverService != null) {
                     Log.e("TAN", "run: 2");
@@ -203,7 +203,7 @@ public class PhoneUtils {
     }
     public void stopFindOutgoingPhone() {
         listener = null;
-        NotificationService notificationReceiverService = NotificationService.Companion.get();
+        NotificationService notificationReceiverService = NotificationService.get();
         if (notificationReceiverService != null) {
             notificationReceiverService.stopListenColorCall();
         }

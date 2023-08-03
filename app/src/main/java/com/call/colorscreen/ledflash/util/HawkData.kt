@@ -10,6 +10,7 @@ class HawkData {
         var THEME_SELECT :String = "THEME_SELECT"
         var KEY_ON_OFF :String = "KEY_ON_OFF"
         var IS_FIRST_LOAD_DATA :String = "IS_FIRST_LOAD_DATA"
+        var TIME_LIMIT_ADS :String = "TIME_LIMIT_ADS"
         var LIST_THEME :String = "LIST_THEME"
         var LIST_THEME_DEFAULT :String = "LIST_THEME_DEFAULT"
         private const val IS_RATED = "IS_RATED"
@@ -109,6 +110,14 @@ class HawkData {
         @JvmStatic
         fun isFirstData(): Boolean {
             return Hawk.get(IS_FIRST_LOAD_DATA, false)
+        }
+        @JvmStatic
+        fun setTimeLimitInter(value: Long) {
+            Hawk.put<Long>(TIME_LIMIT_ADS, value)
+        }
+        @JvmStatic
+        fun getTimeLimitInter(): Long {
+            return Hawk.get<Long>(TIME_LIMIT_ADS, 5L)
         }
     }
 }
