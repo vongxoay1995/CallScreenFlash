@@ -42,7 +42,7 @@ class SelectContactActivity : BaseActivity<
     private var isSearchShow = false
     val database by inject<AppDatabase>()
     private lateinit var appOpenManager: AppOpenManager
-    private var isShowAdsOpen = true
+    private var isRequest = true
 
     override fun getLayoutId(): Int {
         return R.layout.activity_select_contact
@@ -274,26 +274,14 @@ class SelectContactActivity : BaseActivity<
         if (requestCode == Constant.REQUEST_DRAW_OVER) {
             if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
-                    isShowAdsOpen = false
+                    isRequest = true
                     AppUtil.showNotificationAccess(this)
-                }
-                else {
-                    isShowAdsOpen = false
-                    Handler().postDelayed(Runnable {
-                        isShowAdsOpen = true
-                    }, 500)
                 }
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION) {
             if (AppUtil.checkNotificationAccessSettings(this)) {
-                isShowAdsOpen = false
+                Handler().postDelayed({ isRequest = false }, 500)
                 setThemetoContactId()
-            }
-            else {
-                isShowAdsOpen = false
-                Handler().postDelayed(Runnable {
-                    isShowAdsOpen = true
-                }, 500)
             }
         }
     }
@@ -310,6 +298,7 @@ class SelectContactActivity : BaseActivity<
         ) {
             if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
+                    isRequest = true
                     AppUtil.showNotificationAccess(this)
                 }
             } else {
@@ -327,8 +316,7 @@ class SelectContactActivity : BaseActivity<
         appOpenManager.unregisterObserver()
     }
     override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
-        Log.e("TAN", "lifecycleStart: "+isShowAdsOpen )
-        if (isActive()  && isShowAdsOpen) {
+        if (isActive()  && !isRequest&&PermissionUtil.checkHasPermissionCall(this)) {
             appOpenAd.show(this)
         }
     }

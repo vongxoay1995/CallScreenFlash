@@ -34,7 +34,15 @@ import com.call.colorscreen.ledflash.model.EBApplyTheme
 import com.call.colorscreen.ledflash.service.PhoneStateService
 import com.call.colorscreen.ledflash.ui.contact.SelectContactActivity
 import com.call.colorscreen.ledflash.ui.listener.DialogDeleteCallBack
-import com.call.colorscreen.ledflash.util.*
+import com.call.colorscreen.ledflash.util.AppAdsId
+import com.call.colorscreen.ledflash.util.AppOpenManager
+import com.call.colorscreen.ledflash.util.AppUtil
+import com.call.colorscreen.ledflash.util.Constant
+import com.call.colorscreen.ledflash.util.DownloadTask
+import com.call.colorscreen.ledflash.util.HawkData
+import com.call.colorscreen.ledflash.util.PermissionCallContact
+import com.call.colorscreen.ledflash.util.PermissionCallListener
+import com.call.colorscreen.ledflash.util.PermissionUtil
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
@@ -60,7 +68,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     private var isApplied = false
     val database by inject<AppDatabase>()
     private lateinit var appOpenManager: AppOpenManager
-    private var isShowAdsOpen = true
+    private var isRequest = false
 
     override fun getLayoutId(): Int {
         return R.layout.activity_apply
@@ -428,6 +436,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         ) {
             if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
+                    isRequest = true
                     AppUtil.showNotificationAccess(this)
                 }
             } else {
@@ -458,31 +467,21 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
         if (requestCode == Constant.REQUEST_DRAW_OVER) {
             if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
-                    isShowAdsOpen = false
+                    isRequest = true
                     AppUtil.showNotificationAccess(this);
                 }
-            } else {
-                isShowAdsOpen = false
-                Handler().postDelayed(Runnable {
-                    isShowAdsOpen = true
-                }, 500)
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION) {
             if (AppUtil.checkNotificationAccessSettings(this)) {
                 Handler().postDelayed(Runnable {
-                    isShowAdsOpen = true
+                    isRequest = false
                 }, 500)
                 applyThemeCall()
-            } else {
-                isShowAdsOpen = false
-                Handler().postDelayed(Runnable {
-                    isShowAdsOpen = true
-                }, 500)
             }
         } else if (requestCode == 95 && resultCode == RESULT_OK) {
-            isShowAdsOpen = false
+             isRequest = true
             Handler().postDelayed(Runnable {
-                isShowAdsOpen = true
+                isRequest = false
             }, 500)
         }
     }
@@ -535,8 +534,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     }
 
     override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
-        Log.e("TAN", "lifecycleStart: " + isShowAdsOpen)
-        if (isActive() && !interstitialAdsManager.isShowAdsInter() && isShowAdsOpen) {
+        if (isActive() && !interstitialAdsManager.isShowAdsInter() && !isRequest&& PermissionUtil.checkHasPermissionCall(this)) {
             appOpenAd.show(this)
         }
     }

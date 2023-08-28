@@ -25,7 +25,6 @@ import com.call.colorscreen.ledflash.base.BaseFragment
 import com.call.colorscreen.ledflash.database.AppDatabase
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentCustomBinding
-import com.call.colorscreen.ledflash.databinding.FragmentThemesBinding
 import com.call.colorscreen.ledflash.model.EBApplyCustom
 import com.call.colorscreen.ledflash.ui.aply.ApplyActivity
 import com.call.colorscreen.ledflash.ui.listener.DialogGalleryListener
@@ -47,6 +46,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     private var pathUriImage: String? = null
     val database by inject<AppDatabase>()
     private lateinit var analystic: Analystic
+    var isRequestImageVideo = false
 
     private var positionItemThemeSelected = -1
     override fun getViewBinding(
@@ -105,6 +105,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     @SuppressLint("NotifyDataSetChanged")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        isRequestImageVideo = false
         try {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 if (requestCode == Constant.CODE_VIDEO) {
@@ -245,7 +246,13 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
                 permission.WRITE_EXTERNAL_STORAGE,
                 permission.CAMERA
             )
-        } else {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                permission.READ_MEDIA_VIDEO,
+                permission.READ_MEDIA_IMAGES,
+                permission.CAMERA
+            )
+        }else {
             arrayOf(
                 permission.READ_EXTERNAL_STORAGE,
                 permission.CAMERA
@@ -283,6 +290,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     }
 
     override fun onVideoClicked() {
+        isRequestImageVideo = true
         val photoPickerIntent = Intent(Intent.ACTION_PICK)
         photoPickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         photoPickerIntent.type = "video/*"
@@ -295,6 +303,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     }
 
     override fun onImagesClicked() {
+        isRequestImageVideo = true
         pathUriImage = AppUtil.openCameraIntent(this, requireActivity(), Constant.CODE_IMAGE)
     }
 

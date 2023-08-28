@@ -245,17 +245,17 @@ class AnimationRatingBar @JvmOverloads constructor(
         val animationSet = AnimatorSet()
         animationSet.addListener(object : ValueAnimator.AnimatorUpdateListener,
             Animator.AnimatorListener {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 count_anim++
                 if (count_anim == 5) {
                     setRating(0, false)
                 }
             }
 
-            override fun onAnimationUpdate(animation: ValueAnimator?) {}
-            override fun onAnimationRepeat(animation: Animator?) {}
-            override fun onAnimationCancel(animation: Animator?) {}
-            override fun onAnimationStart(animation: Animator?) {
+            override fun onAnimationUpdate(animation: ValueAnimator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationStart(animation: Animator) {
             }
         })
         animationSet.apply {

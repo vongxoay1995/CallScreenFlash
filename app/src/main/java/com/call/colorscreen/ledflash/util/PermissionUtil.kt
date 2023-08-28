@@ -4,7 +4,6 @@ import android.Manifest.permission
 import android.app.Activity
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 
 class PermissionUtil {
@@ -73,6 +72,40 @@ class PermissionUtil {
                 )
             } else {
                 listener?.onHasFlash()
+            }
+        }
+        fun checkHasPermissionCall(activity: Activity): Boolean {
+            val permistion: Array<String> = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                arrayOf(
+                    permission.READ_PHONE_STATE,
+                    permission.CALL_PHONE,
+                    permission.READ_CONTACTS
+                )
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                arrayOf(
+                    permission.ANSWER_PHONE_CALLS,
+                    permission.READ_PHONE_STATE,
+                    permission.CALL_PHONE,
+                    permission.READ_CONTACTS
+                )
+            } else {
+                arrayOf(
+                    permission.ANSWER_PHONE_CALLS,
+                    permission.READ_PHONE_STATE,
+                    permission.CALL_PHONE,
+                    permission.READ_CONTACTS
+                )
+            }
+            return if (!AppUtil.checkPermission(activity, permistion)) {
+                false
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    AppUtil.checkDrawOverlayAppNew(activity) && AppUtil.checkNotificationAccessSettings(
+                        activity
+                    )
+                } else {
+                    true
+                }
             }
         }
 

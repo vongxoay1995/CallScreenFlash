@@ -1,19 +1,22 @@
 package com.call.colorscreen.ledflash.ui.main
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import com.call.colorscreen.ledflash.MyApplication
 import com.call.colorscreen.ledflash.R
-import com.call.colorscreen.ledflash.ads.BannerAdsListener
 import com.call.colorscreen.ledflash.ads.BannerAdsUtils
 import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
 import com.call.colorscreen.ledflash.ads.InterstitialApply
@@ -32,14 +35,16 @@ import com.call.colorscreen.ledflash.ui.main.custom.CustomFragment
 import com.call.colorscreen.ledflash.ui.main.themes.EventBusMain
 import com.call.colorscreen.ledflash.ui.main.themes.ThemesFragment
 import com.call.colorscreen.ledflash.ui.setting.SettingActivity
-import com.call.colorscreen.ledflash.util.*
+import com.call.colorscreen.ledflash.util.AppAdsId
+import com.call.colorscreen.ledflash.util.AppOpenManager
+import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.Constant.MAIL_LIST
 import com.call.colorscreen.ledflash.util.Constant.PLAY_STORE_LINK
 import com.call.colorscreen.ledflash.util.Constant.RATE_FEED_BACK
 import com.call.colorscreen.ledflash.util.Constant.RATE_IN_APP
 import com.call.colorscreen.ledflash.util.Constant.RATE_LATER
+import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.view.AnimationRatingBar
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -51,7 +56,6 @@ import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 
 /*-cách 2: đệ quy
@@ -109,8 +113,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
         disableToolTipTextTab()
         initPager()
         appOpenManager = (application as MyApplication).appOpenManager
+        requestNotificationPermission()
 
     }
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+                notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+    private val notificationPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean? -> }
+
 
     private fun loadAds() {
         bannerAdsUtils = BannerAdsUtils(this, AppAdsId.id_banner_main, binding.llAds)
@@ -353,7 +369,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
     }
 
     override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
-        if (isActive() && !interTheme.isShowAdsInter()) {
+        if (isActive() && !interTheme.isShowAdsInter() && customFragment != null && !(customFragment as CustomFragment).isRequestImageVideo) {
             appOpenAd.show(this)
         }
     }

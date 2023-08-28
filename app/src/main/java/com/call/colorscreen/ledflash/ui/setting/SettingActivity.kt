@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.DataBindingUtil
 import com.call.colorscreen.ledflash.MyApplication
 import com.call.colorscreen.ledflash.R
@@ -59,7 +58,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     var TYPE_RATE = RATE_LATER
     private lateinit var bannerAdsUtils: BannerAdsUtils
     private lateinit var appOpenManager: AppOpenManager
-    private var isShowAdsOpen = false
+    private var isRequest = false
     override fun getLayoutId(): Int {
         return R.layout.activity_setting
     }
@@ -327,6 +326,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 if (AppUtil.checkDrawOverlayAppNew(this)) {
                     if (!AppUtil.checkNotificationAccessSettings(this)) {
                         resetOnOffCall()
+                        isRequest = true
                         AppUtil.showNotificationAccess(this)
                     }
                 } else {
@@ -356,29 +356,17 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             if (AppUtil.checkDrawOverlayAppNew(this)) {
                 if (!AppUtil.checkNotificationAccessSettings(this)) {
                     isCallState = true
-                    isShowAdsOpen = false
+                    isRequest = true
                     resetOnOffCall()
                     AppUtil.showNotificationAccess(this)
                 }
-            } else {
-                isShowAdsOpen = false
-                Handler().postDelayed(Runnable {
-                    isShowAdsOpen = true
-                }, 500)
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION) {
             if (AppUtil.checkNotificationAccessSettings(this)) {
                 isCallState = true
                 binding.swOnOff.isChecked = true
-                Handler().postDelayed(Runnable {
-                    isShowAdsOpen = true
-                }, 500)
+                Handler().postDelayed({ isRequest = false }, 500)
                 onHasCall()
-            } else {
-                isShowAdsOpen = false
-                Handler().postDelayed(Runnable {
-                    isShowAdsOpen = true
-                }, 500)
             }
         }
     }
@@ -494,7 +482,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     }
 
     override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
-        if (isActive() && isShowAdsOpen) {
+        if (isActive() && !isRequest && PermissionUtil.checkHasPermissionCall(this)) {
             appOpenAd.show(this)
         }
     }
