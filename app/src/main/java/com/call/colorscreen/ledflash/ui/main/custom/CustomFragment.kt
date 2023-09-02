@@ -8,6 +8,7 @@ import android.media.ThumbnailUtils
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -105,7 +106,7 @@ class CustomFragment : BaseFragment<FragmentCustomBinding>(), CustomThemeAdapter
     @SuppressLint("NotifyDataSetChanged")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        isRequestImageVideo = false
+        Handler().postDelayed({ isRequestImageVideo = false },500)
         try {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 if (requestCode == Constant.CODE_VIDEO) {

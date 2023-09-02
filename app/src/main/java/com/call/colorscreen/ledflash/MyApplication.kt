@@ -37,7 +37,6 @@ class MyApplication : Application() {
         Hawk.init(this).build()
         appOpenManager = AppOpenManager(this)
        // if (!PreferencesUtils.getBoolean(AppConstant.IS_PURCHASED, false)) {
-        appOpenManager.fetchAd()
         //}
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
         loadDataFirst()

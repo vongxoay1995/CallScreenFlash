@@ -10,11 +10,11 @@ class BannerAdsUtils {
     private var activity: Activity
     private var layoutBannerAds: ViewGroup
     private var adsListener: BannerAdsListener? = null
-    private var admobId: String? = null
+    private lateinit var admobId: String
     private var adviewGoogle: AdView? = null
     var goneWhenFail = true
 
-    constructor(activity: Activity, admobId: String?, viewContainer: ViewGroup) {
+    constructor(activity: Activity, admobId: String, viewContainer: ViewGroup) {
         this.activity = activity
         this.admobId = admobId
         layoutBannerAds = viewContainer
@@ -25,7 +25,7 @@ class BannerAdsUtils {
         layoutBannerAds = viewContainer
     }
 
-    constructor(activity: Activity, admobId: String?, viewContainer: ViewGroup, adsListener: BannerAdsListener?) {
+    constructor(activity: Activity, admobId: String, viewContainer: ViewGroup, adsListener: BannerAdsListener?) {
         this.activity = activity
         layoutBannerAds = viewContainer
         this.adsListener = adsListener
@@ -46,8 +46,8 @@ class BannerAdsUtils {
     fun loadAds() {
         adviewGoogle = AdView(activity)
         val adRequestBuilder = AdRequest.Builder()
-        val adSize = adSize
-        adviewGoogle!!.adSize = adSize
+        //val adSize = adSize
+        adviewGoogle!!.setAdSize(adSize)
         adviewGoogle!!.adUnitId = admobId
         adviewGoogle!!.loadAd(adRequestBuilder.build())
         adviewGoogle!!.adListener = object : AdListener() {

@@ -113,6 +113,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
         disableToolTipTextTab()
         initPager()
         appOpenManager = (application as MyApplication).appOpenManager
+        appOpenManager.fetchAd()
         requestNotificationPermission()
 
     }

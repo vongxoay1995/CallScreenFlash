@@ -151,5 +151,7 @@
 -keep class com.bumptech.glide.load.data.ParcelFileDescriptorRewinder$InternalRewinder {
   *** rewind();
 }
+-keep class com.google.android.gms.internal.** { *; }
+-keep class com.google.android.gms.** { *; }
 # Uncomment for DexGuard only
 #-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
