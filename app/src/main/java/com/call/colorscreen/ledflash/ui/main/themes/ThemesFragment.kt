@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.ads.InterstitialAdsManager
-import com.call.colorscreen.ledflash.ads.InterstitialApply
 import com.call.colorscreen.ledflash.base.BaseFragment
 import com.call.colorscreen.ledflash.database.Theme
 import com.call.colorscreen.ledflash.databinding.FragmentThemesBinding
@@ -79,20 +78,29 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
         })
         interstitialAdsManager = InterstitialAdsManager.getInstance(requireActivity())
 
-      /*  interstitialAdsManager =
-            InterstitialAdsManager(requireActivity(), AppAdsId.inter_select_item)*/
+        /*  interstitialAdsManager =
+              InterstitialAdsManager(requireActivity(), AppAdsId.inter_select_item)*/
         loadInterAds()
     }
 
     private fun loadInterAds() {
         count = PreferencesUtils.getInt(COUNT_SELECT_ITEM, 0)
-     /*   if (!interstitialAdsManager.isLoading) {
-            interstitialAdsManager.loadAds()
-        }*/
+        /*   if (!interstitialAdsManager.isLoading) {
+               interstitialAdsManager.loadAds()
+           }*/
+    }
+
+    var isActive = false
+    override fun onPause() {
+        isActive = false
+        Log.e("TAN", "onPause: ")
+        super.onPause()
     }
 
     override fun onResume() {
         super.onResume()
+        Log.e("TAN", "onResume: ")
+        isActive = true
         adapter.reloadAll()
     }
 
@@ -113,12 +121,12 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
                 binding.llNoNetwork.visibility = View.GONE
                 if (HawkData.getListThemes().size < 10) {
                     binding.llLoading.visibility = View.VISIBLE
-                    if(activity!=null){
+                    if (activity != null) {
                         (requireActivity() as MainActivity).refreshApi()
                     }
                 }
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -153,8 +161,8 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
         isDelete: Boolean,
         posRandom: Int
     ) {
-        if (interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
-            if (count % 2 == 0) {
+        if (isActive && interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
+            if (count % 3 == 0) {
                 interstitialAdsManager.showInterstitial()
                 interstitialAdsManager.onAdClosed = {
                     interstitialAdsManager.loadAds()

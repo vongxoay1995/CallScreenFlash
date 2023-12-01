@@ -8,14 +8,9 @@ import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.util.PreferencesUtils
 import com.facebook.FacebookSdk
-import com.facebook.ads.AdSettings
 import com.facebook.ads.AudienceNetworkAds
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-import com.google.android.gms.common.util.CollectionUtils.listOf
-import com.google.android.gms.tasks.OnCanceledListener
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -23,8 +18,8 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.orhanobut.hawk.Hawk
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import java.util.*
 import java.util.concurrent.Executors
+
 
 class MyApplication : Application() {
    // lateinit var splashAppOpenManager: SplashAppOpenManager
@@ -34,6 +29,12 @@ class MyApplication : Application() {
         super.onCreate()
         Log.e("TAN", "onCreate: application")
         MobileAds.initialize(this)
+        if (BuildConfig.DEBUG){
+            val testDeviceIds: List<String> =
+                mutableListOf("55212404B8A86E84C7904DC519111B68")
+            val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+            MobileAds.setRequestConfiguration(configuration)
+        }
         Hawk.init(this).build()
         appOpenManager = AppOpenManager(this)
        // if (!PreferencesUtils.getBoolean(AppConstant.IS_PURCHASED, false)) {

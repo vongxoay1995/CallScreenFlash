@@ -324,6 +324,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
 
     override fun onResume() {
         super.onResume()
+        isActive = true
         binding.videoTheme.start()
         runAnimation()
     }
@@ -380,12 +381,18 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     }
 
     private fun checkShowAds() {
-        if (interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
+        if (isActive && interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
             isShowInterApply = true
             interstitialAdsManager.showInterstitial()
         } else {
             applyThemeCall()
         }
+    }
+
+    var isActive = false
+    override fun onPause() {
+        isActive = false
+        super.onPause()
     }
 
     private fun applyThemeCall() {
@@ -417,7 +424,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 EventBus.getDefault().postSticky(ebApplyCustom)
             }
         }
-        //finish()
+        finish()
     }
 
     private fun requestPermissionContact() {
@@ -479,7 +486,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 applyThemeCall()
             }
         } else if (requestCode == 95 && resultCode == RESULT_OK) {
-             isRequest = true
+            isRequest = true
             Handler().postDelayed(Runnable {
                 isRequest = false
             }, 500)
@@ -522,7 +529,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     }
 
     override fun onBackPressed() {
-        if (!isShowInterApply && isApplied) {
+        /*if (!isShowInterApply && isApplied) {
             if (interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
                 interstitialAdsManager.showInterstitial()
             } else {
@@ -530,11 +537,15 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
             }
         } else {
             super.onBackPressed()
-        }
+        }*/
+        super.onBackPressed()
     }
 
     override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
-        if (isActive() && !interstitialAdsManager.isShowAdsInter() && !isRequest&& PermissionUtil.checkHasPermissionCall(this)) {
+        if (isActive() && !interstitialAdsManager.isShowAdsInter() && !isRequest && PermissionUtil.checkHasPermissionCall(
+                this
+            )
+        ) {
             appOpenAd.show(this)
         }
     }

@@ -2,6 +2,7 @@ package com.call.colorscreen.ledflash.ads
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.util.Log
 import com.call.colorscreen.ledflash.util.AppAdsId
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -66,6 +67,7 @@ class InterstitialAdsManager {
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    Log.e("TAN", "onAdLoaded: ", )
                     isLoaded = true
                     isLoading = false
                     loadTime = Date().time
@@ -111,6 +113,7 @@ class InterstitialAdsManager {
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    Log.e("TAN", "onAdFailedToLoad: "+loadAdError.message )
                     // Handle the error
                     interstitialAd = null
                     isAdLoadFail = true
