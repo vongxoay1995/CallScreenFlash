@@ -101,17 +101,12 @@ class PhoneStateService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, i: Int, i2: Int): Int {
-        Log.e("TAN", "onStartCommand: "+intent)
-       /* if(intent != null && intent.getAction() != null) {
-            return START_STICKY
-        }else{
-
+        return try {
+            START_STICKY
+        }catch (e:Exception){
+            e.printStackTrace()
+            START_NOT_STICKY
         }
-
-        if (null == intent || null == intent.action) {
-
-        }*/
-        return START_STICKY
     }
 
     companion object {
