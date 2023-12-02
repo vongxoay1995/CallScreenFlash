@@ -22,7 +22,6 @@ import com.call.colorscreen.ledflash.receive.PhoneStateListenerHighAPI
 import com.call.colorscreen.ledflash.receive.PhoneStateListenerLowAPI
 import com.call.colorscreen.ledflash.ui.main.MainActivity
 import org.koin.android.ext.android.inject
-import org.koin.java.KoinJavaComponent.inject
 
 class PhoneStateService : Service() {
     var telephony: TelephonyManager? = null
@@ -101,7 +100,17 @@ class PhoneStateService : Service() {
         phoneStateListener = null
     }
 
-    override fun onStartCommand(intent: Intent, i: Int, i2: Int): Int {
+    override fun onStartCommand(intent: Intent?, i: Int, i2: Int): Int {
+        Log.e("TAN", "onStartCommand: "+intent)
+       /* if(intent != null && intent.getAction() != null) {
+            return START_STICKY
+        }else{
+
+        }
+
+        if (null == intent || null == intent.action) {
+
+        }*/
         return START_STICKY
     }
 
