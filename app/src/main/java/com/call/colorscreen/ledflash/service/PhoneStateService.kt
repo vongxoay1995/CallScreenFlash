@@ -117,14 +117,14 @@ class PhoneStateService : Service() {
     companion object {
         var number: String? = null
         fun startService(context: Context?) {
-            ContextCompat.startForegroundService(
+         /*   ContextCompat.startForegroundService(
                 context!!,
                 Intent(context, PhoneStateService::class.java)
-            )
+            )*/
         }
 
         fun stopService(context: Context) {
-            context.stopService(Intent(context, PhoneStateService::class.java))
+            //context.stopService(Intent(context, PhoneStateService::class.java))
         }
 
         fun setNumberPhone(numberPhone: String?) {

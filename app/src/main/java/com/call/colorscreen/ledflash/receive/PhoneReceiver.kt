@@ -13,7 +13,7 @@ import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.util.PhoneUtils
 
 
-class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
+class PhoneReceiver : BroadcastReceiver(),PhoneUtils.PhoneListener {
     var phoneNumber: String? = null
     val TYPE_END_CALL = 0
     val TYPE_IN_CALL = 2
@@ -26,6 +26,7 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
     lateinit var flashlightProvider: FlashlightProvider
 
     override fun onReceive(context: Context?, intent: Intent) {
+        Log.e("TAN", "onReceive: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         this.context = context
         Thread {
             Log.e("TAN", "PhoneReceiver: ")
@@ -36,7 +37,7 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
                 if (phoneNumber == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     isBiggerAndroidP = true
                     Log.e("TAN", "onReceive: 2")
-                    // PhoneUtils.get(context).getNumberPhoneWhenNull(this@PhoneReceiver)
+                     PhoneUtils.get(context).getNumberPhoneWhenNull(this@PhoneReceiver)
                 }
                 if (state != null && state == TelephonyManager.EXTRA_STATE_IDLE) {
                     stateType = TYPE_END_CALL
@@ -81,11 +82,14 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
     }
 
     private fun onCallStateChanged(context: Context?, state: Int) {
+        Log.e("TAN", "onCallStateChanged: ")
         when (state) {
             TYPE_RINGGING_CALL -> {
-                if (phoneNumber != null) {
+                Log.e("TAN", "onCallStateChanged: 1111")
+                onIncommingCall(context, phoneNumber!!)
+               /* if (phoneNumber != null) {
                     onIncommingCall(context, phoneNumber!!)
-                }
+                }*/
             }
 
             /*TYPE_END_CALL, TYPE_IN_CALL -> finishCall()*/
@@ -117,7 +121,7 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
     }
 
     override fun getNumPhone(phoneNumb: String?) {
-        Log.e("TAN", "getNumPhone receiver: "+phoneNumb)
+        Log.e("TAN", "aaaaagetNumPhone receiver: "+phoneNumb)
         if (!isFirstRun) {
             phoneNumber = phoneNumb
             isFirstRun = true
