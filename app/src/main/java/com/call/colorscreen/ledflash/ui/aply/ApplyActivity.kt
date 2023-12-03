@@ -381,9 +381,15 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     }
 
     private fun checkShowAds() {
+        var showInter = false
         if (isActive && interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
-            isShowInterApply = true
-            interstitialAdsManager.showInterstitial()
+            if (interstitialAdsManager.showInterstitial()) {
+                showInter = true
+                isShowInterApply = true
+            }
+            if (!showInter) {
+                applyThemeCall()
+            }
         } else {
             applyThemeCall()
         }

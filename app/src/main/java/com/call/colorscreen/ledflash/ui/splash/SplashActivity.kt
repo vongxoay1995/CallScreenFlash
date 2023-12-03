@@ -2,12 +2,10 @@ package com.call.colorscreen.ledflash.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.call.colorscreen.ledflash.MyApplication
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.analystic.ManagerEvent
@@ -23,12 +21,11 @@ import com.call.colorscreen.ledflash.util.JobScreen
 import com.call.colorscreen.ledflash.util.PreferencesUtils
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.appopen.AppOpenAd
-import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.tasks.Task
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.orhanobut.hawk.Hawk
 import isActive
-import kotlinx.coroutines.NonCancellable.isActive
 import java.util.*
 
 
@@ -179,6 +176,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
         checkAds()
         binding.llSkip.setOnClickListener(this)
         binding.btnStart.setOnClickListener(this)
+        Hawk.put<Long>(Constant.BEFORE_TIME, 0L)
+
     }
 
     override fun onCreate() {
@@ -246,7 +245,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     }
 
     override fun onResume() {
-        Log.e("TAN", "onResume: ", )
+        Log.e("TAN", "onResume: ")
         if (this::jobScreen.isInitialized) {
             jobScreen.startJob(this)
         }
@@ -254,7 +253,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     }
 
     override fun onPause() {
-        Log.e("TAN", "onPause: ", )
+        Log.e("TAN", "onPause: ")
         stopJobScreen()
         super.onPause()
     }

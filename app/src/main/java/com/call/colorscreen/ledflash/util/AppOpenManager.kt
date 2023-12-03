@@ -30,9 +30,9 @@ class AppOpenManager(private val application: MyApplication) : LifecycleObserver
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
         //if (!PreferencesUtils.getBoolean(AppConstant.IS_PURCHASED, false)) {
-            if (currentActivity !is SplashActivity && currentActivity !is AdActivity) {
-                showAdIfAvailable()
-            }
+//            if (currentActivity !is SplashActivity && currentActivity !is AdActivity) {
+//                showAdIfAvailable()
+//            }
        // }
     }
 

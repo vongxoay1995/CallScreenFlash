@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.util.Log
 import com.call.colorscreen.ledflash.util.AppAdsId
+import com.call.colorscreen.ledflash.util.Constant
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.orhanobut.hawk.Hawk
 import java.util.*
 
 class InterstitialAdsManager {
@@ -67,7 +69,7 @@ class InterstitialAdsManager {
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    Log.e("TAN", "onAdLoaded: ", )
+                    Log.e("TAN", "onAdLoaded: ")
                     isLoaded = true
                     isLoading = false
                     loadTime = Date().time
@@ -80,6 +82,7 @@ class InterstitialAdsManager {
                             isLoaded = false
                             isShowAds = false
                             this@InterstitialAdsManager.interstitialAd = null
+                            Hawk.put(Constant.BEFORE_TIME, System.currentTimeMillis())
                             onAdClosed?.invoke()
                             if (listener != null) {
                                 listener!!.onAdDismissedFullScreenContent()
@@ -135,10 +138,22 @@ class InterstitialAdsManager {
         val numMilliSecondsPerHour: Long = 3600000
         return dateDifference < (numMilliSecondsPerHour * numHours)
     }
-    fun showInterstitial() {
+    /*fun showInterstitial() {
         if (interstitialAd != null) {
             interstitialAd!!.show(activity)
         }
+    }*/
+    fun showInterstitial(): Boolean {
+        Log.e("TAN", "showInterstitial: item "+(System.currentTimeMillis() - Hawk.get(Constant.BEFORE_TIME, 0L)))
+        if (System.currentTimeMillis() - Hawk.get(Constant.BEFORE_TIME, 0L) < Hawk.get(Constant.TIME_BETWEEN_ADS, 10000L)) {
+            Log.e("TAN", "showInterstitial: disssss")
+            return false
+        }
+        if (interstitialAd != null) {
+            interstitialAd!!.show(activity)
+            return true
+        }
+        return false
     }
     companion object{
         @SuppressLint("StaticFieldLeak")

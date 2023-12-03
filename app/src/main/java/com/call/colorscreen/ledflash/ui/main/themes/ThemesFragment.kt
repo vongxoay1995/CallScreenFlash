@@ -80,11 +80,11 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
 
         /*  interstitialAdsManager =
               InterstitialAdsManager(requireActivity(), AppAdsId.inter_select_item)*/
-        loadInterAds()
+      //  loadInterAds()
     }
 
     private fun loadInterAds() {
-        count = PreferencesUtils.getInt(COUNT_SELECT_ITEM, 0)
+       // count = PreferencesUtils.getInt(COUNT_SELECT_ITEM, 0)
         /*   if (!interstitialAdsManager.isLoading) {
                interstitialAdsManager.loadAds()
            }*/
@@ -161,21 +161,24 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
         isDelete: Boolean,
         posRandom: Int
     ) {
-        if (isActive && interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
-            if (count % 3 == 0) {
-                interstitialAdsManager.showInterstitial()
-                interstitialAdsManager.onAdClosed = {
-                    interstitialAdsManager.loadAds()
-                    moveApplyTheme(themes, position, isDelete, posRandom)
-                }
-            } else {
+        var showInter = false
+        count++
+        Log.e("TAN", "onItemClick:count = "+count)
+        if (count>1&&isActive && interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
+            if (interstitialAdsManager.showInterstitial()) {
+                showInter = true
+            }
+            if (!showInter) {
+                moveApplyTheme(themes, position, isDelete, posRandom)
+            }
+            interstitialAdsManager.onAdClosed = {
+                interstitialAdsManager.loadAds()
                 moveApplyTheme(themes, position, isDelete, posRandom)
             }
         } else {
             moveApplyTheme(themes, position, isDelete, posRandom)
         }
-        count++
-        PreferencesUtils.putInt(COUNT_SELECT_ITEM, count)
+       // PreferencesUtils.putInt(COUNT_SELECT_ITEM, count)
     }
 
     private fun moveApplyTheme(

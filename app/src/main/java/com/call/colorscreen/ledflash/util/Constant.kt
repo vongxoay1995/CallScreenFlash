@@ -73,6 +73,6 @@ object Constant {
             "av9.webp",
             "av91.webp"
     )
-
-
+    var BEFORE_TIME = "BEFORE_TIME"
+    var TIME_BETWEEN_ADS = "TIME_BETWEEN_ADS"
 }

@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.util.Log
 import com.call.colorscreen.ledflash.util.AppAdsId
+import com.call.colorscreen.ledflash.util.Constant
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.orhanobut.hawk.Hawk
 import java.util.Date
 
 class InterstitialApply {
@@ -84,6 +86,7 @@ class InterstitialApply {
                             this@InterstitialApply.interstitialAd = null
                             onAdClosed?.invoke()
                             loadAds()
+                            Hawk.put(Constant.BEFORE_TIME, System.currentTimeMillis())
                             if (listener != null) {
                                 listener!!.onAdDismissedFullScreenContent()
                             }
@@ -137,10 +140,23 @@ class InterstitialApply {
         val numMilliSecondsPerHour: Long = 3600000
         return dateDifference < (numMilliSecondsPerHour * numHours)
     }
-    fun showInterstitial() {
+ /*   fun showInterstitial() {
         if (interstitialAd != null) {
             interstitialAd!!.show(activity)
         }
+    }*/
+    fun showInterstitial(): Boolean {
+     Log.e("TAN", "showInterstitial: apply "+(System.currentTimeMillis() - Hawk.get(Constant.BEFORE_TIME, 0L)))
+
+     if (System.currentTimeMillis() - Hawk.get(Constant.BEFORE_TIME, 0L) < Hawk.get(Constant.TIME_BETWEEN_ADS, 10000L)) {
+            Log.e("TAN", "showInterstitial: dis")
+            return false
+        }
+        if (interstitialAd != null) {
+            interstitialAd!!.show(activity)
+            return true
+        }
+        return false
     }
     companion object{
         @SuppressLint("StaticFieldLeak")

@@ -5,6 +5,7 @@ import android.util.Log
 import com.call.colorscreen.ledflash.di.appModule
 import com.call.colorscreen.ledflash.util.AppOpenManager
 import com.call.colorscreen.ledflash.util.AppUtil
+import com.call.colorscreen.ledflash.util.Constant
 import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.util.PreferencesUtils
 import com.facebook.FacebookSdk
@@ -45,6 +46,9 @@ class MyApplication : Application() {
         PreferencesUtils.init(this)
         AudienceNetworkAds.initialize(this)
         FacebookSdk.sdkInitialize(this)
+        Thread(Runnable {
+            configFirebaseRemote()
+        }).start()
     }
     private fun setupKoin() {
         startKoin {
@@ -88,8 +92,10 @@ class MyApplication : Application() {
     }
 
     private fun createAndPostFirebaseEvent() {
-        val time: Long = mFirebaseRemoteConfig!!.getLong("cool_time_ads_inter")
-        HawkData.setTimeLimitInter(time)
+        var time = mFirebaseRemoteConfig!!.getLong(Constant.TIME_BETWEEN_ADS)
+        if (time<1)
+            time=10000
+        Hawk.put(Constant.TIME_BETWEEN_ADS, time)
     }
     private fun loadDataFirst() {
         if(!HawkData.isFirstData()){
