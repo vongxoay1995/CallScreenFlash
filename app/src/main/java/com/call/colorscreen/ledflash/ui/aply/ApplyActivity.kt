@@ -381,7 +381,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
     }
 
     private fun checkShowAds() {
-        var showInter = false
+        /*var showInter = false
         if (isActive && interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
             if (interstitialAdsManager.showInterstitial()) {
                 showInter = true
@@ -392,7 +392,8 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
             }
         } else {
             applyThemeCall()
-        }
+        }*/
+        applyThemeCall()
     }
 
     var isActive = false
@@ -430,7 +431,7 @@ class ApplyActivity : BaseActivity<ActivityApplyBinding>(), View.OnClickListener
                 EventBus.getDefault().postSticky(ebApplyCustom)
             }
         }
-        finish()
+        //finish()
     }
 
     private fun requestPermissionContact() {

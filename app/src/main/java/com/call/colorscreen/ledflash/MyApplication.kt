@@ -94,7 +94,7 @@ class MyApplication : Application() {
     private fun createAndPostFirebaseEvent() {
         var time = mFirebaseRemoteConfig!!.getLong(Constant.TIME_BETWEEN_ADS)
         if (time<1)
-            time=10000
+            time=30000
         Hawk.put(Constant.TIME_BETWEEN_ADS, time)
     }
     private fun loadDataFirst() {

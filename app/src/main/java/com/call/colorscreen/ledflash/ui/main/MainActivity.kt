@@ -149,7 +149,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
         interApply =InterstitialApply.getInstance(this)
         interTheme =InterstitialAdsManager.getInstance(this)
         if (!interApply.isLoading) {
-            interApply.loadAds()
+           // interApply.loadAds()
         }
         if (!interTheme.isLoading) {
             interTheme.loadAds()
