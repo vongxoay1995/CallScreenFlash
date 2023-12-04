@@ -145,7 +145,7 @@ class InterstitialAdsManager {
     }*/
     fun showInterstitial(): Boolean {
         Log.e("TAN", "showInterstitial: item "+(System.currentTimeMillis() - Hawk.get(Constant.BEFORE_TIME, 0L)))
-        if (System.currentTimeMillis() - Hawk.get(Constant.BEFORE_TIME, 0L) < Hawk.get(Constant.TIME_BETWEEN_ADS, 10000L)) {
+        if (System.currentTimeMillis() - Hawk.get(Constant.BEFORE_TIME, 0L) < Hawk.get(Constant.TIME_BETWEEN_ADS, 30000L)) {
             Log.e("TAN", "showInterstitial: disssss")
             return false
         }
