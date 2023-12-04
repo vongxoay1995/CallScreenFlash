@@ -46,9 +46,9 @@ class MyApplication : Application() {
         PreferencesUtils.init(this)
         AudienceNetworkAds.initialize(this)
         FacebookSdk.sdkInitialize(this)
-        Thread(Runnable {
+       /* Thread(Runnable {
             configFirebaseRemote()
-        }).start()
+        }).start()*/
     }
     private fun setupKoin() {
         startKoin {

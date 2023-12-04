@@ -19,9 +19,11 @@ import com.call.colorscreen.ledflash.databinding.FragmentThemesBinding
 import com.call.colorscreen.ledflash.model.EBApplyTheme
 import com.call.colorscreen.ledflash.ui.aply.ApplyActivity
 import com.call.colorscreen.ledflash.ui.main.MainActivity
-import com.call.colorscreen.ledflash.util.*
-import com.call.colorscreen.ledflash.util.Constant.COUNT_SELECT_ITEM
+import com.call.colorscreen.ledflash.util.AppUtil
+import com.call.colorscreen.ledflash.util.Constant
 import com.call.colorscreen.ledflash.util.Constant.IS_DELETE
+import com.call.colorscreen.ledflash.util.HawkData
+import com.call.colorscreen.ledflash.util.NetworkChangeReceiver
 import com.google.gson.Gson
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -35,6 +37,8 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
     private var posDownload = -1
     lateinit var interstitialAdsManager: InterstitialAdsManager
     var count: Int = 0
+    private var countAds = 0
+
     override fun getViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -162,9 +166,25 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
         posRandom: Int
     ) {
         var showInter = false
-        count++
-        Log.e("TAN", "onItemClick:count = "+count)
-        if (count>1&&isActive && interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
+        //count++
+        if (countAds % 3 != 0&&isActive && interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
+            countAds++
+            moveApplyTheme(themes, position, isDelete, posRandom)
+        } else {
+            countAds++
+            if (interstitialAdsManager.showInterstitial()) {
+                showInter = true
+            }
+            if (!showInter) {
+                moveApplyTheme(themes, position, isDelete, posRandom)
+            }
+            interstitialAdsManager.onAdClosed = {
+                countAds = 1
+                interstitialAdsManager.loadAds()
+                moveApplyTheme(themes, position, isDelete, posRandom)
+            }
+        }
+       /* if (count>1&&isActive && interstitialAdsManager.isLoaded && !interstitialAdsManager.isAdLoadFail) {
             if (interstitialAdsManager.showInterstitial()) {
                 showInter = true
             }
@@ -178,7 +198,7 @@ class ThemesFragment : BaseFragment<FragmentThemesBinding>(),
         } else {
             moveApplyTheme(themes, position, isDelete, posRandom)
         }
-       // PreferencesUtils.putInt(COUNT_SELECT_ITEM, count)
+       /// PreferencesUtils.putInt(COUNT_SELECT_ITEM, count)*/
     }
 
     private fun moveApplyTheme(
