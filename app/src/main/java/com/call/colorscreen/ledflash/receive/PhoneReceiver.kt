@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.call.colorscreen.ledflash.call.IncommingCallActivity
 import com.call.colorscreen.ledflash.service.ColorCallService
+import com.call.colorscreen.ledflash.service.NotificationService
 import com.call.colorscreen.ledflash.service.PhoneStateService
 import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.Constant
@@ -31,6 +32,7 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
     lateinit var flashlightProvider: FlashlightProvider
 
     override fun onReceive(context: Context?, intent: Intent) {
+        Log.e("TAN", "onReceive: action")
         this.context = context
         Thread {
             Log.e("TAN", "PhoneReceiver: ")
@@ -89,9 +91,13 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
         Log.e("TAN", "onCallStateChanged: 00", )
         when (state) {
             TYPE_RINGGING_CALL -> {
-                Log.e("TAN", "onCallStateChanged: 111", )
+                Log.e("TAN", "onCallStateChanged: 111"+phoneNumber )
                 if (phoneNumber != null) {
                     onIncommingCall(context, phoneNumber!!)
+                }else {
+                    if (NotificationService.get()==null){
+                        onIncommingCall(context,"")
+                    }
                 }
             }
 

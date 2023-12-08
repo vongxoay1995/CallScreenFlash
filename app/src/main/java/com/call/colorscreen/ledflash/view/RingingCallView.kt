@@ -149,11 +149,11 @@ class RingingCallView : RelativeLayout {
     }
 
     fun setInforContact() {
-        if (number != null && number != "") {
+        if (number != "") {
             try {
                 val contactRetrieve: ContactRetrieve = AppUtil.getContactName(
-                    FacebookSdk.getApplicationContext(),
-                    number.toString()
+                    context,
+                    number
                 )
                 name = contactRetrieve.name
                 contactId = contactRetrieve.contact_id
@@ -164,10 +164,11 @@ class RingingCallView : RelativeLayout {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            txtPhone!!.text = number.toString()
+            txtPhone!!.text = number
             txtPhone!!.visibility = VISIBLE
         } else {
             txtName!!.text = context.getString(R.string.unknowContact)
+            txtPhone!!.text = ""
             txtPhone!!.visibility = INVISIBLE
         }
     }

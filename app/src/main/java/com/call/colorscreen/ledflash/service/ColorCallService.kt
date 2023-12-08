@@ -204,6 +204,7 @@ class ColorCallService : Service() {
     }
 
     fun showViewCall(str: String?) {
+        Log.e("TAN", "showViewCall: ")
         incomingCallView =
             View.inflate(context, R.layout.layout_ringing_call, null) as RingingCallView
         //incomingCallView!!.phoneStateLowAPI = this
