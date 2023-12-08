@@ -75,7 +75,7 @@ class PhoneStateListenerHighAPI(var context: Context,var database: AppDatabase) 
             if (state == 1) {
                 incomingCallView =
                     View.inflate(context, R.layout.layout_ringing_call, null) as RingingCallView
-                incomingCallView!!.phoneStateHighAPI = this
+               // incomingCallView!!.phoneStateHighAPI = this
                 incomingCallView!!.setDatabaseApp(database)
                 incomingCallView!!.initData()
                 incomingCallView!!.setNumberPhone(str)

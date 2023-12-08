@@ -27,6 +27,7 @@ abstract class AppDatabase  : RoomDatabase() {
                     }
 
                     override fun onOpen(db: SupportSQLiteDatabase) {
+
                         super.onOpen(db)
                     }
                 })

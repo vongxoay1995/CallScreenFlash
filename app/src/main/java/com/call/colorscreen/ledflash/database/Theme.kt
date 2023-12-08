@@ -26,7 +26,7 @@ class Theme {
     var time_update: String = ""
     var delete = false
     var position = 0
-
+    
     constructor(
         id: Int,
         type: Int,

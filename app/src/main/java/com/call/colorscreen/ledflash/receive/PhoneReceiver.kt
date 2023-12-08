@@ -6,8 +6,13 @@ import android.content.Intent
 import android.os.Build
 import android.telephony.TelephonyManager
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.call.colorscreen.ledflash.call.IncommingCallActivity
+import com.call.colorscreen.ledflash.service.ColorCallService
+import com.call.colorscreen.ledflash.service.PhoneStateService
 import com.call.colorscreen.ledflash.util.AppUtil
+import com.call.colorscreen.ledflash.util.Constant
 import com.call.colorscreen.ledflash.util.FlashlightProvider
 import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.util.PhoneUtils
@@ -36,7 +41,7 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
                 if (phoneNumber == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     isBiggerAndroidP = true
                     Log.e("TAN", "onReceive: 2")
-                    // PhoneUtils.get(context).getNumberPhoneWhenNull(this@PhoneReceiver)
+                     PhoneUtils.get(context).getNumberPhoneWhenNull(this@PhoneReceiver)
                 }
                 if (state != null && state == TelephonyManager.EXTRA_STATE_IDLE) {
                     stateType = TYPE_END_CALL
@@ -81,14 +86,16 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
     }
 
     private fun onCallStateChanged(context: Context?, state: Int) {
+        Log.e("TAN", "onCallStateChanged: 00", )
         when (state) {
             TYPE_RINGGING_CALL -> {
+                Log.e("TAN", "onCallStateChanged: 111", )
                 if (phoneNumber != null) {
                     onIncommingCall(context, phoneNumber!!)
                 }
             }
 
-            /*TYPE_END_CALL, TYPE_IN_CALL -> finishCall()*/
+            TYPE_END_CALL, TYPE_IN_CALL -> finishCall()
         }
         /* if (flashUtils != null && flashUtils.isRunning()) {
              flashUtils.stop()
@@ -98,13 +105,14 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
     private fun onIncommingCall(context: Context?, number: String) {
         Log.e("TAN", "onIncommingCall receiver: "+number)
         if (AppUtil.checkDrawOverlayAppNew(context) && HawkData.getEnableCall()) {
-         /*   intentCallService = Intent(context, ColorCallService::class.java)
+            intentCallService = Intent(context, ColorCallService::class.java)
             intentCallService!!.putExtra(Constant.PHONE_NUMBER, number)
+            Log.e("TAN", "onIncommingCall: 11111"+intentCallService )
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context?.startForegroundService(intentCallService)
             } else {
                 context?.startService(intentCallService)
-            }*/
+            }
         }
     }
 
@@ -113,7 +121,11 @@ class PhoneReceiver : BroadcastReceiver(), PhoneUtils.PhoneListener {
             LocalBroadcastManager
                 .getInstance(it)
         }
-        localBroadcastManager?.sendBroadcast(Intent("com.callcolor.endCall"))
+        //localBroadcastManager?.sendBroadcast(Intent("com.callcolor.endCall"))
+        context?.stopService( Intent(
+            context,
+            ColorCallService::class.java
+        ))
     }
 
     override fun getNumPhone(phoneNumb: String?) {

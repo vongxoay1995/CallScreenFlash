@@ -58,8 +58,8 @@ class RingingCallView : RelativeLayout {
     private var telephonyManager: TelephonyManager? = null
     private var telephonyService: ITelephony? = null
 
-    var phoneStateLowAPI: PhoneStateListenerLowAPI? = null
-    var phoneStateHighAPI: PhoneStateListenerHighAPI? = null
+   // var phoneStateLowAPI: PhoneStateListenerLowAPI? = null
+   // var phoneStateHighAPI: PhoneStateListenerHighAPI? = null
     var database: AppDatabase ? = null
 
     @BindView(R.id.txtName)
@@ -243,6 +243,8 @@ class RingingCallView : RelativeLayout {
         }
         imgExit!!.setOnClickListener { v: View? ->
             analystic.trackEvent(ManagerEvent.callExit())
+
+/*
             if (phoneStateLowAPI != null) {
                 phoneStateLowAPI?.release()
             }
@@ -250,7 +252,7 @@ class RingingCallView : RelativeLayout {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     phoneStateHighAPI?.release()
                 }
-            }
+            }*/
             release()
         }
     }
@@ -334,13 +336,13 @@ class RingingCallView : RelativeLayout {
     }
 
     fun clearView() {
-        img_bg_call?.setImageDrawable(null)
-        img_bg_call?.visibility = GONE
-        vdo_theme_call!!.alpha = 0.0f
-        vdo_theme_call!!.stopPlayback()
-        vdo_theme_call!!.visibility = GONE
+        img_bg_call.setImageDrawable(null)
+        img_bg_call.visibility = GONE
+        vdo_theme_call.alpha = 0.0f
+        vdo_theme_call.stopPlayback()
+        vdo_theme_call.visibility = GONE
         try {
-            btnAccept!!.visibility = VISIBLE
+            btnAccept.visibility = VISIBLE
         } catch (e2: Exception) {
             e2.printStackTrace()
         }
