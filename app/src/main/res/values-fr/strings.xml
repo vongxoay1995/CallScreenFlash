@@ -83,4 +83,20 @@
     <string name="contentDelete">Êtes-vous sûr de supprimer le thème ?</string>
     <string name="nope">Non</string>
     <string name="sure">Bien sûr, je veux</string>
+    <string name="content_auto_start">Veuillez accorder l\'autorisation de démarrer automatiquement l\'application en arrière-plan. La fonction principale de l\'application peut ne pas fonctionner correctement sans cette autorisation.</string>
+    <string name="maybe_later">Peut-être plus tard</string>
+    <string name="rate_your_experience_with">Notez votre expérience avec Call Color Screen</string>
+    <string name="the_best_we_can_get_is_5_stars">La meilleure note que nous puissions obtenir est de 5 étoiles !</string>
+    <string name="mail_subject">Feedback au développeur</string>
+    <string name="rate_on_gg_play">Noter sur Google Play</string>
+    <string name="rate_title2">Dites-nous où nous pouvons nous améliorer</string>
+    <string name="rate_title3">Magnifique !</string>
+    <string name="rate_content2">Envoyez-nous vos commentaires !</string>
+    <string name="rate_content3">Prenez une seconde pour nous noter sur Google Play</string>
+    <string name="feed_back_rate">Commentaires</string>
+    <string name="flash_not_support">Votre appareil ne prend pas en charge la lampe de poche</string>
+    <string name="notify_msg_foreground">L\'écran d\'appel est en cours d\'exécution</string>
+    <string name="title_auto_start">Autoriser le démarrage automatique</string>
+    <string name="allow">Autoriser</string>
+
 </resources>

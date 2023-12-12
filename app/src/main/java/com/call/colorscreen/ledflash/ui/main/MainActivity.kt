@@ -38,6 +38,7 @@ import com.call.colorscreen.ledflash.ui.setting.SettingActivity
 import com.call.colorscreen.ledflash.util.AppAdsId
 import com.call.colorscreen.ledflash.util.AppOpenManager
 import com.call.colorscreen.ledflash.util.AppUtil
+import com.call.colorscreen.ledflash.util.AutoStartHelper
 import com.call.colorscreen.ledflash.util.Constant.MAIL_LIST
 import com.call.colorscreen.ledflash.util.Constant.PLAY_STORE_LINK
 import com.call.colorscreen.ledflash.util.Constant.RATE_FEED_BACK
@@ -51,6 +52,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
+import com.orhanobut.hawk.Hawk
 import isActive
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
@@ -115,7 +117,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
         appOpenManager = (application as MyApplication).appOpenManager
         //appOpenManager.fetchAd()
         requestNotificationPermission()
-
+        if (!Hawk.get("auto_start",false)){
+            AutoStartHelper.getInstance().getAutoStartPermission(this);
+        }
     }
     private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

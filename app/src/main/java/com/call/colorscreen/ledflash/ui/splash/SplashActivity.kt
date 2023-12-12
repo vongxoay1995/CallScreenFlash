@@ -127,9 +127,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
             R.id.btnStart -> {
                 moveMain(3)
             }
-            R.id.ll_skip -> {
-                moveMain(4)
-            }
         }
     }
     private fun initRemoteConfig() {
@@ -168,13 +165,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
             finish()
             return
         }
-        Glide.with(this)
-            .load(R.drawable.ic_bg_splash_test)
-            .diskCacheStrategy(DiskCacheStrategy.DATA)
-            .thumbnail(0.2f)
-            .into(binding.imgSplash)
         checkAds()
-        binding.llSkip.setOnClickListener(this)
         binding.btnStart.setOnClickListener(this)
         Hawk.put<Long>(Constant.BEFORE_TIME, 0L)
 

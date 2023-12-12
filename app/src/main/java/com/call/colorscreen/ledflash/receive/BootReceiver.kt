@@ -9,6 +9,7 @@ import com.call.colorscreen.ledflash.util.HawkData
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        Log.e("TAN", "onReceive:boot "+intent.action )
         if ("android.intent.action.BOOT_COMPLETED" == intent.action && HawkData.getEnableCall()) {
             PhoneStateService.startService(context)
         }

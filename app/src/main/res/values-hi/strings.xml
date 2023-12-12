@@ -44,4 +44,19 @@
     <string name="contentDelete">क्या आप निश्चित रूप से थीम हटाएं?</string>
     <string name="nope">नहीं</string>
     <string name="sure">मैं बिल्कुल चाहता हूँ</string>
+    <string name="content_auto_start">कृपया अनुमति प्रदान करें कि ऐप्लिकेशन को पृष्ठभूमि में स्वचालित रूप से शुरू किया जा सके। इस अनुमति के बिना, एप्लिकेशन का मुख्य कार्यक्षमता ठीक से काम नहीं कर सकती है।</string>
+    <string name="maybe_later">शायद बाद में</string>
+    <string name="rate_your_experience_with">अपने अनुभव को कॉल कलर स्क्रीन के साथ मूल्यांकित करें</string>
+    <string name="the_best_we_can_get_is_5_stars">हम जो सबसे अच्छा प्राप्त कर सकते हैं, वह 5 सितारे हैं!</string>
+    <string name="mail_subject">डेवेलपर को प्रतिक्रिया</string>
+    <string name="rate_on_gg_play">Google Play पर मूल्यांकन करें</string>
+    <string name="rate_title2">हमें बताएं कहाँ हम सुधार सकते हैं</string>
+    <string name="rate_title3">शानदार!</string>
+    <string name="rate_content2">हमें कुछ प्रतिक्रिया भेजें!</string>
+    <string name="rate_content3">हमें Google Play पर मूल्यांकन करने के लिए एक सेकंड लें</string>
+    <string name="feed_back_rate">प्रतिक्रिया</string>
+    <string name="flash_not_support">आपका डिवाइस फ़्लैश लाइट का समर्थन नहीं करता</string>
+    <string name="notify_msg_foreground">कॉल स्क्रीन चल रही है</string>
+    <string name="title_auto_start">स्वचालित प्रारंभ की अनुमति दें</string>
+    <string name="allow">अनुमति दें</string>
 </resources>

@@ -57,4 +57,7 @@
     <string name="feed_back_rate">Feedback</string>
     <string name="flash_not_support">Your device doesn\'t support flash light</string>
     <string name="notify_msg_foreground">Call Screen is running</string>
+    <string name="title_auto_start">Allow AutoStart</string>
+    <string name="content_auto_start">Please grant permission to automatically start the application in the background. The main functionality of the app may not work without this permission</string>
+    <string name="allow">Allow</string>
 </resources>

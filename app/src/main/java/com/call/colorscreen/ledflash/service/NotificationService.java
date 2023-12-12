@@ -41,7 +41,7 @@ public class NotificationService extends NotificationListenerService {
 
     public void onCreate() {
         super.onCreate();
-        Log.e("TAN", "serviceWeakReference onCreate: ");
+        Log.e("TAN", "oncreate serviceWeakReference onCreate: ");
         serviceWeakReference = new WeakReference<>(this);
     }
 

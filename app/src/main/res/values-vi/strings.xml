@@ -84,4 +84,20 @@
     <string name="nope">Không</string>
 
     <string name="sure">Chắc chắn, tôi muốn</string>
+
+    <string name="content_auto_start">Vui lòng cấp quyền để tự động khởi chạy ứng dụng trong nền. Chức năng chính của ứng dụng có thể không hoạt động đúng nếu thiếu quyền này.</string>
+    <string name="maybe_later">Có lẽ sau</string>
+    <string name="rate_your_experience_with">Đánh giá trải nghiệm của bạn với Call Color Screen</string>
+    <string name="the_best_we_can_get_is_5_stars">Điểm tốt nhất mà chúng tôi có thể đạt được là 5 sao!</string>
+    <string name="mail_subject">Phản hồi cho nhà phát triển</string>
+    <string name="rate_on_gg_play">Đánh giá trên Google Play</string>
+    <string name="rate_title2">Hãy cho chúng tôi biết nơi chúng tôi có thể cải thiện</string>
+    <string name="rate_title3">Tuyệt vời!</string>
+    <string name="rate_content2">Gửi cho chúng tôi một số phản hồi!</string>
+    <string name="rate_content3">Dành một giây để đánh giá chúng tôi trên Google Play</string>
+    <string name="feed_back_rate">Phản hồi</string>
+    <string name="flash_not_support">Thiết bị của bạn không hỗ trợ đèn flash</string>
+    <string name="notify_msg_foreground">Màn hình cuộc gọi đang chạy</string>
+    <string name="title_auto_start">Cho phép Tự động khởi động</string>
+    <string name="allow">Cho phép</string>
 </resources>
