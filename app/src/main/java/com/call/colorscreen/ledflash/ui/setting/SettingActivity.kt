@@ -77,7 +77,10 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         analystic = Analystic.getInstance(this)
         analystic.trackEvent(ManagerEvent.settingShow())
         appOpenManager = (application as MyApplication).appOpenManager
-
+        if (AutoStartHelper.getInstance().isDeviceSpec){
+            binding.lineTips.visibility = View.VISIBLE
+            binding.llTips.visibility = View.VISIBLE
+        }
     }
 
     override fun onStart() {
@@ -127,6 +130,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         binding.llRate.setOnClickListener(this)
         binding.llShare.setOnClickListener(this)
         binding.llFlash.setOnClickListener(this)
+        binding.llTips.setOnClickListener(this)
     }
 
     private fun loadAds() {
@@ -233,7 +237,10 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 analystic.trackEvent(ManagerEvent.settingBackClick())
                 finish()
             }
-
+            R.id.llTips -> {
+                analystic.trackEvent(ManagerEvent.settingTipsClick())
+                startActivity(Intent(this,TipsActivity::class.java))
+            }
             R.id.llShare -> {
                 analystic.trackEvent(ManagerEvent.settingShareAppClick())
                 val sendIntent = Intent()

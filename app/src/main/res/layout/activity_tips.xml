@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.setting.SettingActivity">
+
+        <RelativeLayout
+            android:id="@+id/layout_header"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/color_app"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_back" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/btnBack"
+                android:text="@string/tips"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tips"
+            android:text="@string/faq1"
+            app:layout_constraintTop_toBottomOf="@id/layout_header"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:lineSpacingExtra="@dimen/_2sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/colorTxtApp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tips2"
+            android:text="@string/faq2"
+            android:lineSpacingExtra="@dimen/_2sdp"
+            app:layout_constraintTop_toBottomOf="@id/tips"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/colorTxtApp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tips3"
+            android:text="@string/faq3"
+            android:lineSpacingExtra="@dimen/_2sdp"
+            app:layout_constraintTop_toBottomOf="@id/tips2"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/colorTxtApp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
