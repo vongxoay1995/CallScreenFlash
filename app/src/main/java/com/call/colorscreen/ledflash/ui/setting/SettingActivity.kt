@@ -8,7 +8,11 @@ import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.CompoundButton
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.call.colorscreen.ledflash.MyApplication
@@ -21,12 +25,20 @@ import com.call.colorscreen.ledflash.base.BaseActivity
 import com.call.colorscreen.ledflash.databinding.ActivitySettingBinding
 import com.call.colorscreen.ledflash.databinding.LayoutBottomSheetRateBinding
 import com.call.colorscreen.ledflash.service.PhoneStateService
-import com.call.colorscreen.ledflash.util.*
+import com.call.colorscreen.ledflash.util.AppAdsId
+import com.call.colorscreen.ledflash.util.AppOpenManager
+import com.call.colorscreen.ledflash.util.AppUtil
+import com.call.colorscreen.ledflash.util.Constant
 import com.call.colorscreen.ledflash.util.Constant.MAIL_LIST
 import com.call.colorscreen.ledflash.util.Constant.PLAY_STORE_LINK
 import com.call.colorscreen.ledflash.util.Constant.RATE_FEED_BACK
 import com.call.colorscreen.ledflash.util.Constant.RATE_IN_APP
 import com.call.colorscreen.ledflash.util.Constant.RATE_LATER
+import com.call.colorscreen.ledflash.util.GoogleMobileAdsConsentManager
+import com.call.colorscreen.ledflash.util.HawkData
+import com.call.colorscreen.ledflash.util.PermissionCallListener
+import com.call.colorscreen.ledflash.util.PermissionFlashListener
+import com.call.colorscreen.ledflash.util.PermissionUtil
 import com.call.colorscreen.ledflash.view.AnimationRatingBar
 import com.facebook.ads.*
 import com.google.android.gms.ads.AdLoader
@@ -41,7 +53,6 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
 import isActive
-import java.util.*
 
 class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     View.OnClickListener, AppOpenManager.AppOpenManagerObserver, PermissionCallListener,
@@ -59,6 +70,8 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     private lateinit var bannerAdsUtils: BannerAdsUtils
     private lateinit var appOpenManager: AppOpenManager
     private var isRequest = false
+    private var googleMobileAdsConsentManager: GoogleMobileAdsConsentManager? = null
+
     override fun getLayoutId(): Int {
         return R.layout.activity_setting
     }
@@ -74,6 +87,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
             binding.llAds.visibility = View.GONE;
         }
         //loadAds()
+        googleMobileAdsConsentManager =
+            GoogleMobileAdsConsentManager.getInstance(applicationContext)
+        if (googleMobileAdsConsentManager?.isPrivacyOptionsRequired!!) {
+            binding.layoutUMP.visibility = View.VISIBLE
+        }
         analystic = Analystic.getInstance(this)
         analystic.trackEvent(ManagerEvent.settingShow())
         appOpenManager = (application as MyApplication).appOpenManager
@@ -127,6 +145,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         binding.llRate.setOnClickListener(this)
         binding.llShare.setOnClickListener(this)
         binding.llFlash.setOnClickListener(this)
+        binding.layoutUMP.setOnClickListener(this)
     }
 
     private fun loadAds() {
@@ -233,7 +252,16 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                 analystic.trackEvent(ManagerEvent.settingBackClick())
                 finish()
             }
-
+            R.id.layoutUMP -> {
+                googleMobileAdsConsentManager!!.showPrivacyOptionsForm(
+                    this@SettingActivity
+                ) { formError ->
+                    if (formError != null) {
+                        Toast.makeText(this@SettingActivity, formError.message, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
             R.id.llShare -> {
                 analystic.trackEvent(ManagerEvent.settingShareAppClick())
                 val sendIntent = Intent()

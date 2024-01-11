@@ -4,8 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.call.colorscreen.ledflash.R
 import com.call.colorscreen.ledflash.analystic.Analystic
 import com.call.colorscreen.ledflash.analystic.ManagerEvent
@@ -16,17 +14,21 @@ import com.call.colorscreen.ledflash.ui.main.MainActivity
 import com.call.colorscreen.ledflash.util.AppAdsId
 import com.call.colorscreen.ledflash.util.AppUtil
 import com.call.colorscreen.ledflash.util.Constant
+import com.call.colorscreen.ledflash.util.GoogleMobileAdsConsentManager
 import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.util.JobScreen
 import com.call.colorscreen.ledflash.util.PreferencesUtils
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.tasks.Task
+import com.google.android.ump.FormError
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.orhanobut.hawk.Hawk
 import isActive
-import java.util.*
 
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListener, JobScreen.JobProgress {
@@ -41,6 +43,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     private var mFirebaseRemoteConfig: FirebaseRemoteConfig? = null
     private var loadedRemoteConfig = false
     private var allowRate = true
+    var googleMobileAdsConsentManager: GoogleMobileAdsConsentManager? = null
 
 
     private fun checkAds() {
@@ -53,46 +56,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
 
     private fun loadAds() {
         jobScreen.startJob(this)
-        //splashAppOpenManager.fetchAd()
-        //countTimeAds()
     }
-
-    /*private fun countTimeAds() {
-        timer = object : CountDownTimer(8000L, 56L) {
-            override fun onTick(millisUntilFinished: Long) {
-                binding.seekbar.progress++
-                if (binding.seekbar.progress < 100) {
-                    if (splashAppOpenManager.isAdLoadEnd) {
-                        if (!splashAppOpenManager.isAdLoadFailed) {
-                            if (splashAppOpenManager.isAdAvailable) {
-                                splashAppOpenManager.showAdIfAvailable()
-                                cancelCountimer()
-                                binding.seekbar.progress = 100
-                                binding.layoutFooter.visibility = View.GONE
-                            }
-                        } else {
-                            cancelCountimer()
-                            onFinish()
-                        }
-                    }
-                }
-            }
-
-            override fun onFinish() {
-                binding.seekbar.progress = 100
-                moveMain(2)
-                Log.e("TAN", "onFinish: ")
-            }
-        }
-        (timer as CountDownTimer).start()
-        splashAppOpenManager.setAppOpenAdsListener(this)
-    }*/
-
-    /*  private fun cancelCountimer() {
-          if (timer != null) {
-              timer?.cancel()
-          }
-      }*/
 
     override fun onStop() {
         activeScreen = false
@@ -105,7 +69,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     }
 
     private fun moveMain(from:Int) {
-        Log.e("TAN", "moveMain: "+from)
         if (isActive()) {
             stopJobScreen()
             val intent = Intent(this, MainActivity::class.java)
@@ -181,6 +144,24 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback
         )
         jobScreen = JobScreen()
+
+        googleMobileAdsConsentManager =
+            GoogleMobileAdsConsentManager.getInstance(applicationContext)
+        //int countUpdate = HawkHelper.getCountShowDialogUpdate();
+        // countUpdate++;
+        // HawkHelper.setCountRate(countUpdate);
+        /* if (countUpdate == 1 || countUpdate == 3 || countUpdate == 55) {
+            callFlexibleUpdate();
+        } else {
+            checkShowAds();
+        }*/
+        /* mUpdateManager.addFlexibleUpdateDownloadListener(new UpdateManager.FlexibleUpdateDownloadListener() {
+            @Override
+            public void onDownloadProgress(final long bytesDownloaded, final long totalBytes) {
+                Log.e("TAN", "onDownloadProgress: "+ bytesDownloaded + " / " + totalBytes);
+            }
+        });*/
+        loadConsentForm()
         initRemoteConfig()
         if(HawkData.getThemeSelect().name == "default_3" || HawkData.getThemeSelect().name == "default_4"){
             val bg = Theme(
@@ -194,8 +175,23 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
             HawkData.setThemeSelect(bg)
         }
         PreferencesUtils.putInt(Constant.COUNT_SELECT_ITEM, 0)
-    }
 
+    }
+    private fun loadConsentForm() {
+        googleMobileAdsConsentManager!!.gatherConsent(
+            this,
+            object : GoogleMobileAdsConsentManager.OnConsentGatheringCompleteListener {
+                override fun consentGatheringComplete(error: FormError?) {
+                    Log.e("TAN", "consentGatheringComplete: 111", )
+                }
+
+                override fun conSentShow() {
+                }
+
+                override fun conSentDismiss() {
+                }
+            })
+    }
     private val loadCallback: AppOpenAd.AppOpenAdLoadCallback = object :
         AppOpenAd.AppOpenAdLoadCallback() {
 
@@ -236,7 +232,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     }
 
     override fun onResume() {
-        Log.e("TAN", "onResume: ")
         if (this::jobScreen.isInitialized) {
             jobScreen.startJob(this)
         }
@@ -244,7 +239,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
     }
 
     override fun onPause() {
-        Log.e("TAN", "onPause: ")
         stopJobScreen()
         super.onPause()
     }

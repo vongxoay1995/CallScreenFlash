@@ -44,6 +44,8 @@ import com.call.colorscreen.ledflash.util.Constant.PLAY_STORE_LINK
 import com.call.colorscreen.ledflash.util.Constant.RATE_FEED_BACK
 import com.call.colorscreen.ledflash.util.Constant.RATE_IN_APP
 import com.call.colorscreen.ledflash.util.Constant.RATE_LATER
+import com.call.colorscreen.ledflash.util.GoogleMobileAdsConsentManager
+import com.call.colorscreen.ledflash.util.GoogleMobileAdsConsentManager.OnConsentGatheringCompleteListener
 import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.view.AnimationRatingBar
 import com.google.android.gms.ads.appopen.AppOpenAd
@@ -52,6 +54,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.ump.FormError
 import com.orhanobut.hawk.Hawk
 import isActive
 import org.greenrobot.eventbus.EventBus
@@ -77,7 +80,8 @@ int search(int a[],int l,int r,int x)
         return search(a,m+1,r,x);
 
 }*/
-class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpenManagerObserver,View.OnClickListener {
+class MainActivity : BaseActivity<ActivityMainBinding>(), AppOpenManager.AppOpenManagerObserver,
+    View.OnClickListener {
     private var adapter: ViewPagerAdapter? = null
     private var themesFragment: ThemesFragment? = null
     private var customFragment: CustomFragment? = null
@@ -85,10 +89,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
     private lateinit var analystic: Analystic
     var bottomSheetDialog: BottomSheetDialog? = null
     var TYPE_RATE = RATE_LATER
-    var numberExitAllowShowRate = arrayOf(1,4,7)
+    var numberExitAllowShowRate = arrayOf(1, 4, 7)
     lateinit var interApply: InterstitialApply
     lateinit var interTheme: InterstitialAdsManager
     private lateinit var appOpenManager: AppOpenManager
+    var googleMobileAdsConsentManager: GoogleMobileAdsConsentManager? = null
+    var isShowConsent = false
 
     override fun getLayoutId(): Int {
         return R.layout.activity_main
@@ -102,6 +108,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
         if (HawkData.getEnableCall()) {
             PhoneStateService.startService(this)
         }
+        googleMobileAdsConsentManager =
+            GoogleMobileAdsConsentManager.getInstance(applicationContext)
+        showForm()
         analystic = Analystic.getInstance(this)
         analystic.trackEvent(ManagerEvent.mainShow())
         AppUtil.overHeader(this, binding.layoutHeader)
@@ -117,10 +126,34 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
         appOpenManager = (application as MyApplication).appOpenManager
         //appOpenManager.fetchAd()
         requestNotificationPermission()
-        if (!Hawk.get("auto_start",false)){
+        if (!Hawk.get("auto_start", false)) {
             AutoStartHelper.getInstance().getAutoStartPermission(this);
         }
     }
+
+    private fun showForm() {
+        googleMobileAdsConsentManager!!.showForm(
+            this,
+            object : OnConsentGatheringCompleteListener {
+                override fun consentGatheringComplete(error: FormError?) {
+                    Log.e("TAN", "consentGatheringComplete main: $error")
+                    if (AppUtil.checkInternet(this@MainActivity)) {
+                        loadAds()
+                    }
+                }
+
+                override fun conSentShow() {
+                    isShowConsent = true
+                    Log.e("TAN", "conSentShow: ")
+                }
+
+                override fun conSentDismiss() {
+                    isShowConsent = false
+                    Log.e("TAN", "conSentDismiss: ")
+                }
+            })
+    }
+
     private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
@@ -128,12 +161,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
             }
         }
     }
+
     private val notificationPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean? -> }
 
 
     private fun loadAds() {
+        Log.e("TAN", "loadAds: ", )
         bannerAdsUtils = BannerAdsUtils(this, AppAdsId.id_banner_main, binding.llAds)
         bannerAdsUtils.loadAds()
         bannerAdsUtils.goneWhenFail = false
@@ -149,11 +184,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
         super.onDestroy()
         appOpenManager.unregisterObserver()
     }
+
     private fun loadCacheInter() {
-        interApply =InterstitialApply.getInstance(this)
-        interTheme =InterstitialAdsManager.getInstance(this)
+        interApply = InterstitialApply.getInstance(this)
+        interTheme = InterstitialAdsManager.getInstance(this)
         if (!interApply.isLoading) {
-           // interApply.loadAds()
+            // interApply.loadAds()
         }
         if (!interTheme.isLoading) {
             interTheme.loadAds()
@@ -270,6 +306,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
                     analystic.trackEvent(ManagerEvent.rateInApp())
                     rateInApp()
                 }
+
                 RATE_FEED_BACK -> {
                     analystic.trackEvent(ManagerEvent.rateSendFeedBack())
                     sendFeedBack()
@@ -290,25 +327,40 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
                         TYPE_RATE = RATE_IN_APP
                         bottomBinding.icRate.setImageDrawable(
                             ContextCompat
-                            .getDrawable(baseContext, R.drawable.image_rate_happy))
+                                .getDrawable(baseContext, R.drawable.image_rate_happy)
+                        )
                         bottomBinding.tvRate.text = getString(R.string.rate_on_gg_play)
                         bottomBinding.tvContentRate.text = getString(R.string.rate_title3)
                         bottomBinding.tvGuideRate.text = getString(R.string.rate_content3)
-                        bottomBinding.tvRate.setTextColor(ContextCompat.getColor(baseContext, R.color.white))
+                        bottomBinding.tvRate.setTextColor(
+                            ContextCompat.getColor(
+                                baseContext,
+                                R.color.white
+                            )
+                        )
                         bottomBinding.tvRate.background =
                             ContextCompat.getDrawable(baseContext, R.drawable.bg_button_rate)
                     }
+
                     0 -> {
                         TYPE_RATE = RATE_LATER
                     }
+
                     else -> {
                         TYPE_RATE = RATE_FEED_BACK
-                        bottomBinding.icRate.setImageDrawable(ContextCompat
-                            .getDrawable(baseContext, R.drawable.image_rate_sad))
+                        bottomBinding.icRate.setImageDrawable(
+                            ContextCompat
+                                .getDrawable(baseContext, R.drawable.image_rate_sad)
+                        )
                         bottomBinding.tvRate.text = getString(R.string.feed_back_rate)
                         bottomBinding.tvContentRate.text = getString(R.string.rate_title2)
                         bottomBinding.tvGuideRate.text = getString(R.string.rate_content2)
-                        bottomBinding.tvRate.setTextColor(ContextCompat.getColor(baseContext, R.color.white))
+                        bottomBinding.tvRate.setTextColor(
+                            ContextCompat.getColor(
+                                baseContext,
+                                R.color.white
+                            )
+                        )
                         bottomBinding.tvRate.background =
                             ContextCompat.getDrawable(baseContext, R.drawable.bg_button_rate)
                     }
@@ -316,7 +368,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
             }
         })
     }
-
 
 
     private fun sendFeedBack() {
@@ -359,9 +410,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
     }
 
     override fun onBackPressed() {
-        if (!HawkData.isAllowRate()){
+        if (!HawkData.isAllowRate()) {
             super.onBackPressed()
-        }else{
+        } else {
             var countExitApp = HawkData.getCountExitApp()
             countExitApp++
             HawkData.setExitApp(countExitApp)
@@ -374,7 +425,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(),  AppOpenManager.AppOpe
     }
 
     override fun lifecycleStart(appOpenAd: AppOpenAd, appOpenManager: AppOpenManager) {
-        if (isActive() && !interTheme.isShowAdsInter() && customFragment != null && !(customFragment as CustomFragment).isRequestImageVideo) {
+        if (isActive() && !interTheme.isShowAdsInter() && customFragment != null && !(customFragment as CustomFragment).isRequestImageVideo && !isShowConsent) {
             appOpenAd.show(this)
         }
     }

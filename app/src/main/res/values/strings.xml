@@ -60,4 +60,6 @@
     <string name="title_auto_start">Allow AutoStart</string>
     <string name="content_auto_start">Please grant permission to automatically start the application in the background. The main functionality of the app may not work without this permission</string>
     <string name="allow">Allow</string>
+    <string name="gdpr_content">Personalise ads using personal data</string>
+
 </resources>
