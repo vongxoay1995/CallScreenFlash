@@ -238,10 +238,46 @@
                         android:padding="@dimen/_12sdp"
                         app:srcCompat="@drawable/ic_arrow" />
                 </RelativeLayout>
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:background="#EBDDDADA" />
+                <RelativeLayout
+                    android:id="@+id/llTips"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/btntip"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_40sdp"
+                        android:padding="@dimen/_12sdp"
+                        app:srcCompat="@drawable/quest" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/btntip"
+                        android:paddingStart="@dimen/_4sdp"
+                        android:text="@string/tips"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_13sdp" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:padding="@dimen/_12sdp"
+                        app:srcCompat="@drawable/ic_arrow" />
+                </RelativeLayout>
+                <View
+                    android:id="@+id/lineTips"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:visibility="gone"
                     android:background="#EBDDDADA" />
                 <RelativeLayout
                     android:id="@+id/layoutUMP"

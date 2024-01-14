@@ -28,6 +28,7 @@ import com.call.colorscreen.ledflash.service.PhoneStateService
 import com.call.colorscreen.ledflash.util.AppAdsId
 import com.call.colorscreen.ledflash.util.AppOpenManager
 import com.call.colorscreen.ledflash.util.AppUtil
+import com.call.colorscreen.ledflash.util.AutoStartHelper
 import com.call.colorscreen.ledflash.util.Constant
 import com.call.colorscreen.ledflash.util.Constant.MAIL_LIST
 import com.call.colorscreen.ledflash.util.Constant.PLAY_STORE_LINK
@@ -95,7 +96,10 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         analystic = Analystic.getInstance(this)
         analystic.trackEvent(ManagerEvent.settingShow())
         appOpenManager = (application as MyApplication).appOpenManager
-
+        if (AutoStartHelper.getInstance().isDeviceSpec){
+            binding.lineTips.visibility = View.VISIBLE
+            binding.llTips.visibility = View.VISIBLE
+        }
     }
 
     override fun onStart() {
@@ -146,6 +150,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         binding.llShare.setOnClickListener(this)
         binding.llFlash.setOnClickListener(this)
         binding.layoutUMP.setOnClickListener(this)
+        binding.llTips.setOnClickListener(this)
     }
 
     private fun loadAds() {
@@ -261,6 +266,10 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
                             .show()
                     }
                 }
+            }
+            R.id.llTips -> {
+                analystic.trackEvent(ManagerEvent.settingTipsClick())
+                startActivity(Intent(this,TipsActivity::class.java))
             }
             R.id.llShare -> {
                 analystic.trackEvent(ManagerEvent.settingShareAppClick())

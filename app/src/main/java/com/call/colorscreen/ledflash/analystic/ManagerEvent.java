@@ -63,7 +63,9 @@ public class ManagerEvent {
     public static Event settingBackClick(){
         return new Event(EventKey.SETTING_BACK_CLICKED,new Bundle());
     }
-
+    public static Event settingTipsClick(){
+        return new Event(EventKey.SETTING_BACK_CLICKED,new Bundle());
+    }
     public static Event settingPolicyClick(){
         return new Event(EventKey.SETTING_POLICY_CLICKED,new Bundle());
     }

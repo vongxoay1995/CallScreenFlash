@@ -76,6 +76,7 @@ public class AutoStartHelper {
     private String PACKAGE_NOKIA_MAIN = "com.evenwell.powersaving.g3";
     private String PACKAGE_NOKIA_COMPONENT = "com.evenwell.powersaving.g3.exception.PowerSaverExceptionActivity";
     private Analystic analystic;
+
     private AutoStartHelper() {
 
     }
@@ -86,43 +87,59 @@ public class AutoStartHelper {
 
 
     public void getAutoStartPermission(Context context) {
-      analystic = Analystic.getInstance(context);
+        analystic = Analystic.getInstance(context);
 
         String build_info = Build.BRAND.toLowerCase();
         switch (build_info) {
             case BRAND_ASUS:
-                autoStartAsus(context,build_info);
+                autoStartAsus(context, build_info);
                 break;
             case BRAND_XIAOMI:
             case "redmi":
-                autoStartXiaomi(context,build_info);
+                autoStartXiaomi(context, build_info);
                 break;
             case BRAND_LETV:
-                autoStartLetv(context,build_info);
+                autoStartLetv(context, build_info);
                 break;
             case BRAND_HONOR:
-                autoStartHonor(context,build_info);
+                autoStartHonor(context, build_info);
                 break;
             case BRAND_OPPO:
-                autoStartOppo(context,build_info);
+                autoStartOppo(context, build_info);
                 break;
             case BRAND_VIVO:
-                autoStartVivo(context,build_info);
+                autoStartVivo(context, build_info);
                 break;
             case BRAND_NOKIA:
-                autoStartNokia(context,build_info);
+                autoStartNokia(context, build_info);
                 break;
 
         }
 
     }
 
+    public boolean isDeviceSpec() {
+        String build_info = Build.BRAND.toLowerCase();
+        switch (build_info) {
+            case BRAND_ASUS:
+            case BRAND_XIAOMI:
+            case "redmi":
+            case BRAND_LETV:
+            case BRAND_HONOR:
+            case BRAND_OPPO:
+            case BRAND_VIVO:
+            case BRAND_NOKIA:
+                return true;
+        }
+        return false;
+    }
+
     private void autoStartAsus(final Context context, String name) {
         if (isPackageExists(context, PACKAGE_ASUS_MAIN)) {
             showAlert(context, (dialog, which) -> {
                 try {
-                    analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                    Hawk.put("auto_start",true);
+                    analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                    Hawk.put("auto_start", true);
                     startIntent(context, PACKAGE_ASUS_MAIN, PACKAGE_ASUS_COMPONENT);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -145,8 +162,8 @@ public class AutoStartHelper {
         if (isPackageExists(context, PACKAGE_XIAOMI_MAIN)) {
             showAlert(context, (dialog, which) -> {
                 try {
-                    analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                    Hawk.put("auto_start",true);
+                    analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                    Hawk.put("auto_start", true);
                     startIntent(context, PACKAGE_XIAOMI_MAIN, PACKAGE_XIAOMI_COMPONENT);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -164,8 +181,8 @@ public class AutoStartHelper {
                 public void onClick(DialogInterface dialog, int which) {
 
                     try {
-                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                        Hawk.put("auto_start",true);
+                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                        Hawk.put("auto_start", true);
                         startIntent(context, PACKAGE_LETV_MAIN, PACKAGE_LETV_COMPONENT);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -185,8 +202,8 @@ public class AutoStartHelper {
                 public void onClick(DialogInterface dialog, int which) {
 
                     try {
-                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                        Hawk.put("auto_start",true);
+                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                        Hawk.put("auto_start", true);
                         startIntent(context, PACKAGE_HONOR_MAIN, PACKAGE_HONOR_COMPONENT);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -205,20 +222,20 @@ public class AutoStartHelper {
                 public void onClick(DialogInterface dialog, int which) {
 
                     try {
-                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                        Hawk.put("auto_start",true);
+                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                        Hawk.put("auto_start", true);
                         startIntent(context, PACKAGE_OPPO_MAIN, PACKAGE_OPPO_COMPONENT);
                     } catch (Exception e) {
                         e.printStackTrace();
                         try {
-                            analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                            Hawk.put("auto_start",true);
+                            analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                            Hawk.put("auto_start", true);
                             startIntent(context, PACKAGE_OPPO_FALLBACK, PACKAGE_OPPO_COMPONENT_FALLBACK);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             try {
-                                analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                                Hawk.put("auto_start",true);
+                                analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                                Hawk.put("auto_start", true);
                                 startIntent(context, PACKAGE_OPPO_MAIN, PACKAGE_OPPO_COMPONENT_FALLBACK_A);
                             } catch (Exception exx) {
                                 exx.printStackTrace();
@@ -241,20 +258,20 @@ public class AutoStartHelper {
                 public void onClick(DialogInterface dialog, int which) {
 
                     try {
-                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                        Hawk.put("auto_start",true);
+                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                        Hawk.put("auto_start", true);
                         startIntent(context, PACKAGE_VIVO_MAIN, PACKAGE_VIVO_COMPONENT);
                     } catch (Exception e) {
                         e.printStackTrace();
                         try {
-                            analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                            Hawk.put("auto_start",true);
+                            analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                            Hawk.put("auto_start", true);
                             startIntent(context, PACKAGE_VIVO_FALLBACK, PACKAGE_VIVO_COMPONENT_FALLBACK);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             try {
-                                analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                                Hawk.put("auto_start",true);
+                                analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                                Hawk.put("auto_start", true);
                                 startIntent(context, PACKAGE_VIVO_MAIN, PACKAGE_VIVO_COMPONENT_FALLBACK_A);
                             } catch (Exception exx) {
                                 exx.printStackTrace();
@@ -276,8 +293,8 @@ public class AutoStartHelper {
                 public void onClick(DialogInterface dialog, int which) {
 
                     try {
-                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_"+name, new Bundle()));
-                        Hawk.put("auto_start",true);
+                        analystic.trackEvent(new Event("SHOW_PER_AUTO_START_FROM_" + name, new Bundle()));
+                        Hawk.put("auto_start", true);
                         startIntent(context, PACKAGE_NOKIA_MAIN, PACKAGE_NOKIA_COMPONENT);
                     } catch (Exception e) {
                         e.printStackTrace();

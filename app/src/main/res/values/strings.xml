@@ -41,7 +41,7 @@
     <string name="your_video">Open camera or select a new video</string>
     <string name="select_picture">Select a picture</string>
     <string name="file_not_found">File not found !</string>
-    <string name="facebook_app_id" >1389962418463800</string>
+    <string name="facebook_app_id">1389962418463800</string>
     <string name="contentDelete">Are you sure delete theme?</string>
     <string name="nope">Nope</string>
     <string name="sure">Sure, I want</string>
@@ -62,4 +62,8 @@
     <string name="allow">Allow</string>
     <string name="gdpr_content">Personalise ads using personal data</string>
 
+    <string name="tips">Tips</string>
+    <string name="faq1">If you cannot display the incoming call color screen, please follow these instructions:</string>
+    <string name="faq2"><![CDATA[Go to <b>Settings</b> -> <b>Applications</b> -> <b>Application management</b> -> <b>Permissions</b> -> <b>Back ground Auto Start</b> -> tap the screen Back ground Auto Start\n and <b>enable</b> the Call color screen application.]]></string>
+    <string name="faq3"><![CDATA[On some devices, the permission process may <b>not</b> be the same as above, please <b>search</b> in your application information under <b>"autostart in background"</b> or similar and <b>grant permission</b> to Call color screen. If you have tried everything and it doesn\'t work, please email us at: phamquangtung04041992@gmail.com. We are pleased to answer your questions and serve you. Thank you]]></string>
 </resources>

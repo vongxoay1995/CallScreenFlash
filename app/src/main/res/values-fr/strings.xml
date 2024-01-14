@@ -98,5 +98,8 @@
     <string name="notify_msg_foreground">L\'écran d\'appel est en cours d\'exécution</string>
     <string name="title_auto_start">Autoriser le démarrage automatique</string>
     <string name="allow">Autoriser</string>
-
+    <string name="tips">Conseils</string>
+    <string name="faq1">Si vous ne parvenez pas à afficher l\'écran couleur des appels entrants, veuillez suivre ces instructions :</string>
+    <string name="faq2"><![CDATA[Accédez à <b>Paramètres</b> -> <b>Applications</b> -> <b>Gestion des applications</b> -> <b>Autorisations</b> -> <b>Démarrage automatique en arrière-plan </b> -> appuyez sur l\'écran Démarrage automatique en arrière-plan\n et <b>activez</b> l\'application Appel à écran couleur.]]></string>
+    <string name="faq3"><![CDATA[Sur certains appareils, le processus d\'autorisation peut <b>ne pas</b> être le même que ci-dessus. Veuillez <b>rechercher</b> les informations de votre application sous <b>"démarrage automatique en arrière-plan"</b> ou similaire. et <b>accorder la permission</b> d\'appeler l\'écran couleur. Si vous avez tout essayé et que cela ne fonctionne pas, veuillez nous envoyer un e-mail à : phamquangtung04041992@gmail.com. Il nous fera plaisir de répondre à vos questions et de vous servir. Merci]]></string>
 </resources>

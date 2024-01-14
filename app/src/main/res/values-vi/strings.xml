@@ -100,4 +100,8 @@
     <string name="notify_msg_foreground">Màn hình cuộc gọi đang chạy</string>
     <string name="title_auto_start">Cho phép Tự động khởi động</string>
     <string name="allow">Cho phép</string>
+    <string name="tips">Lời khuyên</string>
+    <string name="faq1">Nếu không hiển thị được màn hình màu cuộc gọi đến, vui lòng làm theo hướng dẫn sau:</string>
+    <string name="faq2"><![CDATA[Đi tới <b>Cài đặt</b> -> <b>Ứng dụng</b> -> <b>Quản lý ứng dụng</b> -> <b>Quyền</b> -> <b>Tự động khởi động lại dưới nền </b> -> bấm vào sau đó <b>bật</b> ứng dụng Màn hình màu cuộc gọi.]]></string>
+    <string name="faq3"><![CDATA[Trên một số thiết bị, quy trình cấp phép có thể <b>không</b> giống như trên, vui lòng <b>tìm kiếm</b> trong thông tin ứng dụng của bạn trong phần <b>"tự khởi động ở chế độ nền"</b> hoặc tương tự và <b>cấp quyền</b> cho màn hình màu Cuộc gọi. Nếu bạn đã thử mọi cách mà không được, vui lòng gửi email cho chúng tôi theo địa chỉ: phamquangtung04041992@gmail.com. Chúng tôi rất vui được trả lời câu hỏi của bạn và phục vụ bạn. Cảm ơn]]></string>
 </resources>
