@@ -182,7 +182,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
             this,
             object : GoogleMobileAdsConsentManager.OnConsentGatheringCompleteListener {
                 override fun consentGatheringComplete(error: FormError?) {
-                    Log.e("TAN", "consentGatheringComplete: 111", )
+                    Log.e("TAN", "consentGatheringComplete: 111")
                 }
 
                 override fun conSentShow() {
@@ -214,6 +214,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(), View.OnClickListen
         override fun onAdDismissedFullScreenContent() {
             isShowAds = false
             moveMain(5)
+            Hawk.put<Long>(Constant.BEFORE_TIME, System.currentTimeMillis())
         }
 
         override fun onAdFailedToShowFullScreenContent(p0: AdError) {
