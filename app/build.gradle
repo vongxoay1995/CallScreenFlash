@@ -7,14 +7,15 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.call.screen.themes.color.phone.flashlight"
+        namespace("com.call.screen.themes.color.phone.flashlight")
         minSdkVersion 21
-        targetSdkVersion 33
-        versionCode 18
-        versionName "1.1.5"
+        targetSdkVersion 34
+        versionCode 19
+        versionName "1.1.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -112,8 +113,6 @@ dependencies {
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
     implementation "androidx.lifecycle:lifecycle-service:2.2.0"
 
-    implementation 'com.google.android.play:core:1.10.2'
-
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-common-java8:2.4.1"
@@ -123,6 +122,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:21.1.1'
     implementation 'com.google.firebase:firebase-config:21.2.0'
     implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
+    implementation 'com.google.android.play:review-ktx:2.0.1'
 
     implementation 'com.jakewharton:butterknife:10.2.3'
     kapt 'com.jakewharton:butterknife-compiler:10.2.3'

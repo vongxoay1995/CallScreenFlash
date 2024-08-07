@@ -49,6 +49,7 @@ import com.call.colorscreen.ledflash.util.GoogleMobileAdsConsentManager.OnConsen
 import com.call.colorscreen.ledflash.util.HawkData
 import com.call.colorscreen.ledflash.view.AnimationRatingBar
 import com.google.android.gms.ads.appopen.AppOpenAd
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.play.core.review.ReviewInfo
@@ -386,10 +387,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), AppOpenManager.AppOpen
 
     fun rateInApp() {
         val reviewManager: ReviewManager = ReviewManagerFactory.create(this)
-        val request: com.google.android.play.core.tasks.Task<ReviewInfo> =
+        val request: Task<ReviewInfo> =
             reviewManager.requestReviewFlow()
         request.addOnSuccessListener { result ->
-            val flow: com.google.android.play.core.tasks.Task<Void> =
+            val flow: Task<Void> =
                 reviewManager.launchReviewFlow(this, result)
             flow.addOnSuccessListener {
                 HawkData.setRate(true)
