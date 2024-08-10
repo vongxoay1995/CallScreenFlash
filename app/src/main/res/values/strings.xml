@@ -61,6 +61,7 @@
     <string name="content_auto_start">Please grant permission to automatically start the application in the background. The main functionality of the app may not work without this permission</string>
     <string name="allow">Allow</string>
     <string name="gdpr_content">Personalise ads using personal data</string>
+    <string name="explain_service" translatable="false">The app uses the foreground service to listen for incoming call status, then displays the call color screen, even if the user exits the app. Without using foreground service, the core features of the application cannot work</string>
 
     <string name="tips">Tips</string>
     <string name="faq1">If you cannot display the incoming call color screen, please follow these instructions:</string>

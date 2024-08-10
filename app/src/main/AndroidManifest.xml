@@ -138,7 +138,7 @@
             android:foregroundServiceType= "specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="sdaf" />
+                android:value="@string/explain_service" />
         </service>
 
         <meta-data
