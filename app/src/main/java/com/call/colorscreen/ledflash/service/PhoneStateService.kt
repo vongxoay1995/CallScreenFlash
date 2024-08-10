@@ -8,6 +8,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.telephony.PhoneStateListener
@@ -55,7 +56,11 @@ class PhoneStateService : Service() {
         builder.setContentTitle(getString(R.string.app_name))
         builder.setContentText(getString(R.string.notify_msg_foreground))
         builder.setSmallIcon(R.drawable.icon_app)
-        startForeground(1, builder.build())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            startForeground(1, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+        }else {
+            startForeground(1, builder.build())
+        }
         val telephonyManager = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
         telephony = telephonyManager
         registerCallStateListener(telephonyManager)

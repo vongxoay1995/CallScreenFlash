@@ -3,9 +3,11 @@ package com.call.colorscreen.ledflash.util
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Handler
 import android.os.Message
 import android.text.TextUtils
@@ -20,7 +22,11 @@ class NetworkChangeReceiver : BroadcastReceiver() {
         this.listener = listener
         val filter = IntentFilter()
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
-        context.registerReceiver(this, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            context.registerReceiver(this, filter,RECEIVER_NOT_EXPORTED)
+        }else{
+            context.registerReceiver(this, filter)
+        }
     }
 
     fun unregisterReceiver(context: Context?) {
